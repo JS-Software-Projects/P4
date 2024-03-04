@@ -13,3 +13,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Tile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=True
+/processorParam:TextureFormat=Color
+/build:Tile.png
+

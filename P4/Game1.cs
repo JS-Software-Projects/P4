@@ -9,6 +9,9 @@ namespace P4
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        Texture2D TileSprite;
+        private P4.GridBlock gridBlock; // Fully qualify the namespace
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -27,6 +30,11 @@ namespace P4
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            TileSprite = Content.Load<Texture2D>("Tile");
+
+            gridBlock = new P4.GridBlock(new Vector2(100, 100), 50, 50, Color.White, "nonwalkable"); // Fully qualify the namespace
+
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -43,6 +51,10 @@ namespace P4
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            _spriteBatch.Begin();
+            gridBlock.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             // TODO: Add your drawing code here
 
