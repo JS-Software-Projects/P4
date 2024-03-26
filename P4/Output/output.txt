@@ -2,6 +2,8 @@ syyygttt
 
 
 
-int x = 10; wtf
+int x = 10; 
 
-s
+
+
+x = x + 10;

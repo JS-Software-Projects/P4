@@ -16,7 +16,11 @@ namespace P4
         private Rectangle buttomLine;
 
         private Button playButton;
-        
+
+        // to move left and right up and down
+        private KeyboardState previousKeyboardState;
+        private MouseState previousMouseState;
+
         public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             this.graphicsDevice = graphicsDevice;
@@ -48,6 +52,10 @@ namespace P4
             string filePath = System.IO.Path.Combine(baseDirectory, outputDirectoryName);
 
             LoadFileContent(filePath);
+
+            // to move left and right up and down
+            previousKeyboardState = Keyboard.GetState();
+            previousMouseState = Mouse.GetState();
 
         }
         private void OnPlayButtonClick()
@@ -184,8 +192,103 @@ namespace P4
         {
             // Update the button
             playButton.Update(mouseState);
+
+            // Handle keyboard state
+            KeyboardState keyboardState = Keyboard.GetState();
+            HandleKeyboardInput(keyboardState);
+
+            // Handle new mouse state
+            HandleMouseInput(mouseState);
         }
 
+        // Modify your HandleKeyboardInput method to use the previous state:
+        private void HandleKeyboardInput(KeyboardState keyboardState)
+        {
+            // Handling the arrow keys with debouncing
+            if (keyboardState.IsKeyDown(Keys.Left) && previousKeyboardState.IsKeyUp(Keys.Left))
+            {
+                if (cursorPosition > 0)
+                {
+                    cursorPosition--;
+                }
+                else if (currentLine > 0)
+                {
+                    currentLine--;
+                    cursorPosition = lines[currentLine].Length;
+                }
+            }
+            else if (keyboardState.IsKeyDown(Keys.Right) && previousKeyboardState.IsKeyUp(Keys.Right))
+            {
+                if (cursorPosition < lines[currentLine].Length)
+                {
+                    cursorPosition++;
+                }
+                else if (currentLine < lines.Count - 1)
+                {
+                    currentLine++;
+                    cursorPosition = 0;
+                }
+            }
+            else if (keyboardState.IsKeyDown(Keys.Up) && previousKeyboardState.IsKeyUp(Keys.Up))
+            {
+                if (currentLine > 0)
+                {
+                    currentLine--;
+                    cursorPosition = Math.Min(cursorPosition, lines[currentLine].Length);
+                }
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down) && previousKeyboardState.IsKeyUp(Keys.Down))
+            {
+                if (currentLine < lines.Count - 1)
+                {
+                    currentLine++;
+                    cursorPosition = Math.Min(cursorPosition, lines[currentLine].Length);
+                }
+            }
+
+            // Update the previousKeyboardState at the end of the method
+            previousKeyboardState = keyboardState;
+        }
+        private void HandleMouseInput(MouseState mouseState)
+        {
+            // Check for left mouse button click transition from not pressed to pressed
+            if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            {
+                // Calculate the clicked position relative to the text area
+                int mouseX = mouseState.X;
+                int mouseY = mouseState.Y;
+
+                // Check if the click was inside the text area
+                if (textAreaRectangle.Contains(mouseX, mouseY))
+                {
+                    int textStartX = textAreaRectangle.X + 10; // This should match your actual text margin
+                    int clickX = mouseX - textStartX;
+                    int clickY = mouseY - textAreaRectangle.Y;
+
+                    // Determine which line was clicked
+                    currentLine = Math.Min(clickY / spriteFont.LineSpacing, lines.Count - 1);
+                    cursorPosition = 0;
+
+                    // Find the nearest character position to the click
+                    string currentTextLine = lines[currentLine];
+                    float smallestDistance = float.MaxValue;
+
+                    for (int i = 0; i <= currentTextLine.Length; i++)
+                    {
+                        string textUpToCursor = currentTextLine.Substring(0, i);
+                        Vector2 textSize = spriteFont.MeasureString(textUpToCursor);
+                        float distance = Math.Abs(clickX - textSize.X);
+
+                        if (distance < smallestDistance)
+                        {
+                            smallestDistance = distance;
+                            cursorPosition = i;
+                        }
+                    }
+                }
+            }
+            previousMouseState = mouseState;
+        }
         public void Draw()
         {
             spriteBatch.Begin();
