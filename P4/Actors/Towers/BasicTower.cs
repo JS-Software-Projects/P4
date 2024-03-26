@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace P4.Content.Actors.Towers
+namespace P4.Actors.Towers
 {
     internal class BasicTower : Tower
     {
