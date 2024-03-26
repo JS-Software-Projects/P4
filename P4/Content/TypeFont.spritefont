@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent>
+    <Asset Type="FontDescription">
+        <FontName>Arial</FontName>
+        <Size>14</Size>
+        <Spacing>1</Spacing>
+        <UseKerning>true</UseKerning>
+        <Style>Regular</Style>
+        <DefaultCharacter>*</DefaultCharacter>
+        <CharacterRegions>
+            <CharacterRegion>
+                <Start>&#32;</Start>
+                <!-- Space character -->
+                <End>&#126;</End>
+                <!-- Tilde character -->
+            </CharacterRegion>
+        </CharacterRegions>
+    </Asset>
+</XnaContent>
