@@ -19,7 +19,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         _variables[variableName] = value;
         return null;
     }
-
+    //Needs to be tested.
     public override object? VisitConstant(EduGrammarParser.ConstantContext context)
     {
         if (context.Num() != null) return double.Parse(context.Num().GetText());
@@ -28,7 +28,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         if (context.Null() != null) return null;
         throw new Exception("Invalid constant");
     }
-    
+    //Has been tested.
     public override object? VisitIdExpr(EduGrammarParser.IdExprContext context)
     {
         var variableName = context.id().GetText();
@@ -36,6 +36,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         return _variables[variableName];
     }
     
+    //Needs to be tested.
     public override object? VisitAddSubExpr(EduGrammarParser.AddSubExprContext context)
     {
         var left = Visit(context.expr(0));
