@@ -1,3 +1,4 @@
-﻿
-using var game = new P4.Game1();
+﻿using P4;
+
+using var game = new Game1();
 game.Run();
