@@ -5,6 +5,7 @@ public class Game1 : Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private TextEditor _textEditor;
+    private Terminal _terminal;
 
     public Game1()
     {
@@ -34,6 +35,7 @@ public class Game1 : Game
         Globals.Content = Content;
         base.Initialize();
         _textEditor = new TextEditor(GraphicsDevice, _spriteBatch, Content.Load<SpriteFont>("TypeFont"));
+        _terminal = new Terminal(GraphicsDevice , _spriteBatch, Content.Load<SpriteFont>("TypeFont"));
         Window.TextInput += TextInputHandler;
     }
 
@@ -70,6 +72,7 @@ public class Game1 : Game
 
         // TODO: Add your drawing code here
         _textEditor.Draw();
+        _terminal.Draw();
         base.Draw(gameTime);
     }
 

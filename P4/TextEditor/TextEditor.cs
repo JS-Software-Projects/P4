@@ -30,9 +30,9 @@ public class TextEditor
         this.spriteBatch = spriteBatch;
         this.spriteFont = spriteFont;
 
-        // Calculate dimensions to fill 20% of the right-hand side of the window
+        // Calculate dimensions to fill 35% of the right-hand side of the window
         var textAreaWidth =
-            (int)(Globals.WindowSize.X * 0.35); // 20% of the window width, accessed directly from Globals
+            (int)(Globals.WindowSize.X * 0.35); // 35% of the window width, accessed directly from Globals
         var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
         var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
         var textAreaY = 0; // Start at the top
@@ -40,7 +40,6 @@ public class TextEditor
         textAreaRectangle = new Rectangle(textAreaX, textAreaY, textAreaWidth, textAreaHeight);
         numberArea = new Rectangle(textAreaX - 40, textAreaY, 40, textAreaHeight);
         buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
-
 
         // Initialize your button here
         var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
@@ -302,6 +301,7 @@ public class TextEditor
         spriteBatch.Draw(textAreaBackground, textAreaRectangle, Color.White); // Use the calculated rectangle
         spriteBatch.Draw(textAreaBackground, numberArea, Color.LightSeaGreen);
         spriteBatch.Draw(textAreaBackground, buttomLine, Color.LightSeaGreen);
+        
         DrawBorder(spriteBatch, textAreaRectangle, 2, Color.Black);
         DrawBorder(spriteBatch, numberArea, 2, Color.Black);
         DrawBorder(spriteBatch, buttomLine, 2, Color.Black);
