@@ -49,7 +49,7 @@ public class VisistExprTest
 
         // Assert
         var ex = Assert.Throws<Exception>(() => visitor.Visit(context));
-        Assert.That(ex.Message, Is.EqualTo("Variable missingVar not found"));
+        Assert.That(ex.Message, Is.EqualTo("Variable missingVar not found at line: 0"));
     }
 
     
