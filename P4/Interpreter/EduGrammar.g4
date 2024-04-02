@@ -39,7 +39,8 @@ AND: '&&';
 OR: '||';
 id : ID;
 ID: [a-zA-Z]+;
-WS: [ \t\r\n]+ -> skip;
+WS: [ \t]+ -> skip; // Skip spaces and tabs but not newlines
+NL: [\r\n]+ -> channel(HIDDEN); // Handle newlines separately
 
 Num: '-'?[0-9]+('.'[0-9]+)?;
 String: '"' ~'"'* '"';
