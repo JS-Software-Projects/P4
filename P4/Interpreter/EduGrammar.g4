@@ -23,7 +23,8 @@ expr:
     | expr compareOp expr   # compareExpr
     | expr boolOp expr      # boolExpr
     | '(' expr ')'          # parenExpr
-    | '!' expr              # notExpr;
+    | '!' expr              # notExpr
+    | expr '?' expr ':' expr # ternaryExpr;
 
 constant: Num | String | Bool | Null ;
 addSubOp: ADD | SUB;
