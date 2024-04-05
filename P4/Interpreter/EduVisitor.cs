@@ -26,7 +26,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         _variables[variableName] = value;
         return null;
     }
-    //Needs to be tested.
+    //Needs to be tested. 
     public override object? VisitConstant(EduGrammarParser.ConstantContext context)
     {
         if (context.Num() != null) return double.Parse(context.Num().GetText());
@@ -57,7 +57,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     }
     private object Add(object left, object right)
     {
-        if (left is string || right is string) 
+        if (left is string && right is string) 
             return left.ToString()+ right;
         
         if (left is double l && right is double r)
@@ -67,7 +67,9 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     }
     private object Sub(object left, object right)
     {
-        if (left is double && right is double) return (double)left - (double)right;
+        if (left is double l && right is double r) 
+            return l - r;
+        
         throw new Exception("Invalid subtraction at line: "+_lineNumber);
     }
 }
