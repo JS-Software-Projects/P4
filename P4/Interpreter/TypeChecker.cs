@@ -6,28 +6,61 @@ namespace P4.Interpreter;
 
 public class TypeChecker : EduGrammarBaseVisitor<Type>
 {
-    private Dictionary<string, Type> types = new Dictionary<string, Type>();
+    private readonly Dictionary<string, Type> _types = new();
     
-    public Type GetTypeFromContext(ParserRuleContext context)
+   public static Type GetTypeFromContext(ParserRuleContext context) {
+    var text = context.GetText();
+
+    return text switch
     {
-        // This is a placeholder implementation.
-        // You'll need to adjust it based on how types are represented in your grammar.
-        if (context.GetText().Equals("Num", StringComparison.OrdinalIgnoreCase))
+        "Num" => typeof(double),
+        "String" => typeof(string),
+        "Bool" => typeof(bool),
+        _ => throw new NotImplementedException($"Unsupported type: {text}")
+    };
+}
+
+    public override Type VisitAssignment(EduGrammarParser.AssignmentContext context)
+    {
+        var variableName = context.id().GetText();
+        var variableType = Visit(context.expr());
+        if (_types.ContainsKey(variableName))
         {
-            return typeof(double);
-        }
-        else if (context.GetText().Equals("Bool", StringComparison.OrdinalIgnoreCase))
-        {
-            return typeof(bool);
-        }
-        else if (context.GetText().Equals("string", StringComparison.OrdinalIgnoreCase))
-        {
-            return typeof(string);
+            if (_types[variableName] != variableType)
+            {
+                throw new Exception($"Type mismatch for variable '{variableName}'. Expected {_types[variableName]}, but found {variableType}.");
+            }
         }
         else
         {
-            // Default or error handling
-            throw new NotImplementedException("Unsupported type: " + context.GetText());
+            _types.Add(variableName, variableType);
         }
+        return variableType;
+    }
+
+    public override Type VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    {
+            var exprType = Visit(context.expr());
+            var variableName = context.id().GetText();
+            var variableType = GetTypeFromContext(context.type());
+            if (exprType != variableType)
+            {
+                throw new Exception($"Type mismatch in declaration. Expected {variableType}, but found {exprType}.");
+            }
+            if (_types.ContainsKey(variableName))
+            {
+                throw new Exception($"Variable '{variableName}' already declared.");
+            }
+
+            _types.Add(variableName, variableType);
+            return variableType;
+       }
+    public override Type VisitConstant(EduGrammarParser.ConstantContext context)
+    {
+        if (context.Num() != null) return typeof(double);
+        if (context.String() != null) return typeof(string); // removes the quotes "" 
+        if (context.Bool() != null) return typeof(bool);
+        if (context.Null() != null) return null;
+        throw new Exception("Invalid type for constant.");
     }
 }

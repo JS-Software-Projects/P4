@@ -3,8 +3,9 @@
 program: line* EOF;
 line: statement | ifBlock | whileBlock;
 
-statement: (assignment | print) ';';
+statement: declaration  | assignment | print ';';
 
+declaration: type id '=' expr ';';
 assignment: id '=' expr;
 
 print: 'print' '(' expr ')';
@@ -26,6 +27,7 @@ expr:
     | '!' expr              # notExpr
     | expr '?' expr ':' expr # ternaryExpr;
 
+type: 'Num' | 'String' | 'Bool';
 constant: Num | String | Bool | Null ;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;

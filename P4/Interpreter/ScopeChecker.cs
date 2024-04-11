@@ -6,58 +6,59 @@ namespace P4.Interpreter;
 
 public class ScopeChecker : EduGrammarBaseVisitor<object>
 {
-    private Stack<Dictionary<string, VariableInfo>> scopes = new Stack<Dictionary<string, VariableInfo>>();
+    private readonly Stack<Dictionary<string, Type>> _scopes = new();
 
+   
     public ScopeChecker()
     {
         // Initialize with a global scope
-        scopes.Push(new Dictionary<string, VariableInfo>());
+        _scopes.Push(new Dictionary<string, Type>());
     }
 
     // Override for ifBlock
     public override object VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
-        scopes.Push(new Dictionary<string, VariableInfo>()); // Enter new scope for the if block
+        _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the if block
         base.VisitIfBlock(context); // Visit children
-        scopes.Pop(); // Exit scope
+        _scopes.Pop(); // Exit scope
         return null;
     }
 
     // Override for elseBlock
     public override object VisitElseBlock(EduGrammarParser.ElseBlockContext context)
     {
-        scopes.Push(new Dictionary<string, VariableInfo>()); // Enter new scope for the else block
+        _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the else block
         base.VisitElseBlock(context); // Visit children
-        scopes.Pop(); // Exit scope
+        _scopes.Pop(); // Exit scope
         return null;
     }
 
     // Override for whileBlock
     public override object VisitWhileBlock(EduGrammarParser.WhileBlockContext context)
     {
-        scopes.Push(new Dictionary<string, VariableInfo>()); // Enter new scope for the while block
+        _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the while block
         base.VisitWhileBlock(context); // Visit children
-        scopes.Pop(); // Exit scope
+        _scopes.Pop(); // Exit scope
         return null;
     }
     
-    // Override for a variable declaration node
-    public override object VisitVarDecl(EduGrammarParser.VarDeclContext context)
+    // Checking dupplicate declaration
+    public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
     {
-        string varName = context.varName.Text;
+        var varName = context.id().GetText();
         if (IsVariableDeclared(varName))
         {
             throw new Exception($"Variable '{varName}' already declared.");
         }
-        Type varType = GetTypeFromContext(context.type());
-        scopes.Peek().Add(varName, new VariableInfo(varType, null));
+        var varType = TypeChecker.GetTypeFromContext(context.type());
+        _scopes.Peek().Add(varName, varType);
         return null;
     }
     
-    // Override for a variable reference node
-    public override object VisitVarRef(EduGrammarParser.VarRefContext context)
+    // Checking if variable is declared
+    public override object VisitAssignment(EduGrammarParser.AssignmentContext context)
     {
-        string varName = context.varName.Text;
+        var varName = context.id().GetText();
         if (!IsVariableDeclared(varName))
         {
             throw new Exception($"Variable '{varName}' not declared.");
@@ -67,7 +68,7 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
 
     private bool IsVariableDeclared(string varName)
     {
-        foreach (var scope in scopes)
+        foreach (var scope in _scopes)
         {
             if (scope.ContainsKey(varName))
             {
@@ -76,18 +77,6 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
         }
         return false;
     }
-    
 }
 
-public class VariableInfo
-{
-    public Type Type { get; set; }
-    public object Value { get; set; }
-
-    public VariableInfo(Type type, object value)
-    {
-        Type = type;
-        Value = value;
-    }
-}
 

@@ -11,21 +11,10 @@ public class RuntimeVisitor : EduGrammarBaseVisitor<object?>
     public override object? VisitAssignment(EduGrammarParser.AssignmentContext context)
     {
         var variableName = context.id().GetText();
-        var value = Visit(context.expr()); // Evaluate the expression
-
-        // Find the closest scope where variable is declared (if your design supports shadowing, for example)
-        foreach (var scope in scopes)
-        {
-            if (scope.ContainsKey(variableName))
-            {
-                // Here, you could add type checking based on the type stored in the scope.
-                // For simplicity, let's assume _variables is a runtime environment separate from scopes.
-                _variables[variableName] = value;
-                return null;
-            }
-        }
-
-        throw new Exception($"Variable '{variableName}' not declared."); // Should not reach here if scope checking is done prior
+        var value = Visit(context.expr());
+        Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
+        _variables[variableName] = value;
+        return null;
     }
 
     public override object? VisitIdExpr(EduGrammarParser.IdExprContext context)
