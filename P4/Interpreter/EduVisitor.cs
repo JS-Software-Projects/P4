@@ -33,7 +33,6 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
         Console.WriteLine($"{value}"+" is type "+value.GetType());
-        Console.WriteLine($"{variableName}"+" is type ");
         _variables[variableName] = value;
         return null;
     }

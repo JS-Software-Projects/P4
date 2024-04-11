@@ -6,8 +6,13 @@ namespace P4.Interpreter;
 
 public class TypeChecker : EduGrammarBaseVisitor<Type>
 {
-    private readonly Dictionary<string, Type> _types = new();
-    
+    private readonly Stack<Dictionary<string, Type>> _scopes = new();
+
+    public TypeChecker()
+    {
+        // Initialize with a global scope
+        _scopes.Push(new Dictionary<string, Type>());
+    }
    public static Type GetTypeFromContext(ParserRuleContext context) {
     var text = context.GetText();
 
@@ -19,42 +24,31 @@ public class TypeChecker : EduGrammarBaseVisitor<Type>
         _ => throw new NotImplementedException($"Unsupported type: {text}")
     };
 }
-
-    public override Type VisitAssignment(EduGrammarParser.AssignmentContext context)
-    {
-        var variableName = context.id().GetText();
-        var variableType = Visit(context.expr());
-        if (_types.ContainsKey(variableName))
-        {
-            if (_types[variableName] != variableType)
-            {
-                throw new Exception($"Type mismatch for variable '{variableName}'. Expected {_types[variableName]}, but found {variableType}.");
-            }
-        }
-        else
-        {
-            _types.Add(variableName, variableType);
-        }
-        return variableType;
-    }
-
     public override Type VisitDeclaration(EduGrammarParser.DeclarationContext context)
-    {
-            var exprType = Visit(context.expr());
+     {
+            var exprType = Visit(context.expr()); 
             var variableName = context.id().GetText();
             var variableType = GetTypeFromContext(context.type());
             if (exprType != variableType)
             {
                 throw new Exception($"Type mismatch in declaration. Expected {variableType}, but found {exprType}.");
             }
-            if (_types.ContainsKey(variableName))
-            {
-                throw new Exception($"Variable '{variableName}' already declared.");
-            }
-
-            _types.Add(variableName, variableType);
+            _scopes.Peek().Add(variableName, variableType);
             return variableType;
-       }
+       }    
+    public override Type VisitAssignment(EduGrammarParser.AssignmentContext context)
+    {
+        var variableName = context.id().GetText();
+        var variableType = Visit(context.expr());
+      
+                if (_scopes.Peek()[variableName] != variableType)
+                {
+                    throw new Exception(
+                        $"Type mismatch for variable '{variableName}'. Expected {_scopes.Peek()[variableName]}, but found {variableType}.");
+                }
+                return variableType;
+    }
+    
     public override Type VisitConstant(EduGrammarParser.ConstantContext context)
     {
         if (context.Num() != null) return typeof(double);

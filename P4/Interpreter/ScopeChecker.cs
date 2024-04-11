@@ -41,7 +41,6 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
         _scopes.Pop(); // Exit scope
         return null;
     }
-    
     // Checking dupplicate declaration
     public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
     {
