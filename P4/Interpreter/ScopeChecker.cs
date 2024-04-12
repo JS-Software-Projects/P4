@@ -15,32 +15,16 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
         _scopes.Push(new Dictionary<string, Type>());
     }
 
-    // Override for ifBlock
+    // Override for ifBlock -> skal ændres til functionBlock når det er tilføjet til grammatikken.
+    /*
     public override object VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
         _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the if block
         base.VisitIfBlock(context); // Visit children
         _scopes.Pop(); // Exit scope
         return null;
-    }
+    }*/
 
-    // Override for elseBlock
-    public override object VisitElseBlock(EduGrammarParser.ElseBlockContext context)
-    {
-        _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the else block
-        base.VisitElseBlock(context); // Visit children
-        _scopes.Pop(); // Exit scope
-        return null;
-    }
-
-    // Override for whileBlock
-    public override object VisitWhileBlock(EduGrammarParser.WhileBlockContext context)
-    {
-        _scopes.Push(new Dictionary<string, Type>()); // Enter new scope for the while block
-        base.VisitWhileBlock(context); // Visit children
-        _scopes.Pop(); // Exit scope
-        return null;
-    }
     // Checking dupplicate declaration
     public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
     {
@@ -67,15 +51,7 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
 
     private bool IsVariableDeclared(string varName)
     {
-        foreach (var scope in _scopes)
-        {
-            if (scope.ContainsKey(varName))
-            {
-                return true;
-            }
-        }
-        return false;
+        return _scopes.Peek().ContainsKey(varName);
     }
 }
-
 
