@@ -23,9 +23,20 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
+        Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
         _variables[variableName] = value;
         return null;
     }
+
+    public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    {
+        var variableName = context.id().GetText();
+        var value = Visit(context.expr());
+        Console.WriteLine($"{value}"+" is type "+value.GetType());
+        _variables[variableName] = value;
+        return null;
+    }
+
     //Needs to be tested. 
     public override object? VisitConstant(EduGrammarParser.ConstantContext context)
     {

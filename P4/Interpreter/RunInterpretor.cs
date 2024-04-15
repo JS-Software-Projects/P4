@@ -21,11 +21,16 @@ public class RunInterpretor
             var scopeChecker = new ScopeChecker();
             scopeChecker.Visit(tree);
             
+            Console.WriteLine(tree.ToStringTree(parser));
+            
             var typeChecker = new TypeChecker();
             typeChecker.Visit(tree);
             
+            Console.WriteLine(tree.ToStringTree(parser));
+            
             var visitor = new EduVisitor();
             visitor.Visit(tree);
+            
         } catch (Exception e)
         {
             Terminal.SetError(true, e.Message);
