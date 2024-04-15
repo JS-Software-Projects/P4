@@ -26,7 +26,7 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
     }*/
 
     // Checking dupplicate declaration
-    public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    public override object VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
         var varName = context.id().GetText();
         if (IsVariableDeclared(varName))

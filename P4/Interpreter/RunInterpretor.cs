@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Antlr4.Runtime;
-
+using P4.Interpreter.AST;
 namespace P4.Interpreter;
 
 public class RunInterpretor
@@ -17,6 +17,9 @@ public class RunInterpretor
             var tokens = new CommonTokenStream(lexer);
             var parser = new EduGrammarParser(tokens);
             var tree = parser.program();
+            
+            var astMaker = new ASTMaker();
+            var AST = astMaker.VisitProgram(tree);
             
             var scopeChecker = new ScopeChecker();
             scopeChecker.Visit(tree);

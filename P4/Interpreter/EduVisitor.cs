@@ -28,7 +28,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         return null;
     }
 
-    public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    public override object VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());

@@ -1,17 +1,26 @@
 ﻿grammar EduGrammar;
 
 program: line* EOF;
-line: statement | ifBlock | whileBlock;
+line: statement | ifBlock | whileBlock | functionDeclaration;
 
-statement: declaration  | assignment | print ';';
+statement: variableDeclaration | assignment | print ';';
 
-declaration: type id '=' expr ';';
+variableDeclaration:
+    type id '=' expr ';';
+
+functionDeclaration:
+    'function' type id '(' parameterList? ')' '{' line* '}';
+
+parameterList:
+    parameter (',' parameter)*;
+
+parameter:
+    type id;
+
 assignment: id '=' expr;
-
 print: 'print' '(' expr ')';
 
-ifBlock: 'if' expr '{' line* '}'elseBlock?;
-
+ifBlock: 'if' expr '{' line* '}' elseBlock?;
 elseBlock: 'else' '{' line* '}';
 
 whileBlock: 'while' expr '{' line* '}';
@@ -28,7 +37,7 @@ expr:
     | expr '?' expr ':' expr # ternaryExpr;
 
 type: 'Num' | 'String' | 'Bool';
-constant: Num | String | Bool | Null ;
+constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;
 boolOp: AND | OR;
