@@ -25,18 +25,14 @@ public class RunInterpretor
             var AST = astMaker.VisitProgram(tree);
             Console.WriteLine(AST.ToString());
             
+            /*
             var scopeChecker = new ScopeChecker();
             scopeChecker.Visit(tree);
-            
-            
-            
             var typeChecker = new TypeChecker();
             typeChecker.Visit(tree);
-            
-            
-            
             var visitor = new EduVisitor();
             visitor.Visit(tree);
+            */
             
         } catch (Exception e)
         {

@@ -9,10 +9,12 @@ statement:
     | print  
     | ifBlock 
     | whileBlock 
-    | functionDeclaration;
+    | functionDeclaration
+    | returnStatement
+    | forLoop;
 
 variableDeclaration:
-    type id '=' expr ';' | parameter ';';
+    type id '=' expr ';' | type id ';';
 
 functionDeclaration:
     'function' type id '(' parameterList? ')' block;
@@ -31,6 +33,9 @@ elseBlock: 'else' block;
 whileBlock: 'while' expr block;
 
 block: '{' line* '}';
+
+returnStatement: 'return' expr ';';
+forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
 expr: 
      constant         # constantExpr
