@@ -18,6 +18,9 @@ public class RunInterpretor
             var parser = new EduGrammarParser(tokens);
             var tree = parser.program();
             
+            Console.WriteLine("Parse tree:");
+            Console.WriteLine(tree.ToStringTree(parser)+"\n");
+            
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(tree);
             Console.WriteLine(AST.ToString());
@@ -25,12 +28,12 @@ public class RunInterpretor
             var scopeChecker = new ScopeChecker();
             scopeChecker.Visit(tree);
             
-            Console.WriteLine(tree.ToStringTree(parser));
+            
             
             var typeChecker = new TypeChecker();
             typeChecker.Visit(tree);
             
-            Console.WriteLine(tree.ToStringTree(parser));
+            
             
             var visitor = new EduVisitor();
             visitor.Visit(tree);

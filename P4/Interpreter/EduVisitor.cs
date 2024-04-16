@@ -23,7 +23,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
-        Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
+       // Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
         _variables[variableName] = value;
         return null;
     }
@@ -32,7 +32,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
-        Console.WriteLine($"{value}"+" is type "+value.GetType());
+       // Console.WriteLine($"{value}"+" is type "+value.GetType());
         _variables[variableName] = value;
         return null;
     }

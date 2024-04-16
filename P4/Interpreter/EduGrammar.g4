@@ -1,28 +1,36 @@
 ﻿grammar EduGrammar;
 
 program: line* EOF;
-line: statement | ifBlock | whileBlock | functionDeclaration;
+line: statement;
 
-statement: variableDeclaration | assignment | print ';';
+statement: 
+      variableDeclaration
+    | assignment 
+    | print  
+    | ifBlock 
+    | whileBlock 
+    | functionDeclaration;
 
 variableDeclaration:
-    type id '=' expr ';'| parameter;
+    type id '=' expr ';' | parameter ';';
 
 functionDeclaration:
-    'function' type id '(' parameterList? ')' '{' line* '}';
+    'function' type id '(' parameterList? ')' block;
 parameterList:
     parameter (',' parameter)*;
 parameter:
     type id;
 
-assignment: id '=' expr;
+assignment: id '=' expr ';';
 
-print: 'print' '(' expr ')';
+print: 'print' '(' expr ')' ';';
 
-ifBlock: 'if' expr '{' line* '}' elseBlock?;
-elseBlock: 'else' '{' line* '}';
+ifBlock: 'if' expr block elseBlock?;
+elseBlock: 'else' block;
 
-whileBlock: 'while' expr '{' line* '}';
+whileBlock: 'while' expr block;
+
+block: '{' line* '}';
 
 expr: 
      constant         # constantExpr

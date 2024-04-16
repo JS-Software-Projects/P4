@@ -17,7 +17,7 @@ public class ProgramNode : ASTNode {
     // Override ToString() to help in debugging and visualizing the tree
     public override string ToString() {
         var builder = new StringBuilder();
-        builder.AppendLine("Program:");
+        builder.AppendLine("AST:");
         foreach (var child in Children) {
             builder.AppendLine(child.ToString());
         }
