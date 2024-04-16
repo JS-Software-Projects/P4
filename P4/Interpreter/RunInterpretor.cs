@@ -20,6 +20,7 @@ public class RunInterpretor
             
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(tree);
+            Console.WriteLine(AST.ToString());
             
             var scopeChecker = new ScopeChecker();
             scopeChecker.Visit(tree);

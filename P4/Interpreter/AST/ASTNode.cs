@@ -15,11 +15,30 @@ public class FunctionDeclarationNode : ASTNode {
 
 public class VariableDeclarationNode : ASTNode {
     public string VariableName { get; set; }
-    public ASTNode Expression { get; set; }
+    public ASTNode Expression { get; set; }  // Can be null if no initial value is provided
+
+    public override string ToString() {
+        return Expression != null
+            ? $"Variable Declaration: {VariableName} = {Expression}"
+            : $"Variable Declaration: {VariableName}";
+    }
 }
 
 public class ExpressionNode : ASTNode {
     public string Operator { get; set; }
     public ASTNode Left { get; set; }
     public ASTNode Right { get; set; }
+}
+
+public class ConstantNode : ASTNode {
+    public object Value { get; set; }
+
+    public ConstantNode(object value) {
+        Value = value;
+    }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }

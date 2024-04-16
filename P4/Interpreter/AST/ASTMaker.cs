@@ -55,6 +55,13 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
+        if (context.expr() == null) {
+            // If there is no expression, create a VariableDeclarationNode with null expression
+            return new VariableDeclarationNode {
+                VariableName = context.id().GetText(),
+                Expression = null
+            };
+        }
         var variableNode = new VariableDeclarationNode {
             VariableName = context.id().GetText(),
             Expression = Visit(context.expr())
@@ -62,5 +69,20 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         return variableNode;
     }
 
+    public override ASTNode VisitConstant(EduGrammarParser.ConstantContext context)
+    {
+        var constantNode = new ConstantNode(context.GetText());
+        return constantNode;
+    }
+
+    public override ASTNode VisitBinaryExpr(EduGrammarParser.BinaryExprContext context)
+    {
+        var exprNode = new ExpressionNode {
+            Operator = context.binOP().GetText(),
+            Left = Visit(context.expr(0)),
+            Right = Visit(context.expr(1))
+        };
+        return exprNode;
+    }
     // Continue with other methods for other types of nodes
 }

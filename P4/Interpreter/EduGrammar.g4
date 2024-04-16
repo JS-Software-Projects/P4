@@ -10,14 +10,13 @@ variableDeclaration:
 
 functionDeclaration:
     'function' type id '(' parameterList? ')' '{' line* '}';
-
 parameterList:
     parameter (',' parameter)*;
-
 parameter:
     type id;
 
 assignment: id '=' expr;
+
 print: 'print' '(' expr ')';
 
 ifBlock: 'if' expr '{' line* '}' elseBlock?;
@@ -26,15 +25,17 @@ elseBlock: 'else' '{' line* '}';
 whileBlock: 'while' expr '{' line* '}';
 
 expr: 
-    constant                # constantExpr
-    | id                    # idExpr
-    | expr multiOp expr     # multiExpr
-    | expr addSubOp expr    # addSubExpr
-    | expr compareOp expr   # compareExpr
-    | expr boolOp expr      # boolExpr
-    | '(' expr ')'          # parenExpr
-    | '!' expr              # notExpr
+     constant         # constantExpr
+    | id              # identifier
+    | expr binOP expr # binaryExpr
+    | unOP  expr      # unaryExpr
+    | '(' expr ')'    # parenExpr
     | expr '?' expr ':' expr # ternaryExpr;
+
+binOP: addSubOp | multiOp | boolOp | compareOp;
+unOP: '!' | '-';
+
+
 
 type: 'Num' | 'String' | 'Bool';
 constant: Num | String | Bool | Null;
