@@ -1,8 +1,8 @@
 ﻿namespace P4.Interpreter.AST;
 
 public class ParameterNode : ASTNode {
-    public string ParameterName { get; set; }
-    public string Type { get; set; }  // Include this if your language supports or requires type annotations
+    private string ParameterName { get; set; }
+    private string Type { get; set; }  // Include this if your language supports or requires type annotations
 
     public ParameterNode(string parameterName, string type) {
         this.ParameterName = parameterName;
