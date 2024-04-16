@@ -6,7 +6,7 @@ line: statement | ifBlock | whileBlock | functionDeclaration;
 statement: variableDeclaration | assignment | print ';';
 
 variableDeclaration:
-    type id '=' expr ';';
+    type id '=' expr ';'| parameter;
 
 functionDeclaration:
     'function' type id '(' parameterList? ')' '{' line* '}';
