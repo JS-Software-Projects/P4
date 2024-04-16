@@ -24,7 +24,7 @@ public class TypeChecker : EduGrammarBaseVisitor<Type>
         _ => throw new NotImplementedException($"Unsupported type: {text}")
     };
 }
-    public override Type VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    public override Type VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
      {
             var exprType = Visit(context.expr()); 
             var variableName = context.id().GetText();

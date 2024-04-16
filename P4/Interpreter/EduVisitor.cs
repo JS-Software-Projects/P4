@@ -23,16 +23,16 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
-        Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
+       // Console.WriteLine($"{variableName} = {value}"+" is type "+value.GetType());
         _variables[variableName] = value;
         return null;
     }
 
-    public override object VisitDeclaration(EduGrammarParser.DeclarationContext context)
+    public override object VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
         var variableName = context.id().GetText();
         var value = Visit(context.expr());
-        Console.WriteLine($"{value}"+" is type "+value.GetType());
+       // Console.WriteLine($"{value}"+" is type "+value.GetType());
         _variables[variableName] = value;
         return null;
     }
@@ -47,7 +47,7 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         throw new Exception("Invalid constant at line: "+_lineNumber);
     }
     //Has been tested.
-    public override object? VisitIdExpr(EduGrammarParser.IdExprContext context)
+    public override object? VisitIdentifier(EduGrammarParser.IdentifierContext context)
     {
         var variableName = context.id().GetText();
         if (!_variables.ContainsKey(variableName)) throw new Exception($"Variable {variableName} not found at line: "+_lineNumber);
@@ -55,11 +55,11 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
     }
     
     //Needs to be tested.
-    public override object? VisitAddSubExpr(EduGrammarParser.AddSubExprContext context)
+    public override object? VisitBinaryExpr(EduGrammarParser.BinaryExprContext context)
     {
         var left = Visit(context.expr(0));
         var right = Visit(context.expr(1));
-        return context.addSubOp().start.Type switch
+        return context.binOP().start.Type switch
         {
             EduGrammarParser.ADD => Add(left, right),
             EduGrammarParser.SUB => Sub(left, right),

@@ -1,34 +1,57 @@
 ﻿grammar EduGrammar;
 
 program: line* EOF;
-line: statement | ifBlock | whileBlock;
+line: statement;
 
-statement: declaration  | assignment | print ';';
+statement: 
+      variableDeclaration
+    | assignment 
+    | print  
+    | ifBlock 
+    | whileBlock 
+    | functionDeclaration
+    | returnStatement
+    | forLoop;
 
-declaration: type id '=' expr ';';
-assignment: id '=' expr;
+variableDeclaration:
+    type id '=' expr ';' | type id ';';
 
-print: 'print' '(' expr ')';
+functionDeclaration:
+    'function' type id '(' parameterList? ')' block;
+parameterList:
+    parameter (',' parameter)*;
+parameter:
+    type id;
 
-ifBlock: 'if' expr '{' line* '}'elseBlock?;
+assignment: id '=' expr ';';
 
-elseBlock: 'else' '{' line* '}';
+print: 'print' '(' expr ')' ';';
 
-whileBlock: 'while' expr '{' line* '}';
+ifBlock: 'if' expr block elseBlock?;
+elseBlock: 'else' block;
+
+whileBlock: 'while' expr block;
+
+block: '{' line* '}';
+
+returnStatement: 'return' expr ';';
+forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
 expr: 
-    constant                # constantExpr
-    | id                    # idExpr
-    | expr multiOp expr     # multiExpr
-    | expr addSubOp expr    # addSubExpr
-    | expr compareOp expr   # compareExpr
-    | expr boolOp expr      # boolExpr
-    | '(' expr ')'          # parenExpr
-    | '!' expr              # notExpr
+     constant         # constantExpr
+    | id              # identifier
+    | expr binOP expr # binaryExpr
+    | unOP  expr      # unaryExpr
+    | '(' expr ')'    # parenExpr
     | expr '?' expr ':' expr # ternaryExpr;
 
+binOP: addSubOp | multiOp | boolOp | compareOp;
+unOP: '!' | '-';
+
+
+
 type: 'Num' | 'String' | 'Bool';
-constant: Num | String | Bool | Null ;
+constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;
 boolOp: AND | OR;

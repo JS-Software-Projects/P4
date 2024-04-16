@@ -17,7 +17,7 @@ public class RuntimeVisitor : EduGrammarBaseVisitor<object?>
         return null;
     }
 
-    public override object? VisitIdExpr(EduGrammarParser.IdExprContext context)
+    public override object? VisitIdentifier(EduGrammarParser.IdentifierContext context)
     {
         var variableName = context.id().GetText();
         if (!_variables.ContainsKey(variableName))

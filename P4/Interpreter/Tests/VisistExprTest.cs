@@ -42,7 +42,7 @@ public class VisistExprTest
         // Arrange
         var parser = Setup("missingVar");
         var visitor = new EduVisitor(); // No variables added
-        var contextMock = new Mock<EduGrammarParser.IdExprContext>();
+        var contextMock = new Mock<EduGrammarParser.IdentifierContext>();
 
         // Act
         var context = parser.expr();
@@ -51,6 +51,4 @@ public class VisistExprTest
         var ex = Assert.Throws<Exception>(() => visitor.Visit(context));
         Assert.That(ex.Message, Is.EqualTo("Variable missingVar not found at line: 0"));
     }
-
-    
 }
