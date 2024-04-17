@@ -10,6 +10,7 @@ statement:
     | ifBlock 
     | whileBlock 
     | functionDeclaration
+    | functionCall
     | returnStatement
     | forLoop;
 
@@ -17,11 +18,16 @@ variableDeclaration:
     type id '=' expr ';' | type id ';';
 
 functionDeclaration:
-    'function' type id '(' parameterList? ')' block;
+    'function' type id '(' parameterList? ')' block;    
 parameterList:
     parameter (',' parameter)*;
 parameter:
     type id;
+    
+functionCall:
+    id '(' argumentList? ')' ';';
+argumentList:
+    expr (',' expr)*;    
 
 assignment: id '=' expr ';';
 

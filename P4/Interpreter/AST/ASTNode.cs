@@ -200,4 +200,17 @@ public class ReturnNode : ASTNode
         return $"return {Expression}";
     }
 }
-
+public class FunctionCallNode : ASTNode
+{
+    private string FunctionName { get; set; }
+    private List<ASTNode> Arguments { get; set; }
+    public FunctionCallNode(string functionName, List<ASTNode> arguments)
+    {
+        FunctionName = functionName;
+        Arguments = arguments;
+    }
+    public override string ToString()
+    {
+        return $"{FunctionName}({string.Join(", ", Arguments)})";
+    }
+}

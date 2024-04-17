@@ -151,5 +151,23 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     {
         return new ReturnNode(Visit(context.expr()));
     }
+    public override ASTNode VisitFunctionCall(EduGrammarParser.FunctionCallContext context)
+    {
+        var functionName = context.id().GetText();
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) : new List<ASTNode>();
+
+        return new FunctionCallNode(functionName, arguments);
+    }
+    public List<ASTNode> VisitArgumentList(EduGrammarParser.ArgumentListContext context)
+    {
+        var arguments = new List<ASTNode>();
+
+        foreach (var exprCtx in context.expr())
+        {
+            arguments.Add(Visit(exprCtx));
+        }
+
+        return arguments;
+    }
     // Continue with other methods for other types of nodes
 }
