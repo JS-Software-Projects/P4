@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace P4.Interpreter.AST;
 
+// Base class for all AST nodes
 public abstract class ASTNode {
-    // Base class for all AST nodes
-    public List<ASTNode> Children { get; set; } = new();
+    protected List<ASTNode> Children { get; set; } = new();
 }
 
 public class BlockNode : ASTNode {
