@@ -16,13 +16,13 @@ public class RunInterpretor
             var lexer = new EduGrammarLexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new EduGrammarParser(tokens);
-            var tree = parser.program();
+            var parseTree = parser.program();
             
             Console.WriteLine("Parse tree:");
-            Console.WriteLine(tree.ToStringTree(parser)+"\n");
+            Console.WriteLine(parseTree.ToStringTree(parser)+"\n");
             
             var astMaker = new ASTMaker();
-            var AST = astMaker.VisitProgram(tree);
+            var AST = astMaker.VisitProgram(parseTree);
             Console.WriteLine(AST.ToString());
             
             /*
