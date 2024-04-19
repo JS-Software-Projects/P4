@@ -6,12 +6,10 @@ namespace P4.Interpreter;
 
 public class RunInterpretor
 {
-    public static void Execute()
+    public static void Execute(string fileName)
     {
         try
         {
-            var fileName = "../../../Output/output.txt";
-
             var input = new AntlrInputStream(File.ReadAllText(fileName));
             var lexer = new EduGrammarLexer(input);
             var tokens = new CommonTokenStream(lexer);

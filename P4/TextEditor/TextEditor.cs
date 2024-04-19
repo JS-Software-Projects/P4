@@ -73,19 +73,28 @@ public class TextEditor
 
         // Get the current directory of the running program
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var outputDirectoryName = _localfilePath; // Name of your desired output directory
+        var outputDirectoryName = "../../../Levels"; // Name of your desired output directory
         var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
 
         // Create the output directory if it does not exist
         Directory.CreateDirectory(directoryPath);
 
         // Combine the directory path with the desired file name and write the text to the file
-        var fullPath = Path.Combine(directoryPath,Path.GetFileName(_localfilePath)?.Replace(".txt", "_output.txt") ?? "output.txt"); 
-        File.WriteAllText(fullPath, allText);
+        if (_localfilePath != null)
+        {
+            var fullPath = Path.Combine(directoryPath,Path.GetFileName(_localfilePath)); 
+            File.WriteAllText(fullPath, allText);
 
-        // Log the full path or open the folder containing the file
-        Debug.WriteLine($"File written to: {fullPath}");
-        RunInterpretor.Execute();
+            // Log the full path or open the folder containing the file
+            Debug.WriteLine($"File written to: {fullPath}");
+            RunInterpretor.Execute(fullPath);
+        }
+        else
+        {
+            throw new Exception("File path is null");
+        }
+        
+        
     }
 
     public void LoadFileContent(string filePath)
