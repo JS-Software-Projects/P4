@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace P4.Interpreter.AST;
 
@@ -31,6 +32,7 @@ public class FunctionDeclarationNode : ASTNode {
     }
 }
 
+// Unit Test done 
 public class VariableDeclarationNode : ASTNode {
     private string Type { get; set; }
     private string VariableName { get; set; }
@@ -55,6 +57,10 @@ public class ExpressionNode : ASTNode {
     private ASTNode Right { get; set; }
     
     public ExpressionNode(string op, ASTNode left, ASTNode right) {
+        if (right == null) {
+            throw new ArgumentNullException(); //needs to be right side only cannot be null exception.
+        }
+        
         Operator = op;
         Left = left;
         Right = right;
@@ -64,7 +70,6 @@ public class ExpressionNode : ASTNode {
         var rightExpr = Right != null ? Right.ToString() : "null";
         return $"({leftExpr} {Operator} {rightExpr})";
     }
-
 }
 public class TernaryExpressionNode : ASTNode {
     private ASTNode Condition { get; set; }
