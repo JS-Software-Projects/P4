@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 
 namespace P4.Interpreter.AST;

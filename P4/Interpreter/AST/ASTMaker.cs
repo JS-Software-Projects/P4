@@ -48,8 +48,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
-        var type = context.type().GetText();
-        var variableName = context.id().GetText();
+        var type = VisitType(context.type());
+        var variableName = VisitId(context.id());
         var expression = context.expr() != null ? Visit(context.expr()) : null;
         
         return new VariableDeclarationNode(type, variableName, expression);
@@ -63,8 +63,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     public override ASTNode VisitBinaryExpr(EduGrammarParser.BinaryExprContext context)
     {
         var op = context.binOP().GetText();
-        var left = Visit(context.expr(0));  // Visit the left expression once, use it for all cases.
-        var right = Visit(context.expr(1));  // Visit the right expression once, use it for all cases.
+        var left = Visit(context.expr(0));  // Visit the left expression
+        var right = Visit(context.expr(1));  // Visit the right expression
        
         return new ExpressionNode(op, left, right);
     }
@@ -89,6 +89,10 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
         return new IdentifierNode(context.GetText());
+    }
+    public override ASTNode VisitType(EduGrammarParser.TypeContext context)
+    {
+        return new TypeNode(context.GetText());
     }
     
     public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext context)

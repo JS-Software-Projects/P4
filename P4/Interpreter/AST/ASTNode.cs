@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace P4.Interpreter.AST;
@@ -14,7 +14,6 @@ public class BlockNode : ASTNode {
     public override string ToString() {
         return "{" + string.Join(" ", Statements.Where(s => s != null).Select(s => s.ToString())) + "}";
     }
-
 }
 
 public class FunctionDeclarationNode : ASTNode {
@@ -32,11 +31,11 @@ public class FunctionDeclarationNode : ASTNode {
 }
 
 public class VariableDeclarationNode : ASTNode {
-    private string Type { get; set; }
-    private string VariableName { get; set; }
+    private ASTNode Type { get; set; }
+    private ASTNode VariableName { get; set; }
     private ASTNode Expression { get; set; }  // Can be null if no initial value is provided
 
-    public VariableDeclarationNode(string type, string variableName, ASTNode expression)
+    public VariableDeclarationNode(ASTNode type, ASTNode variableName, ASTNode expression)
     {
         Type = type;
         VariableName = variableName;
@@ -44,11 +43,21 @@ public class VariableDeclarationNode : ASTNode {
     }
     public override string ToString() {
         return Expression != null
-            ? $"Variable Declaration: {VariableName} = {Expression}"
+            ? $"Variable Declaration: {Type} {VariableName} = {Expression}"
             : $"Variable Declaration: {VariableName}";
     }
 }
+public class TypeNode : ASTNode {
+    private string Type { get; set; }
 
+    public TypeNode(string type) {
+        Type = type;
+    }
+
+    public override string ToString() {
+        return Type;
+    }
+}
 public class ExpressionNode : ASTNode {
     private string Operator { get; set; }
     private ASTNode Left { get; set; }
