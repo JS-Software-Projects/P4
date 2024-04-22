@@ -38,7 +38,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     
     public override ASTNode VisitFunctionDeclaration(EduGrammarParser.FunctionDeclarationContext context)
     {
-        var type = context.type().GetText();
+        var type = VisitType(context.type());
         var name = context.id().GetText(); // Correctly accessing the function's name
         var parameters = VisitParameterList(context.parameterList());
         var body = VisitBlock(context.block());
