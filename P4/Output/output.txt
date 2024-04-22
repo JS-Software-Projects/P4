@@ -1,7 +1,2 @@
-syyygttt
-
-
-
-int x = 10; wtf
-
-s
+Num x = 10;
+x = x + 2;

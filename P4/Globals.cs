@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
 
 public static class Globals
 {
-	public static float Time { get; set; }
+    public static float Time { get; set; }
     public static ContentManager Content { get; set; }
     public static SpriteBatch SpriteBatch { get; set; }
     public static Point WindowSize { get; set; }
