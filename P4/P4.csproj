@@ -15,10 +15,6 @@
     <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icon.ico" />
-    <EmbeddedResource Include="Icon.bmp" />
-  </ItemGroup>
-  <ItemGroup>
   <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms"/>
   </ItemGroup>
   <ItemGroup>
