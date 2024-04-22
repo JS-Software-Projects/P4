@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms.VisualStyles;
 
 namespace P4.Interpreter.AST;
 
@@ -17,11 +19,11 @@ public class BlockNode : ASTNode {
 }
 
 public class FunctionDeclarationNode : ASTNode {
-    private string type { get; set; }
+    private ASTNode type { get; set; }
     private string Name { get; set; }
     private List<ParameterNode> Parameters { get; set; }
     private ASTNode Body { get; set; }
-    public FunctionDeclarationNode(string type, string name, List<ParameterNode> parameters, ASTNode body)
+    public FunctionDeclarationNode(ASTNode type, string name, List<ParameterNode> parameters, ASTNode body)
     {
         this.type = type;
         Name = name;
