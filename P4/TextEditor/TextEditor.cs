@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using P4.Interpreter;
+using P4.managers;
 
 namespace P4;
 
@@ -34,7 +35,7 @@ public class TextEditor
 
         // Calculate dimensions to fill 35% of the right-hand side of the window
         var textAreaWidth =
-            (int)(Globals.WindowSize.X * 0.35); // 35% of the window width, accessed directly from Globals
+            (int)(Globals.WindowSize.X * 0.38)+4; // 35% of the window width, accessed directly from Globals
         var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
         var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
         var textAreaY = 0; // Start at the top
@@ -66,8 +67,7 @@ public class TextEditor
     private void OnPlayButtonClick()
     {
         // Actions to take when the button is clicked
-
-
+        InputManager.SetExecute(true,8,8);
         // Concatenate all lines into a single string
         var allText = string.Join("\n", lines);
 
