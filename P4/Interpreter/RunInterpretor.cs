@@ -6,12 +6,10 @@ namespace P4.Interpreter;
 
 public class RunInterpretor
 {
-    public static void Execute()
+    public static void Execute(string fileName)
     {
         try
         {
-            var fileName = "../../../Output/output.txt";
-
             var input = new AntlrInputStream(File.ReadAllText(fileName));
             var lexer = new EduGrammarLexer(input);
             var tokens = new CommonTokenStream(lexer);
@@ -24,6 +22,25 @@ public class RunInterpretor
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(parseTree);
             Console.WriteLine(AST.ToString());
+            
+            /*
+            Console.WriteLine("\n");
+            Console.WriteLine("                       ProgramNode      ");
+            Console.WriteLine("              /                         \\");
+            Console.WriteLine("   VariableDeclarationNode                 AssignmentNode");
+            Console.WriteLine("      /      |           \\                     /            \\");
+            Console.WriteLine("TypeNode  IdentifierNode  ConstantNode    IdentifierNode  ExpressionNode ");
+            Console.WriteLine("                                                               /       \\");
+            Console.WriteLine("                                                        variableNode  ConstantNode");
+            Console.WriteLine("\n");  
+            Console.WriteLine("                  ProgramNode      ");
+            Console.WriteLine("              /                \\");
+            Console.WriteLine("       Num   x  =  10         x = x + 2");
+            Console.WriteLine("      /      |      \\        /      |   ");
+            Console.WriteLine("     Num     x       10      x    x + 2");
+            Console.WriteLine("                                 /     \\ ");
+            Console.WriteLine("                                x       2");
+            */
             
             /*
             var scopeChecker = new ScopeChecker();

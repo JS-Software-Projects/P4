@@ -1,11 +1,13 @@
 ﻿namespace P4;
-
+using P4.HomeScreen;
 public class Game1 : Game
 {
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private TextEditor _textEditor;
     private Terminal _terminal;
+    private StateManager _stateManager;
+    private UIManager _uiManager;
+    private IScreen _currentScene;
 
     public Game1()
     {
@@ -21,6 +23,7 @@ public class Game1 : Game
         _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height -20;
         _graphics.ApplyChanges();
         Globals.WindowSize = new Point(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        _stateManager = new StateManager();
     }
 
     protected override void Initialize()
@@ -33,23 +36,50 @@ public class Game1 : Game
            //to here
 
         Globals.Content = Content;
+        Globals.spriteFont = Content.Load<SpriteFont>("TypeFont");
+        Globals.graphicsDevice = GraphicsDevice;
+        
+        
         base.Initialize();
-        _textEditor = new TextEditor(GraphicsDevice, _spriteBatch, Content.Load<SpriteFont>("TypeFont"));
-        _terminal = new Terminal(GraphicsDevice , _spriteBatch, Content.Load<SpriteFont>("TypeFont"));
+        _uiManager = new UIManager();
+        HomeScene homeScreen = new HomeScene();
+        LevelSelectionScene levelSelectionScene = new LevelSelectionScene();
+        
+        _stateManager.ScreenChanged += OnScreenChanged;
+        _uiManager.HomeClicked += () => _stateManager.ChangeScreen(homeScreen);
+        homeScreen.OnPlayClicked += () => _stateManager.ChangeScreen(levelSelectionScene);
+        homeScreen.OnQuitClicked += HandleQuitClicked;
+        levelSelectionScene.LevelSelected += (path) =>
+        {
+            LevelScene levelScene = new LevelScene(path);
+            _stateManager.ChangeScreen(levelScene);
+        };
+        _stateManager.ChangeScreen(homeScreen); // Start with the home screen
+        
         Window.TextInput += TextInputHandler;
     }
+    private void OnScreenChanged(IScreen newScreen)
+    {
+        _currentScene = newScreen;
+    }
+    private void HandleQuitClicked()
+    {
+        Exit();  // Exit the game
+    }
 
+    private void TextInputHandler(object sender, TextInputEventArgs e)
+    {
+        if (_currentScene is LevelScene levelScene)
+        {
+            levelScene.AddCharacterToEditor(e.Character);
+        }
+    }
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Globals.SpriteBatch = _spriteBatch;
 
         // TODO: use this.Content to load your game content here
-    }
-
-    private void TextInputHandler(object sender, TextInputEventArgs e)
-    {
-        _textEditor.AddCharacter(e.Character);
     }
 
     protected override void Update(GameTime gameTime)
@@ -60,10 +90,11 @@ public class Game1 : Game
 
         // TODO: Add your update logic here
         Globals.Update(gameTime);
+        _uiManager.Update();
         base.Update(gameTime);
+        _stateManager.Update(gameTime, Mouse.GetState());
         // Pass the current mouse state to the text editor's update method
-        if (_textEditor != null) // Make sure your text editor is initialized
-            _textEditor.Update(Mouse.GetState());
+        
     }
 
     protected override void Draw(GameTime gameTime)
@@ -71,8 +102,10 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.WhiteSmoke);
 
         // TODO: Add your drawing code here
-        _textEditor.Draw();
-        _terminal.Draw();
+        _stateManager.Draw(gameTime);
+        _spriteBatch.Begin();
+        _uiManager.Draw(_spriteBatch);
+        _spriteBatch.End();
         base.Draw(gameTime);
     }
 
