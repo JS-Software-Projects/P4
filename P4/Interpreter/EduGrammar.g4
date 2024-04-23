@@ -54,8 +54,6 @@ expr:
 binOP: addSubOp | multiOp | boolOp | compareOp;
 unOP: '!' | '-';
 
-
-
 type: 'Num' | 'String' | 'Bool';
 constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
