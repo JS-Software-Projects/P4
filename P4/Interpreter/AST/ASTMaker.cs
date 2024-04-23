@@ -9,13 +9,19 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 {
     public override ASTNode VisitProgram(EduGrammarParser.ProgramContext context)
     {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
         var programNode = new ProgramNode();
-            foreach (var child in context.children) {
-                var result = Visit(child);
-                if (result != null) {
-                    programNode.AddChild(result);
-                }
+        foreach (var child in context.children)
+        {
+            var result = Visit(child);
+            if (result != null)
+            {
+                programNode.AddChild(result);
             }
+        }
         return programNode;
     }
 

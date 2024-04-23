@@ -44,12 +44,15 @@ returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
 expr: 
-     constant         # constantExpr
-    | id              # identifier
-    | expr binOP expr # binaryExpr
-    | unOP  expr      # unaryExpr
-    | '(' expr ')'    # parenExpr
-    | expr '?' expr ':' expr # ternaryExpr;
+       constant                 # constantExpr
+         | id                      # identifier
+         | expr multiOp expr       # multiplicationExpr
+         | expr addSubOp expr      # additionExpr
+         | expr compareOp expr     # comparisonExpr
+         | expr boolOp expr        # booleanExpr
+         | unOP  expr              # unaryExpr
+         | '(' expr ')'            # parenExpr
+         | expr '?' expr ':' expr  # ternaryExpr;
 
 binOP: addSubOp | multiOp | boolOp | compareOp;
 unOP: '!' | '-';
