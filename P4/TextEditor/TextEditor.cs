@@ -16,6 +16,7 @@ public class TextEditor
     private readonly List<string> lines = new() { "" };
     private readonly Rectangle numberArea;
     string _localfilePath = "";
+    public event EventHandler ResetRequested;
 
     private readonly Button playButton;
 
@@ -63,9 +64,13 @@ public class TextEditor
         previousKeyboardState = Keyboard.GetState();
         previousMouseState = Mouse.GetState();
     }
-
+    public void RequestReset()
+    {
+        ResetRequested?.Invoke(this, EventArgs.Empty);
+    }
     private void OnPlayButtonClick()
     {
+        RequestReset();
         // Actions to take when the button is clicked
         InputManager.SetExecute(true,8,8);
         // Concatenate all lines into a single string

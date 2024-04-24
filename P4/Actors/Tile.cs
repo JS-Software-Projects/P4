@@ -22,6 +22,7 @@ public class Tile : Sprite
             if (InputManager.execute)
             {
                 Pathfinder.BFSearch(_mapX, _mapY);
+                InputManager.SetExecute(false,_mapX, _mapY);
             }
         }
 

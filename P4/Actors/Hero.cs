@@ -6,6 +6,7 @@ namespace p4.Actors;
 public class Hero : Sprite
 {
     public Vector2 DestinationPosition { get; protected set; }
+    public Vector2 initialPosition { get; protected set; }
     public bool MoveDone { get; protected set; }
     protected float speed;
     public List<Vector2> Path { get; private set; }
@@ -15,8 +16,16 @@ public class Hero : Sprite
     {
         speed = 200;
         DestinationPosition = pos;
+        initialPosition = pos;
         MoveDone = true;
     }
+    public void ResetPosition()
+    {
+        // Reset hero's position to its initial position
+        Position = initialPosition; // Assuming you have an initialPosition field or property in your Hero class
+        MoveDone = true; // Set MoveDone flag to true to indicate that the hero has not started moving yet
+    }
+
 
     public void SetPath(List<Vector2> path)
     {
