@@ -8,7 +8,9 @@ public class VariableDeclarationNode_Should
     {
         // Arrange
         var expression = new ConstantNode(5);
-        var node = new VariableDeclarationNode("int", "x", expression);
+        var type = new TypeNode("Num");
+        var id = new IdentifierNode("x");
+        var node = new VariableDeclarationNode(type, id, expression);
 
         // Act
         var result = node.ToString();
@@ -21,7 +23,9 @@ public class VariableDeclarationNode_Should
     public void VariableDeclarationNode_WithNullExpression_ReturnsCorrectString()
     {
         // Arrange
-        var node = new VariableDeclarationNode("int", "x", null);
+        var type = new TypeNode("Num");
+        var id = new IdentifierNode("x");
+        var node = new VariableDeclarationNode(type, id, null);
 
         // Act
         var result = node.ToString();
@@ -35,7 +39,9 @@ public class VariableDeclarationNode_Should
     {
         // Arrange
         var expression = new ConstantNode("hej");
-        var node = new VariableDeclarationNode("String", "x", expression);
+        var type = new TypeNode("String");
+        var id = new IdentifierNode("x");
+        var node = new VariableDeclarationNode(type, id, expression);
 
         // Act
         var result = node.ToString();
