@@ -25,20 +25,32 @@ public class Map
         for (int x = 0; x < Size.X - 3; x++)
         {
             Tiles[x, 4].Blocked = true;
+            Tiles[x,3].AddBoundry("bottom");
+            if (x == Size.X -4)
+            {
+                Tiles[x+1,3].AddBoundry("bottom"); 
+            }
         }
         for (int y = 4; y < Size.Y ; y++)
         {
             Tiles[Size.X-3, y].Blocked = true;
+            Tiles[Size.X-2, y].AddBoundry("left");
         }
 
 
         for (int x = 0; x < Size.X -1; x++)
         {
             Tiles[x, 2].Blocked = true;
+            Tiles[x, 3].AddBoundry("top");
         }
         for (int y = 2; y < Size.Y; y++)
         {
             Tiles[Size.X - 1, y].Blocked = true;
+            if (y != 2) //ignore first 
+            {
+                Tiles[Size.X - 2, y].AddBoundry("right");
+            }
+            
         }
 
     }
