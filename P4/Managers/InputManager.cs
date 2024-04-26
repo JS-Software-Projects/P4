@@ -10,6 +10,6 @@ public static class InputManager
     public static void SetExecute(bool run,int x, int y)
     {
         execute = run;
-        tile = new(x*63, y*63, 1, 1);
+        tile = new(x*Globals.TileSize-(Globals.TileSize/2), y*Globals.TileSize-(Globals.TileSize/2), 1, 1);
     }
 }

@@ -8,12 +8,12 @@ internal class AdvancedTower : Tower
 
     public AdvancedTower(Texture2D texture, Vector2 position, Color color) : base(texture, position, color)
     {
-        radius = 50;
-        damage = 20;
-        cost = 20;
-        attackSpeed = 2;
-        povLine1 = new Vector2(position.X + radius, position.Y + radius);
-        povLine2 = new Vector2(position.X + radius, position.Y - radius);
+        Radius = 50;
+        Damage = 20;
+        Cost = 20;
+        AttackSpeed = 2;
+        povLine1 = new Vector2(position.X + Radius, position.Y + Radius);
+        povLine2 = new Vector2(position.X + Radius, position.Y - Radius);
     }
 
     public Vector2 povLine1 { get; set; }
@@ -21,9 +21,9 @@ internal class AdvancedTower : Tower
 
     public void DrawPOV(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(texture, povLine1, null, color, 0f, new Vector2(texture.Width / 2, texture.Height / 2),
+        spriteBatch.Draw(texture, povLine1, null, Color, 0f, new Vector2(texture.Width / 2, texture.Height / 2),
             Vector2.One, SpriteEffects.None, 0f);
-        spriteBatch.Draw(texture, povLine2, null, color, 0f, new Vector2(texture.Width / 2, texture.Height / 2),
+        spriteBatch.Draw(texture, povLine2, null, Color, 0f, new Vector2(texture.Width / 2, texture.Height / 2),
             Vector2.One, SpriteEffects.None, 0f);
     }
 
@@ -33,7 +33,7 @@ internal class AdvancedTower : Tower
         var radians = Math.PI / 180 * angle;
 
         // Calculate the midpoint between povLine1 and povLine2 to rotate around
-        var center = new Vector2(position.X + radius, position.Y);
+        var center = new Vector2(Position.X + Radius, Position.Y);
 
         // Rotate povLine1
         var newX1 = Math.Cos(radians) * (povLine1.X - center.X) - Math.Sin(radians) * (povLine1.Y - center.Y) +

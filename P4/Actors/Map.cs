@@ -13,7 +13,7 @@ public class Map
         Tiles = new Tile[Size.X, Size.Y];
         var texture = Globals.Content.Load<Texture2D>("tile");
         TileSize = new(texture.Width, texture.Height);
-
+        Globals.TileSize = texture.Width;
         for (int y = 0; y < Size.Y; y++)
         {
             for (int x = 0; x < Size.X; x++)
