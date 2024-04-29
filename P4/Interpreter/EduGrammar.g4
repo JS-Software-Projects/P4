@@ -1,7 +1,7 @@
 ﻿grammar EduGrammar;
 
-program: line* EOF;
-line: functionDeclaration* statement;
+program: functionDeclaration* line* EOF;
+line: statement;
 
 statement: 
       variableDeclaration
@@ -42,13 +42,13 @@ block: '{' line* '}';
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
-expr : comparisonExpr ( boolOp comparisonExpr )* ;
-comparisonExpr : additionExpr ( compareOp additionExpr )* ;
-additionExpr : multiplicationExpr ( addSubOp multiplicationExpr )* ;
+expr               : comparisonExpr ( boolOp comparisonExpr )* ;
+comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
+additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
 multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
-unaryExpr : ( unOP)* ternaryExpr ;
-ternaryExpr : term('?' term ':' term)* ;
-term : id | constant | 'true' | 'false' | '(' expr ') ' ;
+unaryExpr          : ( unOP)* ternaryExpr ;
+ternaryExpr        : term('?' term ':' term)* ;
+term               : id | constant | '(' expr ') ' ;
 
 binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 unOP: '!' | '-';
