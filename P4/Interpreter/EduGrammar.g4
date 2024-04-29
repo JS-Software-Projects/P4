@@ -51,7 +51,7 @@ expr:
     | '(' expr ')'    # parenExpr
     | expr '?' expr ':' expr # ternaryExpr;
 
-binOP: addSubOp | multiOp | boolOp | compareOp;
+binOP: multiOp |  addSubOp | boolOp | compareOp;
 unOP: '!' | '-';
 
 type: 'Num' | 'String' | 'Bool';
