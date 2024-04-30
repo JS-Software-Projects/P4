@@ -5,11 +5,17 @@ namespace P4.Interpreter.AST;
 
 // Base class for all AST nodes
 public abstract class ASTNode {
+    public abstract void Visit(AstScopeChecker checker);
     protected List<ASTNode> Children { get; set; } = new();
 }
 
 public class BlockNode : ASTNode {
     public List<ASTNode> Statements { get; } = new();
+    
+    public override void Visit(AstScopeChecker checker)
+    {
+        checker.VisitBlock(this);
+    }
     
     public override string ToString() {
         return "{" + string.Join(" ", Statements.Where(s => s != null).Select(s => s.ToString())) + "}";
@@ -28,12 +34,21 @@ public class FunctionDeclarationNode : ASTNode {
         Parameters = parameters;
         Body = body;
     }
+    public override void Visit(AstScopeChecker checker)
+    {
+        checker.VisitFunctionDeclaration(this);
+    }
 }
 
 public class VariableDeclarationNode : ASTNode {
     private ASTNode Type { get; set; }
     private ASTNode VariableName { get; set; }
     private ASTNode Expression { get; set; }  // Can be null if no initial value is provided
+    
+    public override void Visit(AstScopeChecker checker)
+    {
+        checker.VisitVariableDeclaration(this);
+    }
 
     public VariableDeclarationNode(ASTNode type, ASTNode variableName, ASTNode expression)
     {
@@ -151,6 +166,10 @@ public class AssignmentNode : ASTNode
     {
         VariableName = variableName;
         Expression = expression;
+    }
+public override void Visit(AstScopeChecker checker)
+    {
+        checker.VisitAssignment(this);
     }
     
     public ASTNode GetVariableName()
