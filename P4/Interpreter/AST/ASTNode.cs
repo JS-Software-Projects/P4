@@ -46,6 +46,17 @@ public class VariableDeclarationNode : ASTNode {
         VariableName = variableName;
         Expression = expression;
     }
+
+    public ASTNode GetVariableName()
+    {
+        return VariableName;
+    }
+    
+    public ASTNode GetVariableType()
+    {
+        return Type;
+    }
+    
     public override string ToString() {
         return Expression != null
             ? $"Variable Declaration: {Type} {VariableName} = {Expression}"
@@ -148,6 +159,11 @@ public class AssignmentNode : ASTNode
     {
         VariableName = variableName;
         Expression = expression;
+    }
+    
+    public ASTNode GetVariableName()
+    {
+        return VariableName;
     }
     public override string ToString()
     {
