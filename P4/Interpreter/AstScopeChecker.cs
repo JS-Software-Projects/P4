@@ -13,25 +13,15 @@ namespace P4.Interpreter
             // Initialize with a global scope
             _scopes.Push(new Dictionary<string, TypeNode>());
         }
+
         /*
+
+
         public void Visit(ASTNode node)
         {
-            switch (node)
-            {
-                case BlockNode blockNode:
-                    VisitBlock(blockNode);
-                    break;
-                case VariableDeclarationNode varDeclNode:
-                    VisitVariableDeclaration(varDeclNode);
-                    break;
-                case AssignmentNode assignNode:
-                    VisitAssignment(assignNode);
-                    break;
-                // Add more cases as needed for other ASTNode types
-                default:
-                    throw new Exception($"Unsupported node type: {node.GetType()}");
-            }
+            node.Visit(this);
         }
+
         */
         private void VisitBlock(BlockNode blockNode)
         {
@@ -43,7 +33,7 @@ namespace P4.Interpreter
             _scopes.Pop(); // Exit scope
         }
 
-        private void VisitVariableDeclaration(VariableDeclarationNode varDeclNode)
+        public void VisitVariableDeclaration(VariableDeclarationNode varDeclNode)
         {
             var varName = varDeclNode.GetVariableName().ToString();
             if (IsVariableDeclared(varName))
@@ -54,7 +44,7 @@ namespace P4.Interpreter
             _scopes.Peek().Add(varName, varType);
         }
 
-        private void VisitAssignment(AssignmentNode assignNode)
+        public void VisitAssignment(AssignmentNode assignNode)
         {
             var varName = assignNode.GetVariableName().ToString();
             if (!IsVariableDeclared(varName))
@@ -67,5 +57,20 @@ namespace P4.Interpreter
         {
             return _scopes.Peek().ContainsKey(varName);
         }
+
+        
+        
+        public void PrintScopes()
+        {
+            foreach (var scope in _scopes)
+            {
+                Console.WriteLine("Scope:");
+                foreach (var (varName, varType) in scope)
+                {
+                    Console.WriteLine($"  {varName}: {varType}");
+                }
+            }
+        }
+        
     }
 }
