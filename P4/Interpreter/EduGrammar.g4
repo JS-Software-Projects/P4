@@ -1,6 +1,6 @@
 ﻿grammar EduGrammar;
 
-program: line* EOF;
+program: functionDeclaration* line* EOF;
 line: statement;
 
 statement: 
@@ -9,7 +9,6 @@ statement:
     | print  
     | ifBlock 
     | whileBlock 
-    | functionDeclaration
     | functionCall
     | returnStatement
     | forLoop;
@@ -43,15 +42,15 @@ block: '{' line* '}';
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
-expr: 
-     constant         # constantExpr
-    | id              # identifier
-    | expr binOP expr # binaryExpr
-    | unOP  expr      # unaryExpr
-    | '(' expr ')'    # parenExpr
-    | expr '?' expr ':' expr # ternaryExpr;
+expr               : comparisonExpr ( boolOp comparisonExpr )* ;
+comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
+additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
+multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
+unaryExpr          : ( unOP)* ternaryExpr ;
+ternaryExpr        : term('?' term ':' term)* ;
+term               : id | constant | '(' expr ') ' ;
 
-binOP: addSubOp | multiOp | boolOp | compareOp;
+binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 unOP: '!' | '-';
 
 type: 'Num' | 'String' | 'Bool';
@@ -59,6 +58,7 @@ constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;
 boolOp: AND | OR;
+ternaryOp: '?' | ':';
 compareOp: '==' | '!=' | '<' | '<=' | '>' | '>=';
 
 ADD: '+';
