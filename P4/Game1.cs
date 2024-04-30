@@ -37,7 +37,13 @@ public class Game1 : Game
 
         Globals.Content = Content;
         Globals.spriteFont = Content.Load<SpriteFont>("TypeFont");
+        
         Globals.graphicsDevice = GraphicsDevice;
+        
+        Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+        Color[] colorData = { Color.White }; // Create a 1x1 white pixel
+        pixel.SetData(colorData);
+        Globals.Pixel = pixel;
         
         
         base.Initialize();
