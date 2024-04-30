@@ -17,6 +17,11 @@ public class ProgramNode : ASTNode {
         return Children;
     }
 
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     // Override ToString() to help in debugging and visualizing the tree
     public override string ToString() {
         var builder = new StringBuilder();

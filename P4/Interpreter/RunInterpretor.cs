@@ -21,9 +21,9 @@ public class RunInterpretor
             
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(parseTree);
-            var scopeChecker = new AstScopeChecker();
+            //var scopeChecker = new AstScopeChecker();
             Console.WriteLine(AST.ToString());
-            scopeChecker.Visit(AST);
+            //scopeChecker.Visit(AST);
             
             
             /*

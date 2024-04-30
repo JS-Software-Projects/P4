@@ -42,18 +42,20 @@ block: '{' line* '}';
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
-expr               : comparisonExpr ( boolOp comparisonExpr )* ;
+expr: boolExpr;
+boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
 comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
 additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
-multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
+multiplicationExpr : unaryExpr ( (MULT | DIV) unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
-term               : id | constant | '(' expr ') ' ;
+term               : id | constant | parenExpr | functionCall;
+
 
 binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 
 unOP: '!' | '-';
-
+parenExpr: '(' expr ')' ;
 type: 'Num' | 'String' | 'Bool';
 constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;

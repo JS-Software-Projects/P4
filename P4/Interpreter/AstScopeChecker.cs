@@ -13,18 +13,22 @@ namespace P4.Interpreter
             // Initialize with a global scope
             _scopes.Push(new Dictionary<string, TypeNode>());
         }
+
+        /*
+
+
         public void Visit(ASTNode node)
         {
             node.Visit(this);
         }
-        
 
-        public void VisitBlock(BlockNode blockNode)
+        */
+        private void VisitBlock(BlockNode blockNode)
         {
             _scopes.Push(new Dictionary<string, TypeNode>()); // Enter new scope for the block
             foreach (var statement in blockNode.Statements)
             {
-                Visit(statement);
+               // Visit(statement);
             }
             _scopes.Pop(); // Exit scope
         }

@@ -3,22 +3,29 @@
 public interface IASTVisitor<T>
 {
     T Visit(ASTNode node);
-    T Visit(BlockNode node);
-    T Visit(FunctionDeclarationNode node);
-    T Visit(VariableDeclarationNode node);
-    T Visit(TypeNode node);
-    T Visit(ExpressionNode node); // binop og unop
-    T Visit(ConstantNode node);
-    T Visit(IdentifierNode node);
+    T Visit(Block node);
+    T Visit(BinaryExpression node);
+    T Visit(UnaryExpression node);
+    T Visit(TernaryExpression node);
+    T Visit(Assignment node);
+    T Visit(FunctionCall node);
+    T Visit(VariableDeclaration node);
+    T Visit(Expression node);
+    T Visit(Statement node);
+    T Visit(ConstantExpression node);
+    T Visit(IdentifierExpression node);
     //T Visit(BinOpNode node);
     //T Visit(UnaryOpNode node);
-    T Visit(FunctionCallNode node);
     T Visit(ParameterNode node);
     T Visit(IfNode node);
     T Visit(WhileNode node);
     T Visit(ReturnNode node);
     T Visit(ForNode node);
-    
+    T Visit(Print node);
+    T Visit(IfBlock node);
+    T Visit(WhileBlock node);
+    T Visit(ReturnStatement node);
+    T Visit(ForLoop node);
 
-    
+
 }

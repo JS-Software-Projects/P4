@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime.Atn;
 
 namespace P4.Interpreter.AST;
@@ -7,6 +8,7 @@ using P4.Interpreter;
 
 public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 {
+    private int _lineNumber = 0;
     public override ASTNode VisitProgram(EduGrammarParser.ProgramContext context)
     {
         if (context == null)
@@ -24,7 +26,12 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         }
         return programNode;
     }
-
+    public override ASTNode VisitLine(EduGrammarParser.LineContext context)
+    {
+        var token = context.Start;
+        _lineNumber = token.Line;
+        return base.VisitLine(context);
+    }
     public List<ParameterNode> VisitParameterList(EduGrammarParser.ParameterListContext context) {
         var parameters = new List<ParameterNode>();
 
@@ -66,49 +73,122 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         return new ConstantNode(context.GetText());
     }
 
-    public override ASTNode VisitBinaryExpr(EduGrammarParser.BinaryExprContext context)
+    public override ASTNode VisitComparisonExpr(EduGrammarParser.ComparisonExprContext context)
     {
-        var op = context.binOP().GetText();
-        var left = Visit(context.expr(0));  // Visit the left expression
-        var right = Visit(context.expr(1));  // Visit the right expression
-       
-        return new ExpressionNode(op, left, right);
+        var op = context.compareOp();
+        
+        if (op != null)
+        {
+            var left = Visit(context.additionExpr(0)) as Expression;
+            var right = Visit(context.additionExpr(1)) as Expression;
+            
+            return new BinaryExpression(left,Operator.Or, right);
+        }
+
+        return VisitAdditionExpr(context.additionExpr(0));
     }
+    
+    public override ASTNode VisitMultiplicationExpr(EduGrammarParser.MultiplicationExprContext context)
+    {
+        if (context.MULT() == null | context.DIV() == null)
+        {
+            return Visit(context.unaryExpr(0));
+        }
+        
+        var oOperator = Operator.Add;
+        if (context.MULT()!= null )
+        {
+            
+            oOperator = Operator.Multiply;
+        }
+        if (context.DIV() != null)
+        {
+            oOperator = Operator.Divide;
+        }
+        
+        var left = Visit(context.unaryExpr(0)) as Expression;
+        var right = Visit(context.unaryExpr(1)) as Expression;
+            
+        return new BinaryExpression(left, oOperator, right);
+    }
+
+    public override ASTNode VisitBoolExpr(EduGrammarParser.BoolExprContext context)
+    {
+        var op = context.boolOp();
+        if (op != null)
+        {
+            var left = Visit(context.comparisonExpr(0)) as Expression;
+            var right = Visit(context.comparisonExpr(1)) as Expression;
+            return new BinaryExpression(left, Operator.Or, right);
+        }
+        return Visit(context.comparisonExpr(0));
+    }
+    
+    public override ASTNode VisitAdditionExpr(EduGrammarParser.AdditionExprContext context)
+    {
+        var op = context.addSubOp();
+
+        if (op != null)
+        {
+            var oOperator = Operator.Add;
+            if (op.ToString() == "+")
+            {
+                oOperator = Operator.Add;
+            } else if (op.ToString() == "-")
+            {
+                oOperator = Operator.Subtract;
+            }
+            var left = Visit(context.multiplicationExpr(0)) as Expression;
+            var right = Visit(context.multiplicationExpr(1)) as Expression;
+            
+            return new BinaryExpression(left, oOperator, right);
+        }
+        else
+        {
+            return Visit(context.multiplicationExpr(0));
+        }
+    }
+
+    public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext context)
+    {
+        if (context.term(1) != null)
+        {
+            var condition = Visit(context.term(0)) as Expression;
+            var trueExpr = Visit(context.term(1)) as Expression;
+            var falseExpr = Visit(context.term(2)) as Expression;
+            
+            return new TernaryExpressionNode(condition, trueExpr, falseExpr);
+        }
+        return Visit(context.term(0));
+    }
+    
+    
     public override ASTNode VisitUnaryExpr(EduGrammarParser.UnaryExprContext context)
     {
-
-        var op = context.unOP().GetText();
-        var right = Visit(context.expr());
+        if (context.unOP() == null)
+        {
+            return Visit(context.ternaryExpr());
+        }
         
-        return new ExpressionNode(op, null, right);
+        var op = context.unOP();
+        var right = Visit(context.ternaryExpr()) as Expression;
+        
+        return new UnaryExpression(Operator.Or, right);
     }
 
     public override ASTNode VisitParenExpr(EduGrammarParser.ParenExprContext context)
     {   
         return Visit(context.expr());
     }
-
-    public override ASTNode VisitIdentifier(EduGrammarParser.IdentifierContext context)
-    {
-       return new IdentifierNode(context.GetText());
-    }
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
-        return new IdentifierNode(context.GetText());
+        return new IdentifierExpression(context.GetText());
     }
     public override ASTNode VisitType(EduGrammarParser.TypeContext context)
     {
         return new TypeNode(context.GetText());
     }
     
-    public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext context)
-    {
-        var condition = Visit(context.expr(0)); // Visit the condition expression
-        var trueExpr = Visit(context.expr(1)); // Visit the expression for the true branch
-        var falseExpr = Visit(context.expr(2)); // Visit the expression for the false branch
-        
-        return new TernaryExpressionNode(condition, trueExpr, falseExpr);
-    }
     public override ASTNode VisitBlock(EduGrammarParser.BlockContext context) {
         var block = new BlockNode();
         foreach (var line in context.line()) {

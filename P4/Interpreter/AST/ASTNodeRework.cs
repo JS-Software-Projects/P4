@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using P4.Interpreter.AST;
 
 // Base class for all AST nodes
 public abstract class ASTNode
 {
     protected List<ASTNode> Children { get; set; } = new List<ASTNode>();
     
-    public abstract void Accept(Visitor visitor);
+    public abstract T Accept<T>(IASTVisitor<T> visitor);
 }
 
 

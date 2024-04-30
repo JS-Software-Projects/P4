@@ -24,6 +24,11 @@ public class BlockNode : ASTNode {
     public override string ToString() {
         return "{" + string.Join(" ", Statements.Where(s => s != null).Select(s => s.ToString())) + "}";
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
 }
 
 public class FunctionDeclarationNode : ASTNode {
@@ -38,9 +43,15 @@ public class FunctionDeclarationNode : ASTNode {
         Parameters = parameters;
         Body = body;
     }
-    public override void Visit(AstScopeChecker checker)
+    public override T Accept<T>(IASTVisitor<T> visitor)
     {
-        checker.VisitFunctionDeclaration(this);
+        return visitor.Visit(this);
+    }
+
+    public override string ToString()
+    {
+        return $"Function Declaration: {type} {Name}({string.Join(", ", Parameters)}) {Body}";
+
     }
 }
 
@@ -71,7 +82,12 @@ public class VariableDeclarationNode : ASTNode {
     {
         return Type;
     }
-    
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString() {
         return Expression != null
             ? $"Variable Declaration: {Type} {VariableName} = {Expression}"
@@ -83,6 +99,11 @@ public class TypeNode : ASTNode {
 
     public TypeNode(string type) {
         Type = type;
+    }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
     }
 
     public override string ToString() {
@@ -103,6 +124,12 @@ public class ExpressionNode : ASTNode {
         Left = left;
         Right = right;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString() {
         var leftExpr = Left != null ? Left.ToString() : "null";
         var rightExpr = Right != null ? Right.ToString() : "null";
@@ -119,6 +146,12 @@ public class TernaryExpressionNode : ASTNode {
         TrueExpr = trueExpr;
         FalseExpr = falseExpr;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString() {
         return $"({Condition} ? {TrueExpr} : {FalseExpr})";
     }
@@ -129,6 +162,11 @@ public class ConstantNode : ASTNode {
 
     public ConstantNode(object value) {
         Value = value;
+    }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
     }
 
     public override string ToString()
@@ -144,6 +182,11 @@ public class IdentifierNode : ASTNode {
         Identifier = identifier;
     }
 
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return Identifier;
@@ -156,6 +199,12 @@ public class PrintNode : ASTNode {
     {
         Expression = expression;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"print {Expression}";
@@ -184,6 +233,12 @@ public override void Visit(AstScopeChecker checker)
     {
         return VariableName;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"Assignment is: {VariableName} {AssignmentOp} {Expression}";
@@ -201,6 +256,11 @@ public class IfNode : ASTNode
         ElseBody = elseBody;
     }
 
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"if {Condition} {Body} else {ElseBody}";
@@ -216,6 +276,12 @@ public class WhileNode : ASTNode
         Condition = condition;
         Body = body;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"while {Condition} {Body}";
@@ -235,6 +301,12 @@ public class ForNode : ASTNode
         Increment = increment;
         Body = body;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"for {Initializer} {Condition} {Increment} {Body}";
@@ -247,6 +319,12 @@ public class ReturnNode : ASTNode
     {
         Expression = expression;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"return {Expression}";
@@ -261,6 +339,12 @@ public class FunctionCallNode : ASTNode
         FunctionName = functionName;
         Arguments = arguments;
     }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string ToString()
     {
         return $"{FunctionName}({string.Join(", ", Arguments)})";
