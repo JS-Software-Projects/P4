@@ -4,7 +4,7 @@ using P4.Interpreter.AST;
 
 namespace P4.Interpreter
 {
-    public class AstScopeChecker
+    public class AstScopeChecker : IASTVisitor<ASTNode>
     {
         private readonly Stack<Dictionary<string, TypeNode>> _scopes = new();
 
@@ -71,6 +71,115 @@ namespace P4.Interpreter
                 }
             }
         }
-        
+
+        public ASTNode Visit(AST.ASTNode node)
+        {
+            return null;
+        }
+
+        public ASTNode Visit(Block node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(BinaryExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(UnaryExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(TernaryExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(Assignment node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(FunctionCall node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(VariableDeclaration node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(Expression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(Statement node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ConstantExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(IdentifierExpression node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ParameterNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(IfNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(WhileNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ReturnNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ForNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(Print node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(IfBlock node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(WhileBlock node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ReturnStatement node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ASTNode Visit(ForLoop node)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
