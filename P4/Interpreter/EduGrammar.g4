@@ -51,6 +51,7 @@ ternaryExpr        : term('?' term ':' term)* ;
 term               : id | constant | '(' expr ') ' ;
 
 binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
+
 unOP: '!' | '-';
 
 type: 'Num' | 'String' | 'Bool';
