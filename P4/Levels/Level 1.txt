@@ -1,1 +1,2 @@
-Num x = 1; 
+Num x = 8; 
+Num y = 8;

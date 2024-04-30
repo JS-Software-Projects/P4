@@ -4,11 +4,13 @@ using System;
 
 namespace P4.Interpreter.AST;
 
+
 // Base class for all AST nodes
 public abstract class ASTNode {
     protected List<ASTNode> Children { get; set; } = new();
     public abstract T Accept<T>(IASTVisitor<T> visitor);
 }
+
 
 public class BlockNode : ASTNode {
     public List<ASTNode> Statements { get; } = new();
