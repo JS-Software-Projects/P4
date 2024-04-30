@@ -6,42 +6,57 @@ public class TypVisitor : IASTVisitor<ASTNode> {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(BlockNode node)
+    public ASTNode Visit(Block node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(FunctionDeclarationNode node)
+    public ASTNode Visit(BinaryExpression node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(VariableDeclarationNode node)
+    public ASTNode Visit(UnaryExpression node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(TypeNode node)
+    public ASTNode Visit(TernaryExpression node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(ExpressionNode node)
+    public ASTNode Visit(Assignment node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(ConstantNode node)
+    public ASTNode Visit(FunctionCall node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(IdentifierNode node)
+    public ASTNode Visit(VariableDeclaration node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(FunctionCallNode node)
+    public ASTNode Visit(Expression node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(Statement node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(ConstantExpression node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(IdentifierExpression node)
     {
         throw new System.NotImplementedException();
     }
@@ -67,6 +82,31 @@ public class TypVisitor : IASTVisitor<ASTNode> {
     }
 
     public ASTNode Visit(ForNode node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(Print node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(IfBlock node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(WhileBlock node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(ReturnStatement node)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ASTNode Visit(ForLoop node)
     {
         throw new System.NotImplementedException();
     }
