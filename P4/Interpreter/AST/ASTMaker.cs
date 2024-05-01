@@ -61,11 +61,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
-        var type = VisitType(context.type());
-        var variableName = VisitId(context.id());
-        var expression = context.expr() != null ? Visit(context.expr()) : null;
+        var type = context.type().GetText();
+        var variableName = context.id().GetText();
+        var expression = context.expr() != null ? Visit(context.expr()) as Expression : null;
         
-        return new VariableDeclarationNode(type, variableName, expression);
+        return new VariableDeclaration(variableName,type, expression);
     }
 
     public override ASTNode VisitConstant(EduGrammarParser.ConstantContext context)

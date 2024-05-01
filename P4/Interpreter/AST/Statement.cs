@@ -25,7 +25,14 @@ public class VariableDeclaration : Statement
     public string VariableName { get; set; }
     public string Type { get; set; }
     public Expression Expression { get; set; }
-    
+
+    public VariableDeclaration(string variableName, string type, Expression expression)
+    {
+        VariableName = variableName;
+        Type = type;
+        Expression = expression;
+    }
+
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);

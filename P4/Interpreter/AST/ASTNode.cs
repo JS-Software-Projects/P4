@@ -11,7 +11,7 @@ public abstract class ASTNode {
     public abstract T Accept<T>(IASTVisitor<T> visitor);
 }
 
-
+/*
 public class BlockNode : ASTNode {
     public List<ASTNode> Statements { get; } = new();
     
@@ -334,4 +334,5 @@ public class FunctionCallNode : ASTNode
     {
         return $"{FunctionName}({string.Join(", ", Arguments)})";
     }
-}
+} 
+*/

@@ -1,3 +1,1 @@
-Num x = 8; 
-Num y = 8;
-Num z = x * y;
+Num x = 8;
