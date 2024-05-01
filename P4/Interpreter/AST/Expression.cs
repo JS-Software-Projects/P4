@@ -70,6 +70,7 @@ public class BinaryExpression : Expression
         return $"({leftExpr} {Operator} {rightExpr})";
     
     }
+    
 }
 
 public class UnaryExpression : Expression

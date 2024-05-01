@@ -193,11 +193,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     
     public override ASTNode VisitBlock(EduGrammarParser.BlockContext context) {
-        var block = new BlockNode();
+        var block = new BlockStatement();
         foreach (var line in context.line()) {
             var statementNode = Visit(line);
             if (statementNode != null) {
-                block.Statements.Add(statementNode);
+                block.Statements.Add(statementNode as Statement);
             } else {
                 // Log or handle the case where Visit(line) returns null
             }
@@ -206,19 +206,26 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitPrint(EduGrammarParser.PrintContext context)
     {
-        return new PrintNode(Visit(context.expr()));
+        return new PrintStatement((Expression)Visit(context.expr()));
     }
+    
     public override ASTNode VisitAssignment(EduGrammarParser.AssignmentContext context)
     {
-        return new AssignmentNode(Visit(context.id()), Visit(context.expr()));
+        var idNode = Visit(context.id()) as IdentifierExpression;
+        if (idNode == null)
+        {
+            throw new InvalidCastException("Expected IdentifierExpression");
+        }
+        var variableName = idNode.Name;
+        return new AssignmentStatement(variableName, (Expression)Visit(context.expr()));
     }
     public override ASTNode VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
-        var condition = Visit(context.expr());
-        var ifBlock = Visit(context.block());
-        var elseBlock = context.elseBlock() != null ? Visit(context.elseBlock()) : null;
+        var condition = (Expression)Visit(context.expr());
+        var ifBlock = (BlockStatement)Visit(context.block());
+        var elseBlock = context.elseBlock() != null ? (BlockStatement)Visit(context.elseBlock()) : null;
 
-        return new IfNode(condition, ifBlock, elseBlock);
+        return new IfBlock(condition, ifBlock, elseBlock);
     }
     public override ASTNode VisitElseBlock(EduGrammarParser.ElseBlockContext context)
     {
@@ -226,38 +233,43 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitWhileBlock(EduGrammarParser.WhileBlockContext context)
     {
-        var condition = Visit(context.expr());
-        var block = Visit(context.block());
+        var condition = (Expression)Visit(context.expr());
+        var block = (BlockStatement)Visit(context.block());
 
-        return new WhileNode(condition, block);
+        return new WhileBlock(condition, block);
     }
     public override ASTNode VisitForLoop(EduGrammarParser.ForLoopContext context)
     {
-        var init = Visit(context.variableDeclaration());
-        var condition = Visit(context.expr());
-        var update = Visit(context.assignment());
-        var block = Visit(context.block());
+        var init = (Statement)Visit(context.variableDeclaration());
+        var condition = (Expression)Visit(context.expr());
+        var update = (Statement)Visit(context.assignment());
+        var block = (BlockStatement)Visit(context.block());
 
-        return new ForNode(init, condition, update, block);
+        return new ForLoopStatement(init, condition, update, block);
     }
     public override ASTNode VisitReturnStatement(EduGrammarParser.ReturnStatementContext context)
     {
-        return new ReturnNode(Visit(context.expr()));
+        return new ReturnStatement((Expression)Visit(context.expr()));
     }
     public override ASTNode VisitFunctionCall(EduGrammarParser.FunctionCallContext context)
     {
         var functionName = context.id().GetText();
-        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) : new List<ASTNode>();
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) : new List<Expression>();
 
-        return new FunctionCallNode(functionName, arguments);
+        return new FunctionCallStatement(functionName, arguments);
     }
-    public List<ASTNode> VisitArgumentList(EduGrammarParser.ArgumentListContext context)
+    public new List<Expression> VisitArgumentList(EduGrammarParser.ArgumentListContext context)
     {
-        var arguments = new List<ASTNode>();
+        var arguments = new List<Expression>();
 
         foreach (var exprCtx in context.expr())
         {
-            arguments.Add(Visit(exprCtx));
+            var argument = Visit(exprCtx) as Expression;
+            if (argument == null)
+            {
+                throw new InvalidCastException("Expected Expression");
+            }
+            arguments.Add(argument);
         }
 
         return arguments;
