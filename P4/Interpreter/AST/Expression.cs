@@ -22,6 +22,11 @@ public class IdentifierExpression : Expression
     {
         return visitor.Visit(this);
     }
+
+    public override string ToString()
+    {
+        return $"IdentifierExpression: Name is = {Name}";
+    }
 }
 
 public class ConstantExpression : Expression
@@ -30,6 +35,15 @@ public class ConstantExpression : Expression
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public ConstantExpression(object value)
+    {
+        Value = value;
+    }
+    public override string ToString()
+    {
+        return $"ConstantExpression: is = {Value}";
     }
 }
 
@@ -69,10 +83,18 @@ public class UnaryExpression : Expression
         Operand = operand;
     }
 
+    public override string ToString()
+    {
+        return $"UnaryExpression: Operand is = {Operand}. " +
+               $"Operator is = {Operator}";
+    }
+
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
     }
+    
+    
 }
 
 public class TernaryExpression : Expression
@@ -83,6 +105,20 @@ public class TernaryExpression : Expression
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public TernaryExpression(Expression condition, Expression thenExpression, Expression elseExpression)
+    {
+        Condition = condition;
+        ThenExpression = thenExpression;
+        ElseExpression = elseExpression;
+    }
+
+    public override string ToString()
+    {
+        return $"UnaryExpression: Condition is = {Condition}" +
+               $"thenExpression is = {ThenExpression}" +
+               $"elseExpression is {ElseExpression}";
     }
 }
 

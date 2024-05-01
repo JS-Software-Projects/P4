@@ -17,15 +17,16 @@ public interface IASTVisitor<T>
     //T Visit(BinOpNode node);
     //T Visit(UnaryOpNode node);
     T Visit(ParameterNode node);
-    T Visit(IfNode node);
-    T Visit(WhileNode node);
-    T Visit(ReturnNode node);
-    T Visit(ForNode node);
+    T Visit(FunctionDeclaration node);
+
     T Visit(Print node);
     T Visit(IfBlock node);
     T Visit(WhileBlock node);
     T Visit(ReturnStatement node);
     T Visit(ForLoop node);
-
+  //  T Visit(IfNode node);
+   // T Visit(WhileNode node);
+  //  T Visit(ReturnNode node);
+   // T Visit(ForNode node);
 
 }

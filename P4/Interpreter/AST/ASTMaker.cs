@@ -56,7 +56,10 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         var parameters = VisitParameterList(context.parameterList());
         var body = VisitBlock(context.block());
         
-         return new FunctionDeclarationNode(type,name,parameters,body);
+         return new FunctionDeclaration(type,name,parameters,body);
+         {
+             
+         }
     }
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
@@ -70,7 +73,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 
     public override ASTNode VisitConstant(EduGrammarParser.ConstantContext context)
     {
-        return new ConstantNode(context.GetText());
+        return new ConstantExpression(context.GetText());
     }
 
     public override ASTNode VisitComparisonExpr(EduGrammarParser.ComparisonExprContext context)
@@ -157,7 +160,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
             var trueExpr = Visit(context.term(1)) as Expression;
             var falseExpr = Visit(context.term(2)) as Expression;
             
-            return new TernaryExpressionNode(condition, trueExpr, falseExpr);
+            return new TernaryExpression(condition, trueExpr, falseExpr);
         }
         return Visit(context.term(0));
     }
