@@ -51,15 +51,17 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     
     public override ASTNode VisitFunctionDeclaration(EduGrammarParser.FunctionDeclarationContext context)
     {
-        var type = VisitType(context.type());
+        var type = VisitType(context.type()) as Type;
+        if (type == null)
+        {
+            throw new InvalidCastException("Expected Type");
+        }
+        var typeName = type.TypeName;
         var name = context.id().GetText(); // Correctly accessing the function's name
         var parameters = VisitParameterList(context.parameterList());
         var body = VisitBlock(context.block());
-        
-         return new FunctionDeclaration(type,name,parameters,body);
-         {
-             
-         }
+
+        return new FunctionDeclaration(typeName, name, parameters, body);
     }
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
@@ -189,7 +191,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitType(EduGrammarParser.TypeContext context)
     {
-        return new TypeNode(context.GetText());
+        return new Type(context.GetText());
     }
     
     public override ASTNode VisitBlock(EduGrammarParser.BlockContext context) {
