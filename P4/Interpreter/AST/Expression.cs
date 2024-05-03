@@ -1,3 +1,4 @@
+using System;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter.AST;
@@ -145,4 +146,43 @@ public enum Operator
 
     // Unary operator (negation)
     Not
+}
+
+
+public static class OperatorExtensions
+{
+    public static Operator FromString(this string op)
+    {
+        switch (op)
+        {
+            case "+":
+                return Operator.Add;
+            case "-":
+                return Operator.Subtract;
+            case "*":
+                return Operator.Multiply;
+            case "/":
+                return Operator.Divide;
+            case "==":
+                return Operator.Equal;
+            case "!=":
+                return Operator.NotEqual;
+            case "<":
+                return Operator.LessThan;
+            case "<=":
+                return Operator.LessThanOrEqual;
+            case ">":
+                return Operator.GreaterThan;
+            case ">=":
+                return Operator.GreaterThanOrEqual;
+            case "&&":
+                return Operator.And;
+            case "||":
+                return Operator.Or;
+            case "!":
+                return Operator.Not;
+            default:
+                throw new ArgumentException($"Invalid operator: {op}");
+        }
+    }
 }
