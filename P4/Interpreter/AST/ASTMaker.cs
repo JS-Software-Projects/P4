@@ -248,10 +248,12 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     {
         return VisitParenExpr(context.parenExpr());
     }
-    else // context.functionCall() != null
+    else if (context.functionCall() != null)
     {
         return VisitFunctionCall(context.functionCall());
     }
+
+    return null;
 }
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
