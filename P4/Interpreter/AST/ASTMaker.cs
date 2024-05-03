@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Antlr4.Runtime.Atn;
 
 namespace P4.Interpreter.AST;
@@ -213,11 +214,11 @@ public override ASTNode VisitMultiplicationExpr(EduGrammarParser.MultiplicationE
 
 public override ASTNode VisitUnaryExpr(EduGrammarParser.UnaryExprContext context)
 {
-    if (context.unOP() == null || context.unOP().Length == 0)
+    if (context.unOP().Length == 0)
     {
         return VisitTernaryExpr(context.ternaryExpr());
     }
-    var opContext = context.unOP()[0]; // replace '0' with the appropriate index
+    var opContext = context.unOP()[0]; 
     var op = OperatorExtensions.FromString(opContext.GetText());
     var right = VisitTernaryExpr(context.ternaryExpr()) as Expression;
     return new UnaryExpression(op, right);
