@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 
+/*
 namespace P4.Interpreter;
 
 public class ScopeChecker : EduGrammarBaseVisitor<object>
@@ -23,7 +24,7 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
         base.VisitIfBlock(context); // Visit children
         _scopes.Pop(); // Exit scope
         return null;
-    }*/
+    }
 
     // Checking dupplicate declaration
     public override object VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
@@ -54,4 +55,4 @@ public class ScopeChecker : EduGrammarBaseVisitor<object>
         return _scopes.Peek().ContainsKey(varName);
     }
 }
-
+*/

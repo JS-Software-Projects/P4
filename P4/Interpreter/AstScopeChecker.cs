@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using P4.Interpreter.AST;
-
+/*
 namespace P4.Interpreter
-{
+
+
     public class AstScopeChecker : IASTVisitor<ASTNode>
     {
-        private readonly Stack<Dictionary<string, TypeNode>> _scopes = new();
+
 
         public AstScopeChecker()
         {
             // Initialize with a global scope
-            _scopes.Push(new Dictionary<string, TypeNode>());
+           // _scopes.Push(new Dictionary<string, TypeNode>());
         }
 
-        /*
+
 
 
         public void Visit(ASTNode node)
@@ -22,7 +23,7 @@ namespace P4.Interpreter
             node.Visit(this);
         }
 
-        */
+        ,
         private void VisitBlock(BlockNode blockNode)
         {
             _scopes.Push(new Dictionary<string, TypeNode>()); // Enter new scope for the block
@@ -58,8 +59,8 @@ namespace P4.Interpreter
             return _scopes.Peek().ContainsKey(varName);
         }
 
-        
-        
+
+
         public void PrintScopes()
         {
             foreach (var scope in _scopes)
@@ -182,4 +183,5 @@ namespace P4.Interpreter
             throw new NotImplementedException();
         }
     }
-}
+
+}*/

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class FunctionDeclaration : ASTNode
 {
-    public string FunctionName { get; set; }
+    public IdentifierExpression FunctionName { get; set; }
     public List<ParameterNode> Parameters { get; set; }
-    public List<Statement> Statements { get; set; }
-    public string ReturnType { get; set; }
+    public BlockStatement Statements { get; set; }
+    public Type ReturnType { get; set; }
 
-    public FunctionDeclaration(string functionName, List<ParameterNode> parameters, List<Statement> statements, string returnType)
+    public FunctionDeclaration(Type returnType,IdentifierExpression functionName, List<ParameterNode> parameters, BlockStatement statements)
     {
         FunctionName = functionName;
         Parameters = parameters;

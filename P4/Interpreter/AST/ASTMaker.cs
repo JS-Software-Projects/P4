@@ -30,8 +30,10 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     {
         var token = context.Start;
         _lineNumber = token.Line;
+        Console.WriteLine("here?");
         return base.VisitLine(context);
     }
+   
     public List<ParameterNode> VisitParameterList(EduGrammarParser.ParameterListContext context) {
         var parameters = new List<ParameterNode>();
 
@@ -57,11 +59,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
             throw new InvalidCastException("Expected Type");
         }
         var typeName = type.TypeName;
-        var name = context.id().GetText(); // Correctly accessing the function's name
+        var name = VisitId(context.id()) as IdentifierExpression; // Correctly accessing the function's name
         var parameters = VisitParameterList(context.parameterList());
-        var body = VisitBlock(context.block());
+        var body = VisitBlock(context.block()) as BlockStatement;
 
-        return new FunctionDeclaration(typeName, name, parameters, body);
+        return new FunctionDeclaration(type, name, parameters, body);
     }
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
@@ -70,7 +72,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         var variableName = context.id().GetText();
         var expression = context.expr() != null ? Visit(context.expr()) as Expression : null;
         
-        return new VariableDeclaration(variableName,type, expression);
+        return new VariableDeclaration(variableName, type, expression);
     }
 
     public override ASTNode VisitConstant(EduGrammarParser.ConstantContext context)

@@ -25,6 +25,7 @@ public class AssignmentStatement : Statement
     }
 
     public override string ToString()
+    
     {
         return $"AssignmentStatement: {VariableName} = {Expression}";
     }

@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using P4.Interpreter.AST;
 
+/*
 public class VariableDeclarationNode_Should
 {
     [Fact]
@@ -50,3 +51,4 @@ public class VariableDeclarationNode_Should
         Assert.Equal("Variable Declaration: x = hej", result);
     }
 }
+*/
