@@ -1,0 +1,3 @@
+Num x = 8;
+Num y = x *2;
+Bool z= !false;

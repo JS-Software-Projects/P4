@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using P4.Interpreter;
+using P4.managers;
 
 namespace P4;
 
@@ -14,6 +15,8 @@ public class TextEditor
     private readonly GraphicsDevice graphicsDevice;
     private readonly List<string> lines = new() { "" };
     private readonly Rectangle numberArea;
+    string _localfilePath = "";
+    public event EventHandler ResetRequested;
 
     private readonly Button playButton;
 
@@ -24,15 +27,16 @@ public class TextEditor
     private readonly SpriteFont spriteFont;
     private Rectangle textAreaRectangle;
 
-    public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont)
+    public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont,string localfilePath)
     {
         this.graphicsDevice = graphicsDevice;
         this.spriteBatch = spriteBatch;
         this.spriteFont = spriteFont;
+        _localfilePath = localfilePath;
 
         // Calculate dimensions to fill 35% of the right-hand side of the window
         var textAreaWidth =
-            (int)(Globals.WindowSize.X * 0.35); // 35% of the window width, accessed directly from Globals
+            (int)(Globals.WindowSize.X * 0.38)+4; // 35% of the window width, accessed directly from Globals
         var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
         var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
         var textAreaY = 0; // Start at the top
@@ -52,8 +56,7 @@ public class TextEditor
         //load file content
         // Get the current directory of the running program
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var outputDirectoryName = "../../../Output/output.txt"; // Name of your desired output directory
-        var filePath = Path.Combine(baseDirectory, outputDirectoryName);
+        var filePath = Path.Combine(baseDirectory, localfilePath);
 
         LoadFileContent(filePath);
 
@@ -61,30 +64,42 @@ public class TextEditor
         previousKeyboardState = Keyboard.GetState();
         previousMouseState = Mouse.GetState();
     }
-
+    public void RequestReset()
+    {
+        ResetRequested?.Invoke(this, EventArgs.Empty);
+    }
     private void OnPlayButtonClick()
     {
+        RequestReset();
         // Actions to take when the button is clicked
-
-
+        InputManager.SetExecute(true,8,8);
         // Concatenate all lines into a single string
         var allText = string.Join("\n", lines);
 
         // Get the current directory of the running program
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var outputDirectoryName = "../../../Output"; // Name of your desired output directory
+        var outputDirectoryName = "../../../Levels"; // Name of your desired output directory
         var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
 
         // Create the output directory if it does not exist
         Directory.CreateDirectory(directoryPath);
 
         // Combine the directory path with the desired file name and write the text to the file
-        var fullPath = Path.Combine(directoryPath, "output.txt");
-        File.WriteAllText(fullPath, allText);
+        if (_localfilePath != null)
+        {
+            var fullPath = Path.Combine(directoryPath,Path.GetFileName(_localfilePath)); 
+            File.WriteAllText(fullPath, allText);
 
-        // Log the full path or open the folder containing the file
-        Debug.WriteLine($"File written to: {fullPath}");
-        RunInterpretor.Execute();
+            // Log the full path or open the folder containing the file
+            Debug.WriteLine($"File written to: {fullPath}");
+            RunInterpretor.Execute(fullPath);
+        }
+        else
+        {
+            throw new Exception("File path is null");
+        }
+        
+        
     }
 
     public void LoadFileContent(string filePath)
@@ -98,11 +113,12 @@ public class TextEditor
             // Clear current text and reset cursor
             lines.Clear();
             currentLine = 0;
-            cursorPosition = 0;
+            
 
             // Add each line from the file to the lines list
             foreach (var line in fileLines) lines.Add(line);
-
+            cursorPosition = lines[currentLine].Length;
+            
             // If the file is empty, ensure there is at least one empty line
             if (lines.Count == 0) lines.Add("");
         }

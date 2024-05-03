@@ -20,12 +20,12 @@ public class Terminal
         
         // Calculate dimensions of TextEditor
         var textAreaWidth =
-            (int)(Globals.WindowSize.X * 0.35+40); // 35% of the window width, accessed directly from Globals
+            (int)(Globals.WindowSize.X * 0.38+44); // 35% of the window width, accessed directly from Globals
         var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
               var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
-              _textAreaY = textAreaHeight - 80; // Box height
+              _textAreaY = textAreaHeight - 128; // Box height
         
-        _terminal = new Rectangle(0, _textAreaY,textAreaX, 80);
+        _terminal = new Rectangle(0, _textAreaY,textAreaX, 128);
     }
     public static void SetError(bool err,string line)
     {

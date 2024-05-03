@@ -33,7 +33,7 @@ public class Button
     {
         // Check if the mouse is over the button
         isHovering = Bounds.Contains(currentMouseState.X, currentMouseState.Y);
-
+        
         // Check for click: mouse button was just released while over the button
         if (isHovering && currentMouseState.LeftButton == ButtonState.Released &&
             previousMouseState.LeftButton == ButtonState.Pressed) Click?.Invoke(); // Raise the Click event

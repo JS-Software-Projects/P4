@@ -13,6 +13,14 @@ public class ProgramNode : ASTNode {
     public void AddChild(ASTNode child) {
         Children.Add(child);
     }
+    public List<ASTNode> GetChildren() {
+        return Children;
+    }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
 
     // Override ToString() to help in debugging and visualizing the tree
     public override string ToString() {
