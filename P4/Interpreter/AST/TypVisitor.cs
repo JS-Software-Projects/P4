@@ -1,12 +1,12 @@
 ﻿namespace P4.Interpreter.AST;
-
+/*
 public class TypVisitor : IASTVisitor<ASTNode> {
     public ASTNode Visit(ASTNode node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(Block node)
+    public ASTNode Visit(BlockStatement node)
     {
         throw new System.NotImplementedException();
     }
@@ -26,12 +26,12 @@ public class TypVisitor : IASTVisitor<ASTNode> {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(Assignment node)
+    public ASTNode Visit(AssignmentStatement node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(FunctionCall node)
+    public ASTNode Visit(FunctionCallStatement node)
     {
         throw new System.NotImplementedException();
     }
@@ -66,27 +66,27 @@ public class TypVisitor : IASTVisitor<ASTNode> {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(IfNode node)
+    public ASTNode Visit(IfBlock node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(WhileNode node)
+    public ASTNode Visit(WhileBlock node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(ReturnNode node)
+    public ASTNode Visit(ReturnStatement node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(ForNode node)
+    public ASTNode Visit(ForLoopStatement node)
     {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(Print node)
+    public ASTNode Visit(PrintStatement node)
     {
         throw new System.NotImplementedException();
     }
@@ -106,8 +106,9 @@ public class TypVisitor : IASTVisitor<ASTNode> {
         throw new System.NotImplementedException();
     }
 
-    public ASTNode Visit(ForLoop node)
+    public ASTNode Visit(ForLoopStatement node)
     {
         throw new System.NotImplementedException();
     }
 }
+*/

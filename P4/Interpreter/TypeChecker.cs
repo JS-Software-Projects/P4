@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 
+
+/*
 namespace P4.Interpreter;
 
 public class TypeChecker : EduGrammarBaseVisitor<Type>
@@ -58,3 +60,4 @@ public class TypeChecker : EduGrammarBaseVisitor<Type>
         throw new Exception("Invalid type for constant.");
     }
 }
+*/

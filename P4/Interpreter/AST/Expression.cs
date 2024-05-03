@@ -1,3 +1,4 @@
+using System;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter.AST;
@@ -22,6 +23,11 @@ public class IdentifierExpression : Expression
     {
         return visitor.Visit(this);
     }
+
+    public override string ToString()
+    {
+        return $"IdentifierExpression: Name is = {Name}";
+    }
 }
 
 public class ConstantExpression : Expression
@@ -30,6 +36,15 @@ public class ConstantExpression : Expression
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public ConstantExpression(object value)
+    {
+        Value = value;
+    }
+    public override string ToString()
+    {
+        return $"ConstantExpression: is = {Value}";
     }
 }
 
@@ -56,6 +71,7 @@ public class BinaryExpression : Expression
         return $"({leftExpr} {Operator} {rightExpr})";
     
     }
+    
 }
 
 public class UnaryExpression : Expression
@@ -69,10 +85,18 @@ public class UnaryExpression : Expression
         Operand = operand;
     }
 
+    public override string ToString()
+    {
+        return $"UnaryExpression: Operand is = {Operand}. " +
+               $"Operator is = {Operator}";
+    }
+
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
     }
+    
+    
 }
 
 public class TernaryExpression : Expression
@@ -83,6 +107,20 @@ public class TernaryExpression : Expression
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public TernaryExpression(Expression condition, Expression thenExpression, Expression elseExpression)
+    {
+        Condition = condition;
+        ThenExpression = thenExpression;
+        ElseExpression = elseExpression;
+    }
+
+    public override string ToString()
+    {
+        return $"UnaryExpression: Condition is = {Condition}" +
+               $"thenExpression is = {ThenExpression}" +
+               $"elseExpression is {ElseExpression}";
     }
 }
 
@@ -108,4 +146,43 @@ public enum Operator
 
     // Unary operator (negation)
     Not
+}
+
+
+public static class OperatorExtensions
+{
+    public static Operator FromString(this string op)
+    {
+        switch (op)
+        {
+            case "+":
+                return Operator.Add;
+            case "-":
+                return Operator.Subtract;
+            case "*":
+                return Operator.Multiply;
+            case "/":
+                return Operator.Divide;
+            case "==":
+                return Operator.Equal;
+            case "!=":
+                return Operator.NotEqual;
+            case "<":
+                return Operator.LessThan;
+            case "<=":
+                return Operator.LessThanOrEqual;
+            case ">":
+                return Operator.GreaterThan;
+            case ">=":
+                return Operator.GreaterThanOrEqual;
+            case "&&":
+                return Operator.And;
+            case "||":
+                return Operator.Or;
+            case "!":
+                return Operator.Not;
+            default:
+                throw new ArgumentException($"Invalid operator: {op}");
+        }
+    }
 }

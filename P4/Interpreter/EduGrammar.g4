@@ -46,7 +46,7 @@ expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
 comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
 additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
-multiplicationExpr : unaryExpr ( (MULT | DIV) unaryExpr )* ;
+multiplicationExpr : unaryExpr ( (multiOp) unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
 term               : id | constant | parenExpr | functionCall;
