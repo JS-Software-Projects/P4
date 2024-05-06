@@ -41,18 +41,18 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     public Type Visit(AssignmentStatement node)
     {
         // Scope rule
-        if (!_symbolTableType.IsVariableDeclared(node.VariableName))
+        var varName = node.VariableName;
+        if (!_symbolTableType.IsVariableDeclared(varName))
         {
             throw new Exception("Variable not declared.");
         }
         //Type checking
         Type expression = Visit(node.Expression);
         
-        if (!_symbolTableType.IsTypeCorrect(node.VariableName, expression))
+        if (!_symbolTableType.IsTypeCorrect(varName, expression))
         {
             throw new Exception("Type mismatch.");
         }
-
         return null;
     }
 
@@ -61,15 +61,23 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         throw new System.NotImplementedException();
     }
 
-    // Scope rule
+    
     public Type Visit(VariableDeclaration node)
     {
+        // Scope rule 
         var varName = node.VariableName;
         if (_symbolTableType.IsVariableDeclaredInScope(varName))
         {
             throw new Exception($"Variable '{varName}' already declared.");
         }
 
+        // Type checking
+        var expressionType = Visit(node.Expression);
+        if (_symbolTableType.IsTypeCorrect(varName, expressionType))
+        {
+            throw new Exception($"Type mismatch for variable '{varName}'.");
+        }
+        
         var varType = node.Type;
         _symbolTableType.Add(varName, varType);
         return null;
