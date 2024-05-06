@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter;
@@ -24,12 +25,57 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(BinaryExpression node)
     {
-        throw new System.NotImplementedException();
+        Type leftType = Visit(node.Left);
+        Type rightType = Visit(node.Right);
+        
+        if (leftType != rightType)
+        {
+            throw new Exception("Type mismatch in binary expression.");
+        }
+        
+        switch (node.Operator)
+        {
+            case Operator.Add:
+            case Operator.Subtract:
+            case Operator.Multiply:
+            case Operator.Divide:
+                // For these operators, the result type is the same as the operand types
+                return leftType;
+            
+            case Operator.LessThan:
+            case Operator.LessThanOrEqual:
+            case Operator.GreaterThan:
+            case Operator.GreaterThanOrEqual:
+            case Operator.Equal:
+            case Operator.NotEqual:
+                
+                return new Type("Bool");   
+            default:
+                throw new Exception("Unknown binary operator.");
+        }
     }
 
     public Type Visit(UnaryExpression node)
     {
-        throw new System.NotImplementedException();
+        Type operandType = Visit(node.Operand);
+        
+        switch (node.Operator)
+        {
+            case Operator.Not:
+                if (operandType.TypeName != "Bool")
+                {
+                    throw new Exception("Type mismatch in unary expression: expected Bool.");
+                }
+                return operandType;
+            case Operator.Subtract:
+                if (operandType.TypeName != "Num")
+                {
+                    throw new Exception("Type mismatch in unary expression: expected a Number.");
+                }
+                return operandType;
+            default:
+                throw new Exception("Unknown unary operator.");
+        }
     }
 
     public Type Visit(TernaryExpression node)

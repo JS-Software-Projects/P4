@@ -71,7 +71,7 @@ DIV: '/';
 AND: '&&';
 OR: '||';
 id : ID;
-ID: [a-zA-Z]+[a-zA-Z0-9_]*;
+ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 WS: [ \t]+ -> skip; // Skip spaces and tabs but not newlines
 NL: [\r\n]+ -> channel(HIDDEN); // Handle newlines separately
 
