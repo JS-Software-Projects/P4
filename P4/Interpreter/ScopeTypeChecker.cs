@@ -36,20 +36,48 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         switch (node.Operator)
         {
             case Operator.Add:
+                if(leftType.TypeName == "Num" || leftType.TypeName == "String")
+                {
+                    return leftType;
+                }
+                else
+                {
+                    throw new Exception("Type mismatch in binary expression: expected a Number or a String.");
+                }
             case Operator.Subtract:
             case Operator.Multiply:
             case Operator.Divide:
-                // For these operators, the result type is the same as the operand types
-                return leftType;
-            
+                if (leftType.TypeName == "Num")
+                {
+                    return leftType;
+                }
+                else
+                {
+                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                }
             case Operator.LessThan:
             case Operator.LessThanOrEqual:
             case Operator.GreaterThan:
             case Operator.GreaterThanOrEqual:
+                if (leftType.TypeName == "Num")
+                {
+                    return new Type("Bool");
+                }
+                else
+                {
+                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                }
             case Operator.Equal:
             case Operator.NotEqual:
-                
-                return new Type("Bool");   
+                if (leftType==rightType)
+                {
+                    return new Type("Bool");
+                }
+                else
+                {
+                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                }
+               
             default:
                 throw new Exception("Unknown binary operator.");
         }
@@ -80,7 +108,22 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(TernaryExpression node)
     {
-        throw new System.NotImplementedException();
+        
+        Type conditionType = Visit(node.Condition);
+        if (conditionType.TypeName != "Bool")
+        {
+            throw new Exception("Condition in ternary expression must be of type Bool.");
+        }
+        
+        Type trueExpressionType = Visit(node.ThenExpression);
+        Type falseExpressionType = Visit(node.ElseExpression);
+
+        if (trueExpressionType.TypeName != falseExpressionType.TypeName)
+        {
+            throw new Exception("True and false expressions in a ternary operation must be of the same type.");
+        }
+        
+        return trueExpressionType;
     }
 
     
@@ -142,12 +185,33 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(ConstantExpression node)
     {
-        throw new System.NotImplementedException();
+        if (node.Value is int || node.Value is double)
+        {
+            return new Type("Num");
+        }
+        else if (node.Value is bool)
+        {
+            return new Type("Bool");
+        }
+        else if (node.Value is string)
+        {
+            return new Type("String");
+        }
+        else
+        {
+            throw new Exception("Unknown type in constant expression.");
+        }
     }
-
     public Type Visit(IdentifierExpression node)
     {
-        throw new System.NotImplementedException();
+        var varName = node.Name;
+        if (!_symbolTableType.IsVariableDeclared(varName))
+        {
+            throw new Exception($"Variable '{varName}' not declared.");
+        }
+
+        
+        return _symbolTableType.GetVariableType(varName);
     }
 
     public Type Visit(ParameterNode node)
