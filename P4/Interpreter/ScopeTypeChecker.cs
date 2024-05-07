@@ -34,7 +34,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         Type leftType = Visit(node.Left);
         Type rightType = Visit(node.Right);
         
-        if (leftType != rightType)
+        if (leftType.TypeName != rightType.TypeName)
         {
             throw new Exception("Type mismatch in binary expression.");
         }
@@ -75,13 +75,23 @@ public class ScopeTypeChecker : IASTVisitor<Type>
                 }
             case Operator.Equal:
             case Operator.NotEqual:
-                if (leftType==rightType)
+                if (leftType.TypeName == rightType.TypeName)
                 {
                     return new Type("Bool");
                 }
                 else
                 {
                     throw new Exception("Type mismatch in binary expression: expected a Number.");
+                }
+            case Operator.Or:
+            case Operator.And:
+                if (leftType.TypeName == "Bool")
+                {
+                    return new Type("Bool");
+                }
+                else
+                {
+                    throw new Exception("Type mismatch in binary expression: expected a Bool.");
                 }
                
             default:
