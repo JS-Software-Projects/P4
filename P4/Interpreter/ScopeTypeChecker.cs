@@ -111,12 +111,21 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(FunctionDeclaration node)
     {
-        throw new System.NotImplementedException();
+        var blockType = Visit(node.Statements);
+        var returnType = Visit(node.ReturnType);
+        
+        if (returnType != blockType)
+        {
+            throw new Exception("Return type mismatch.");
+        }
+
+        return null;
     }
 
     public Type Visit(PrintStatement node)
     {
-        throw new System.NotImplementedException();
+        Visit(node.Expression);
+        return null;
     }
 
     public Type Visit(IfBlock node)
@@ -134,7 +143,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(ReturnStatement node)
     {
-        throw new System.NotImplementedException();
+        return Visit(node.Expression);
     }
 
     public Type Visit(ForLoopStatement node)
