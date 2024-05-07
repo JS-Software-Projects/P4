@@ -123,8 +123,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
             throw new ArgumentNullException(nameof(idContext));
         }
 
-        var type = typeContext.GetText();
-        var variableName = idContext.GetText();
+        var type = VisitType(typeContext) as Type;
+        var variableName = VisitId(idContext) as IdentifierExpression;
 
         var exprContext = context.expr();
         var expression = exprContext != null ? Visit(exprContext) as Expression : null;
@@ -289,8 +289,7 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
         {
             throw new InvalidCastException("Expected IdentifierExpression");
         }
-        var variableName = idNode.Name;
-        return new AssignmentStatement(variableName, (Expression)Visit(context.expr()));
+        return new AssignmentStatement(idNode, (Expression)Visit(context.expr()));
     }
     public override ASTNode VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {

@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework.Constraints;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter;
 
 public class ScopeTypeChecker : IASTVisitor<Type>
 {
-    private SymbolTable _symbolTableType = new();
+    private readonly SymbolTable _symbolTableType = new();
 
     public Type Visit(ASTNode node)
     {
-        throw new System.NotImplementedException();
+        return node.Accept(this);
     }
-
+    public Type Visit(ProgramNode node)
+    {
+        foreach (var child in node.GetChildren())
+        {
+            Visit(child);
+        }
+        return null;
+    }
     public Type Visit(BlockStatement node)
     {
         foreach (var statement in node.Statements)
@@ -131,14 +137,14 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         // Scope rule
         var varName = node.VariableName;
-        if (!_symbolTableType.IsVariableDeclared(varName))
+        if (!_symbolTableType.IsVariableDeclared(varName.Name))
         {
             throw new Exception("Variable not declared.");
         }
         //Type checking
         Type expression = Visit(node.Expression);
         
-        if (!_symbolTableType.IsTypeCorrect(varName, expression))
+        if (!_symbolTableType.IsTypeCorrect(varName.Name, expression))
         {
             throw new Exception("Type mismatch.");
         }
@@ -147,7 +153,21 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(FunctionCallStatement node)
     {
-        throw new System.NotImplementedException();
+        if (!_symbolTableType.IsVariableDeclared(node.FunctionName))
+        {
+            throw new Exception("Function not declared.");
+        }
+
+        var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
+        for (int i = 0; i < node.Arguments.Count; i++)
+        {
+            if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments[i]).TypeName)
+            {
+                throw new Exception("Type mismatch in function call does not match declaration of"+node.FunctionName);
+            }
+        }
+
+        return null;
     }
 
     
@@ -155,33 +175,30 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         // Scope rule 
         var varName = node.VariableName;
-        if (_symbolTableType.IsVariableDeclaredInScope(varName))
+        if (_symbolTableType.IsVariableDeclaredInScope(varName.Name))
         {
             throw new Exception($"Variable '{varName}' already declared.");
         }
 
         // Type checking
+        var varType = new Type(node.Type.TypeName);
+        if (!varType.IsCorrectType())
+        {
+            throw new Exception("Unknown type in variable declaration.");
+        }
+        
         var expressionType = Visit(node.Expression);
-        if (_symbolTableType.IsTypeCorrect(varName, expressionType))
+        if (_symbolTableType.IsTypeCorrect(varName.Name, expressionType))
         {
             throw new Exception($"Type mismatch for variable '{varName}'.");
         }
         
-        var varType = new Type(node.Type);
-        _symbolTableType.Add(varName, varType);
+        
+        _symbolTableType.Add(varName.Name, varType);
         return null;
     }
-   
+    
 
-    public Type Visit(Expression node)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Type Visit(Statement node)
-    {
-        throw new System.NotImplementedException();
-    }
 
     public Type Visit(ConstantExpression node)
     {
@@ -209,20 +226,50 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         {
             throw new Exception($"Variable '{varName}' not declared.");
         }
-
-        
-        return _symbolTableType.GetVariableType(varName);
+        return _symbolTableType.Get(varName) as Type;
     }
 
     public Type Visit(ParameterNode node)
     {
-        throw new System.NotImplementedException();
+        if (_symbolTableType.IsVariableDeclared(node.ParameterName))
+        {
+            throw new Exception("Parameter already declared.");
+        }
+        var parType = new Type(node.Type);
+        if (!parType.IsCorrectType())
+        {
+            throw new Exception("Unknown type in parameter declaration.");
+        }
+
+        return parType;
     }
 
     public Type Visit(FunctionDeclaration node)
     {
+        if (_symbolTableType.IsVariableDeclared(node.FunctionName.Name))
+        {
+            throw new Exception("Function already declared.");
+        }
+        
+        var typeList = new List<Type>();
+
+        foreach (var parameter in node.Parameters)
+        {
+            typeList.Add(Visit(parameter));
+        }
+        
+        var returnType = new TypeE(typeList,node.ReturnType.TypeName);
+        if (!returnType.IsCorrectTypeE())
+        {
+            throw new Exception("Unknown type in function declaration.");
+        }
+        
+        _symbolTableType.PushScope();
+        foreach (var parameter in node.Parameters)
+        {
+            _symbolTableType.Add(parameter.ParameterName, Visit(parameter));
+        }
         var blockType = Visit(node.Statements);
-        var returnType = Visit(node.ReturnType);
         
         if (returnType != blockType)
         {
@@ -248,7 +295,14 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(WhileBlock node)
     {
-        throw new System.NotImplementedException();
+        if (Visit(node.Condition).TypeName != "Bool")
+        {
+            throw new Exception("Condition in while block must be of type Bool.");
+        }
+        _symbolTableType.PushScope(); // Enter new scope for the while block
+        Visit(node.Block); // Visit children
+        _symbolTableType.PopScope(); // Exit scope
+        return null;
     }
 
     public Type Visit(ReturnStatement node)
@@ -258,6 +312,13 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(ForLoopStatement node)
     {
-        throw new System.NotImplementedException();
+        if (Visit(node.Condition).TypeName != "Bool")
+        {
+            throw new Exception("Condition in for loop must be of type Bool.");
+        }
+        _symbolTableType.PushScope(); // Enter new scope for the for loop
+        Visit(node.Block);
+        _symbolTableType.PopScope(); // Exit scope
+        return null;
     }
 }

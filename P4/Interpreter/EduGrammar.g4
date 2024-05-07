@@ -46,13 +46,13 @@ expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
 comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
 additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
-multiplicationExpr : unaryExpr ( (multiOp) unaryExpr )* ;
+multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
 term               : id | constant | parenExpr | functionCall;
 
 
-binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
+//binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 
 unOP: '!' | '-';
 parenExpr: '(' expr ')' ;
@@ -61,7 +61,6 @@ constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;
 boolOp: AND | OR;
-ternaryOp: '?' | ':';
 compareOp: '==' | '!=' | '<' | '<=' | '>' | '>=';
 
 ADD: '+';

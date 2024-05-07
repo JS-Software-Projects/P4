@@ -3,6 +3,7 @@
 public interface IASTVisitor<T>
 {
     T Visit(ASTNode node);
+    T Visit(ProgramNode node);
     T Visit(BlockStatement node);
     T Visit(BinaryExpression node);
     T Visit(UnaryExpression node);
@@ -10,8 +11,8 @@ public interface IASTVisitor<T>
     T Visit(AssignmentStatement node);
     T Visit(FunctionCallStatement node);
     T Visit(VariableDeclaration node);
-    T Visit(Expression node);
-    T Visit(Statement node);
+    //T Visit(Expression node);
+    //T Visit(Statement node);
     T Visit(ConstantExpression node);
     T Visit(IdentifierExpression node);
     //T Visit(BinOpNode node);
