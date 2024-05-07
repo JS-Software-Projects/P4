@@ -8,6 +8,7 @@ namespace P4.Interpreter.AST;
 // Base class for all AST nodes
 public abstract class ASTNode {
     public abstract T Accept<T>(IASTVisitor<T> visitor);
+    public int LineNumber;
 }
 
 /*

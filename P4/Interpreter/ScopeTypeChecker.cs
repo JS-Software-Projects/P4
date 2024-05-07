@@ -36,7 +36,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         
         if (leftType != rightType)
         {
-            throw new Exception("Type mismatch in binary expression.");
+            throw new Exception("Type mismatch in binary expression. In line:"+node.LineNumber);
         }
         
         switch (node.Operator)
@@ -48,7 +48,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Number or a String.");
+                    throw new Exception("Type mismatch in binary expression: expected a Number or a String. In line:"+node.LineNumber);
                 }
             case Operator.Subtract:
             case Operator.Multiply:
@@ -59,7 +59,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                    throw new Exception("Type mismatch in binary expression: expected a Number. In line:"+node.LineNumber);
                 }
             case Operator.LessThan:
             case Operator.LessThanOrEqual:
@@ -71,7 +71,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                    throw new Exception("Type mismatch in binary expression: expected a Number. In line:"+node.LineNumber);
                 }
             case Operator.Equal:
             case Operator.NotEqual:
@@ -81,11 +81,11 @@ public class ScopeTypeChecker : IASTVisitor<Type>
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Number.");
+                    throw new Exception("Type mismatch in binary expression: expected a Number. In line:"+node.LineNumber);
                 }
                
             default:
-                throw new Exception("Unknown binary operator.");
+                throw new Exception("Unknown binary operator. In line:"+node.LineNumber);
         }
     }
 
@@ -98,17 +98,17 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             case Operator.Not:
                 if (operandType.TypeName != "Bool")
                 {
-                    throw new Exception("Type mismatch in unary expression: expected Bool.");
+                    throw new Exception("Type mismatch in unary expression: expected Bool. In line:"+node.LineNumber);
                 }
                 return operandType;
             case Operator.Subtract:
                 if (operandType.TypeName != "Num")
                 {
-                    throw new Exception("Type mismatch in unary expression: expected a Number.");
+                    throw new Exception("Type mismatch in unary expression: expected a Number. In line:"+node.LineNumber);
                 }
                 return operandType;
             default:
-                throw new Exception("Unknown unary operator.");
+                throw new Exception("Unknown unary operator. In line:"+node.LineNumber);
         }
     }
 
@@ -118,7 +118,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         Type conditionType = Visit(node.Condition);
         if (conditionType.TypeName != "Bool")
         {
-            throw new Exception("Condition in ternary expression must be of type Bool.");
+            throw new Exception("Condition in ternary expression must be of type Bool. In line:"+node.LineNumber);
         }
         
         Type trueExpressionType = Visit(node.ThenExpression);
@@ -126,7 +126,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
         if (trueExpressionType.TypeName != falseExpressionType.TypeName)
         {
-            throw new Exception("True and false expressions in a ternary operation must be of the same type.");
+            throw new Exception("True and false expressions in a ternary operation must be of the same type. In line:"+node.LineNumber);
         }
         
         return trueExpressionType;
@@ -139,14 +139,14 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         var varName = node.VariableName;
         if (!_symbolTableType.IsVariableDeclared(varName.Name))
         {
-            throw new Exception("Variable not declared.");
+            throw new Exception("Variable not declared. In line:"+node.LineNumber);
         }
         //Type checking
         Type expression = Visit(node.Expression);
         
         if (!_symbolTableType.IsTypeCorrect(varName.Name, expression))
         {
-            throw new Exception("Type mismatch.");
+            throw new Exception("Type mismatch. In line:"+node.LineNumber);
         }
         return null;
     }
@@ -155,7 +155,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (!_symbolTableType.IsVariableDeclared(node.FunctionName))
         {
-            throw new Exception("Function not declared.");
+            throw new Exception("Function not declared. In line:"+node.LineNumber);
         }
 
         var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
@@ -177,20 +177,20 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         var varName = node.VariableName;
         if (_symbolTableType.IsVariableDeclaredInScope(varName.Name))
         {
-            throw new Exception($"Variable '{varName}' already declared.");
+            throw new Exception($"Variable '{varName}' already declared. In line:"+node.LineNumber);
         }
 
         // Type checking
         var varType = new Type(node.Type.TypeName);
         if (!varType.IsCorrectType())
         {
-            throw new Exception("Unknown type in variable declaration.");
+            throw new Exception("Unknown type in variable declaration. In line:"+node.LineNumber);
         }
         
         var expressionType = Visit(node.Expression);
         if (_symbolTableType.IsTypeCorrect(varName.Name, expressionType))
         {
-            throw new Exception($"Type mismatch for variable '{varName}'.");
+            throw new Exception($"Type mismatch for variable '{varName}'. In line:"+node.LineNumber);
         }
         
         
@@ -216,7 +216,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
         else
         {
-            throw new Exception("Unknown type in constant expression.");
+            throw new Exception("Unknown type in constant expression. In line:"+node.LineNumber);
         }
     }
     public Type Visit(IdentifierExpression node)
@@ -224,7 +224,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         var varName = node.Name;
         if (!_symbolTableType.IsVariableDeclared(varName))
         {
-            throw new Exception($"Variable '{varName}' not declared.");
+            throw new Exception($"Variable '{varName}' not declared. In line:"+node.LineNumber);
         }
         return _symbolTableType.Get(varName) as Type;
     }
@@ -233,12 +233,12 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (_symbolTableType.IsVariableDeclared(node.ParameterName))
         {
-            throw new Exception("Parameter already declared.");
+            throw new Exception("Parameter already declared. In line:"+node.LineNumber);
         }
         var parType = new Type(node.Type);
         if (!parType.IsCorrectType())
         {
-            throw new Exception("Unknown type in parameter declaration.");
+            throw new Exception("Unknown type in parameter declaration. In line:"+node.LineNumber);
         }
 
         return parType;
@@ -248,7 +248,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (_symbolTableType.IsVariableDeclared(node.FunctionName.Name))
         {
-            throw new Exception("Function already declared.");
+            throw new Exception("Function already declared. In line:"+node.LineNumber);
         }
         
         var typeList = new List<Type>();
@@ -261,7 +261,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         var returnType = new TypeE(typeList,node.ReturnType.TypeName);
         if (!returnType.IsCorrectTypeE())
         {
-            throw new Exception("Unknown type in function declaration.");
+            throw new Exception("Unknown type in function declaration. In line:"+node.LineNumber);
         }
         
         _symbolTableType.PushScope();
@@ -273,7 +273,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         
         if (returnType != blockType)
         {
-            throw new Exception("Return type mismatch.");
+            throw new Exception("Return type mismatch. In line:"+node.LineNumber);
         }
 
         return null;
@@ -297,7 +297,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (Visit(node.Condition).TypeName != "Bool")
         {
-            throw new Exception("Condition in while block must be of type Bool.");
+            throw new Exception("Condition in while block must be of type Bool. In line:"+node.LineNumber);
         }
         _symbolTableType.PushScope(); // Enter new scope for the while block
         Visit(node.Block); // Visit children
@@ -314,7 +314,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (Visit(node.Condition).TypeName != "Bool")
         {
-            throw new Exception("Condition in for loop must be of type Bool.");
+            throw new Exception("Condition in for loop must be of type Bool. In line:"+node.LineNumber);
         }
         _symbolTableType.PushScope(); // Enter new scope for the for loop
         Visit(node.Block);
