@@ -6,6 +6,7 @@ namespace P4.Interpreter;
 public class SymbolTable
 {
     private readonly Stack<Dictionary<string, object>> _symbolTable = new();
+    private Dictionary<string, Type> _variables = new ();
 
     public SymbolTable()
     {
@@ -57,7 +58,17 @@ public class SymbolTable
         }
         return false;
     }
-
+    public Type GetVariableType(string variableName)
+    {
+        if (_variables.TryGetValue(variableName, out Type variableType))
+        {
+            return variableType;
+        }
+        else
+        {
+            throw new Exception($"Variable '{variableName}' is not declared.");
+        }
+    }
     public void PushScope()
     {
         _symbolTable.Push(new Dictionary<string, object>());
@@ -67,4 +78,5 @@ public class SymbolTable
     {
         _symbolTable.Pop();
     }
+    
 }
