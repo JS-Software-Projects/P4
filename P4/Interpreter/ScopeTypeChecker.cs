@@ -167,7 +167,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             throw new Exception($"Type mismatch for variable '{varName}'.");
         }
         
-        var varType = node.Type;
+        var varType = new Type(node.Type);
         _symbolTableType.Add(varName, varType);
         return null;
     }
