@@ -1,4 +1,4 @@
-﻿using P4.Interpreter.AST;
+﻿using System;using P4.Interpreter.AST;
 
 public class Type : ASTNode {
     public string TypeName { get; set; }
@@ -12,7 +12,28 @@ public class Type : ASTNode {
         return visitor.Visit(this);
     }
 
+    public bool IsCorrectType()
+    {
+        foreach (Types type in Enum.GetValues(typeof(Types)))
+        {
+            if (TypeName == type.ToString())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+   
+
     public override string ToString() {
         return TypeName;
     }
+}
+
+public enum Types
+{
+    Num,
+    String,
+    Bool
 }

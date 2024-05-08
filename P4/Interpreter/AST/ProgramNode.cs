@@ -5,8 +5,9 @@ namespace P4.Interpreter.AST;
 
 public class ProgramNode : ASTNode {
     // This constructor could initialize any collections or default values
+    protected List<ASTNode> Children { get; set; }
     public ProgramNode() {
-        this.Children = new List<ASTNode>();
+        Children = new List<ASTNode>();
     }
 
     // Optionally, you might include methods to add nodes directly

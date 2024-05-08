@@ -11,14 +11,14 @@ public class Statement : ASTNode
 
 public class AssignmentStatement : Statement
 {
-    public string VariableName { get; set; }
+    public IdentifierExpression VariableName { get; set; }
     public Expression Expression { get; set; }
     
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
     }
-    public AssignmentStatement(string variableName, Expression expression)
+    public AssignmentStatement(IdentifierExpression variableName, Expression expression)
     {
         VariableName = variableName;
         Expression = expression;
@@ -33,11 +33,11 @@ public class AssignmentStatement : Statement
 
 public class VariableDeclaration : Statement
 {
-    public string VariableName { get; set; }
-    public string Type { get; set; }
+    public IdentifierExpression VariableName { get; set; }
+    public Type Type { get; set; }
     public Expression Expression { get; set; }
 
-    public VariableDeclaration(string variableName, string type, Expression expression)
+    public VariableDeclaration(IdentifierExpression variableName, Type type, Expression expression)
     {
         VariableName = variableName;
         Type = type;

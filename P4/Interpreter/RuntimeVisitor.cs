@@ -5,7 +5,7 @@ namespace P4.Interpreter;
 
 public class RuntimeVisitor : EduGrammarBaseVisitor<object?>
 {
-    /*
+    /*44
     private readonly Dictionary<string, object> _variables = new();
     private int _lineNumber = 0;
     
