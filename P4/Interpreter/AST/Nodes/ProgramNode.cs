@@ -4,13 +4,8 @@ using System.Text;
 namespace P4.Interpreter.AST;
 
 public class ProgramNode : ASTNode {
-    // This constructor could initialize any collections or default values
-    protected List<ASTNode> Children { get; set; }
-    public ProgramNode() {
-        Children = new List<ASTNode>();
-    }
+    private List<ASTNode> Children { get; set; } = new();
 
-    // Optionally, you might include methods to add nodes directly
     public void AddChild(ASTNode child) {
         Children.Add(child);
     }
