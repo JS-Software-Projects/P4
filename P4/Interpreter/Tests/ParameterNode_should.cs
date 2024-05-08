@@ -9,18 +9,22 @@ public class ParameterNode_should
     public void ParameterNode_InitializesWithCorrectValues()
     {
         // Arrange
-        var node = new ParameterNode("Test", "String");
+        var VarIdExpression = new IdentifierExpression("test");
+        var VarType = new Type("Num");
+        var node = new ParameterNode(VarIdExpression, VarType);
         // Act & Assert 
-        Assert.Equal("String Test", node.ToString());
+        Assert.Equal(VarType.TypeName + " " + VarIdExpression.ToString(), node.ToString());
     }
 
     [Fact]
     public void ParameterNode_InitializesWithEmptyValues()
     {
         // Arrange
-        var node = new ParameterNode("", "");
+        var VarIdExpression = new IdentifierExpression("");
+        var VarType = new Type("");
+        var node = new ParameterNode(VarIdExpression, VarType);
         // Act & Assert
-        Assert.Equal(" ", node.ToString());
+        Assert.Equal(" " + VarIdExpression, node.ToString());
     }
 
     [Fact]

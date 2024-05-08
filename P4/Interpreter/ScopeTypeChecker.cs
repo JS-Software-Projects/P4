@@ -198,11 +198,10 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
         
         var expressionType = Visit(node.Expression);
-        if (_symbolTableType.IsTypeCorrect(varName.Name, expressionType))
+        if (varType.TypeName != expressionType.TypeName)
         {
             throw new Exception($"Type mismatch for variable '{varName}'. In line:"+node.LineNumber);
         }
-        
         
         _symbolTableType.Add(varName.Name, varType);
         return null;
@@ -241,11 +240,11 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(ParameterNode node)
     {
-        if (_symbolTableType.IsVariableDeclared(node.ParameterName))
+        if (_symbolTableType.IsVariableDeclared(node.ParameterName.Name))
         {
             throw new Exception("Parameter already declared. In line:"+node.LineNumber);
         }
-        var parType = new Type(node.Type);
+        var parType = new Type(node.Type.TypeName);
         if (!parType.IsCorrectType())
         {
             throw new Exception("Unknown type in parameter declaration. In line:"+node.LineNumber);
@@ -277,7 +276,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         _symbolTableType.PushScope();
         foreach (var parameter in node.Parameters)
         {
-            _symbolTableType.Add(parameter.ParameterName, Visit(parameter));
+            _symbolTableType.Add(parameter.ParameterName.Name, Visit(parameter));
         }
         var blockType = Visit(node.Statements);
         
