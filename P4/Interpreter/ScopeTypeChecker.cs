@@ -303,6 +303,12 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         _symbolTableType.PushScope(); // Enter new scope for the if block
         Visit(node.Block); // Visit children
         _symbolTableType.PopScope(); // Exit scope
+        if (node.ElseBlock != null)
+        {
+            _symbolTableType.PushScope(); // Enter new scope for the else block
+            Visit(node.ElseBlock); // Visit children
+            _symbolTableType.PopScope(); // Exit scope
+        }
         return null;
     }
 
