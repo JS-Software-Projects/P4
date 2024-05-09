@@ -48,8 +48,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         // Iterate through all parameter contexts in the parameter list
         foreach (var paramCtx in context.parameter()) {
             // Assuming each parameter context has a type and an identifier
-            string typeName = paramCtx.type().GetText(); // GetText might vary based on how you define 'type'
-            string paramName = paramCtx.id().GetText(); // Similarly, for 'identifier'
+            var typeName = VisitType(paramCtx.type()) as Type; // GetText might vary based on how you define 'type'
+            var paramName = VisitId(paramCtx.id()) as IdentifierExpression; // Similarly, for 'identifier'
 
             // Create a new ParameterNode and add it to the list
             var parameterNode = new ParameterNode(paramName, typeName)
