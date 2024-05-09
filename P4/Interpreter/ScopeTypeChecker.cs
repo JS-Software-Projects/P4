@@ -262,7 +262,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         
         var typeList = new List<Type>();
 
-        foreach (var parameter in node.Parameters)
+        foreach (var parameter in node.ParameterList.Parameters)
         {
             typeList.Add(Visit(parameter));
         }
@@ -274,7 +274,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
         
         _symbolTableType.PushScope();
-        foreach (var parameter in node.Parameters)
+        foreach (var parameter in node.ParameterList.Parameters)
         {
             _symbolTableType.Add(parameter.ParameterName.Name, Visit(parameter));
         }
@@ -296,6 +296,10 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(IfBlock node)
     {
+        if (Visit(node.Condition).TypeName != "Bool")
+        {
+            throw new Exception("Condition in while block must be of type Bool. In line:"+node.LineNumber);
+        }
         _symbolTableType.PushScope(); // Enter new scope for the if block
         Visit(node.Block); // Visit children
         _symbolTableType.PopScope(); // Exit scope

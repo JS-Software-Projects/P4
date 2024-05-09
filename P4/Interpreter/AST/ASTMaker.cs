@@ -32,17 +32,12 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitLine(EduGrammarParser.LineContext context)
     {
-        if (context == null || context.Start == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         var token = context.Start;
         _lineNumber = token.Line;
         return base.VisitLine(context);
     }
    
-    public List<ParameterNode> VisitParameterList(EduGrammarParser.ParameterListContext context) {
+    public override ASTNode VisitParameterList(EduGrammarParser.ParameterListContext context) {
         var parameters = new List<ParameterNode>();
 
         // Iterate through all parameter contexts in the parameter list
@@ -59,50 +54,15 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
             parameters.Add(parameterNode);
         }
 
-        return parameters;
+        return  new ParameterList(parameters);
     }
     
     public override ASTNode VisitFunctionDeclaration(EduGrammarParser.FunctionDeclarationContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        var typeContext = context.type();
-        if (typeContext == null)
-        {
-            throw new ArgumentNullException(nameof(typeContext));
-        }
-
-        var idContext = context.id();
-        if (idContext == null)
-        {
-            throw new ArgumentNullException(nameof(idContext));
-        }
-
-        var parameterListContext = context.parameterList();
-        if (parameterListContext == null)
-        {
-            throw new ArgumentNullException(nameof(parameterListContext));
-        }
-
-        var blockContext = context.block();
-        if (blockContext == null)
-        {
-            throw new ArgumentNullException(nameof(blockContext));
-        }
-
-        var type = VisitType(typeContext) as Type;
-        if (type == null)
-        {
-            throw new InvalidCastException("Expected Type");
-        }
-
-        var typeName = type.TypeName;
-        var name = VisitId(idContext) as IdentifierExpression; // Correctly accessing the function's name
-        var parameters = VisitParameterList(parameterListContext);
-        var body = VisitBlock(blockContext) as BlockStatement;
+        var type = VisitType(context.type()) as Type;
+        var name = VisitId(context.id()) as IdentifierExpression; // Correctly accessing the function's name
+        var parameters = VisitParameterList(context.parameterList()) as ParameterList;
+        var body = VisitBlock(context.block()) as BlockStatement;
         return new FunctionDeclaration(type, name, parameters, body)
         {
             LineNumber = _lineNumber
@@ -111,25 +71,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        var typeContext = context.type();
-        if (typeContext == null)
-        {
-            throw new ArgumentNullException(nameof(typeContext));
-        }
-
-        var idContext = context.id();
-        if (idContext == null)
-        {
-            throw new ArgumentNullException(nameof(idContext));
-        }
-
-        var type = VisitType(typeContext) as Type;
-        var variableName = VisitId(idContext) as IdentifierExpression;
+        var type = VisitType(context.type()) as Type;
+        var variableName = VisitId(context.id()) as IdentifierExpression;
 
         var exprContext = context.expr();
         var expression = exprContext != null ? Visit(exprContext) as Expression : null;
