@@ -30,11 +30,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         }
         return programNode;
     }
-    public override ASTNode VisitLine(EduGrammarParser.LineContext context)
+    public override ASTNode VisitStatement(EduGrammarParser.StatementContext context)
     {
         var token = context.Start;
         _lineNumber = token.Line;
-        return base.VisitLine(context);
+        return base.VisitStatement(context);
     }
    
     public override ASTNode VisitParameterList(EduGrammarParser.ParameterListContext context) {
@@ -59,6 +59,8 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     
     public override ASTNode VisitFunctionDeclaration(EduGrammarParser.FunctionDeclarationContext context)
     {
+        var token = context.Start;
+        _lineNumber = token.Line;
         var type = VisitType(context.type()) as Type;
         var name = VisitId(context.id()) as IdentifierExpression; // Correctly accessing the function's name
         var parameters = VisitParameterList(context.parameterList()) as ParameterList;
@@ -256,8 +258,8 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     public override ASTNode VisitBlock(EduGrammarParser.BlockContext context)
     {
         var block = new BlockStatement();
-        foreach (var line in context.line()) {
-            var statementNode = Visit(line);
+        foreach (var statement in context.statement()) {
+            var statementNode = Visit(statement);
             if (statementNode != null) {
                 block.Statements.Add(statementNode as Statement);
             } else {

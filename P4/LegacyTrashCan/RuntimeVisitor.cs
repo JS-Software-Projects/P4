@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace P4.Interpreter;
+/*namespace P4.Interpreter;
 
 public class RuntimeVisitor : EduGrammarBaseVisitor<object?>
 {
@@ -28,6 +28,6 @@ public class RuntimeVisitor : EduGrammarBaseVisitor<object?>
         return _variables[variableName];
     }
     */
-}
+//}
 
 
