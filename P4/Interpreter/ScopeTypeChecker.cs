@@ -24,6 +24,10 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         foreach (var statement in node.Statements)
         {
+            if (statement is ReturnStatement)
+            {
+                return Visit(statement);
+            }
             Visit(statement);
         }
         return null;
@@ -279,8 +283,13 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             _symbolTableType.Add(parameter.ParameterName.Name, Visit(parameter));
         }
         var blockType = Visit(node.Statements);
-        
-        if (returnType != blockType)
+
+        if (returnType.TypeName == "Void" && blockType == null)
+        {
+            return null;
+        }
+
+        if (returnType.TypeName != blockType.TypeName )
         {
             throw new Exception("Return type mismatch. In line:"+node.LineNumber);
         }

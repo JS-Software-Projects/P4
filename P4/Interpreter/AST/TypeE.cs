@@ -18,7 +18,7 @@ public class TypeE : Type
    
     public bool IsCorrectTypeE()
     {
-        foreach (TypesE type in Enum.GetValues(typeof(Types)))
+        foreach (TypesE type in Enum.GetValues(typeof(TypesE)))
         {
             if (TypeName == type.ToString())
             {
