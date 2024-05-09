@@ -52,7 +52,7 @@ public class SymbolTable
         {
             if (scope.ContainsKey(varName))
             {
-                return scope[varName].GetType() == value.GetType();
+                return scope[varName].Equals(value);
             }
         }
         return false;
