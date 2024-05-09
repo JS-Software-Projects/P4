@@ -240,7 +240,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
 
     public Type Visit(ParameterNode node)
     {
-        if (_symbolTableType.IsVariableDeclared(node.ParameterName.Name))
+        if (_symbolTableType.IsVariableDeclaredInScope(node.ParameterName.Name))
         {
             throw new Exception("Parameter already declared. In line:"+node.LineNumber);
         }
