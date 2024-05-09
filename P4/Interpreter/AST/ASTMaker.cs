@@ -30,106 +30,59 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         }
         return programNode;
     }
-    public override ASTNode VisitLine(EduGrammarParser.LineContext context)
+    public override ASTNode VisitStatement(EduGrammarParser.StatementContext context)
     {
-        if (context == null || context.Start == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         var token = context.Start;
         _lineNumber = token.Line;
-        return base.VisitLine(context);
+        return base.VisitStatement(context);
     }
    
-    public List<ParameterNode> VisitParameterList(EduGrammarParser.ParameterListContext context) {
+    public override ASTNode VisitParameterList(EduGrammarParser.ParameterListContext context) {
         var parameters = new List<ParameterNode>();
 
         // Iterate through all parameter contexts in the parameter list
         foreach (var paramCtx in context.parameter()) {
             // Assuming each parameter context has a type and an identifier
-            string typeName = paramCtx.type().GetText(); // GetText might vary based on how you define 'type'
-            string paramName = paramCtx.id().GetText(); // Similarly, for 'identifier'
+            var typeName = VisitType(paramCtx.type()) as Type; // GetText might vary based on how you define 'type'
+            var paramName = VisitId(paramCtx.id()) as IdentifierExpression; // Similarly, for 'identifier'
 
             // Create a new ParameterNode and add it to the list
-            var parameterNode = new ParameterNode(paramName, typeName);
+            var parameterNode = new ParameterNode(paramName, typeName)
+            {
+                LineNumber = _lineNumber
+            };
             parameters.Add(parameterNode);
         }
 
-        return parameters;
+        return  new ParameterList(parameters);
     }
     
     public override ASTNode VisitFunctionDeclaration(EduGrammarParser.FunctionDeclarationContext context)
     {
-        if (context == null)
+        var token = context.Start;
+        _lineNumber = token.Line;
+        var type = VisitType(context.type()) as Type;
+        var name = VisitId(context.id()) as IdentifierExpression; // Correctly accessing the function's name
+        var parameters = VisitParameterList(context.parameterList()) as ParameterList;
+        var body = VisitBlock(context.block()) as BlockStatement;
+        return new FunctionDeclaration(type, name, parameters, body)
         {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        var typeContext = context.type();
-        if (typeContext == null)
-        {
-            throw new ArgumentNullException(nameof(typeContext));
-        }
-
-        var idContext = context.id();
-        if (idContext == null)
-        {
-            throw new ArgumentNullException(nameof(idContext));
-        }
-
-        var parameterListContext = context.parameterList();
-        if (parameterListContext == null)
-        {
-            throw new ArgumentNullException(nameof(parameterListContext));
-        }
-
-        var blockContext = context.block();
-        if (blockContext == null)
-        {
-            throw new ArgumentNullException(nameof(blockContext));
-        }
-
-        var type = VisitType(typeContext) as Type;
-        if (type == null)
-        {
-            throw new InvalidCastException("Expected Type");
-        }
-
-        var typeName = type.TypeName;
-        var name = VisitId(idContext) as IdentifierExpression; // Correctly accessing the function's name
-        var parameters = VisitParameterList(parameterListContext);
-        var body = VisitBlock(blockContext) as BlockStatement;
-
-        return new FunctionDeclaration(type, name, parameters, body);
+            LineNumber = _lineNumber
+        };
     }
 
     public override ASTNode VisitVariableDeclaration(EduGrammarParser.VariableDeclarationContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        var typeContext = context.type();
-        if (typeContext == null)
-        {
-            throw new ArgumentNullException(nameof(typeContext));
-        }
-
-        var idContext = context.id();
-        if (idContext == null)
-        {
-            throw new ArgumentNullException(nameof(idContext));
-        }
-
-        var type = typeContext.GetText();
-        var variableName = idContext.GetText();
+        var type = VisitType(context.type()) as Type;
+        var variableName = VisitId(context.id()) as IdentifierExpression;
 
         var exprContext = context.expr();
         var expression = exprContext != null ? Visit(exprContext) as Expression : null;
 
-        return new VariableDeclaration(variableName, type, expression);
+        return new VariableDeclaration(variableName, type, expression)
+        {
+            LineNumber = _lineNumber
+        };
     }
 
     public override ASTNode VisitConstant(EduGrammarParser.ConstantContext context)
@@ -138,24 +91,37 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         {
             // Parse the number and create a ConstantExpression
             var value = double.Parse(context.Num().GetText());
-            return new ConstantExpression(value);
+            return new ConstantExpression(value)
+            {
+                LineNumber = _lineNumber
+            };
         }
         else if (context.String() != null)
         {
             // Remove the quotes and create a ConstantExpression
             var value = context.String().GetText().Trim('"');
-            return new ConstantExpression(value);
+            return new ConstantExpression(value)
+            {
+                LineNumber = _lineNumber
+            };
         }
         else if (context.Bool() != null)
         {
             // Parse the boolean and create a ConstantExpression
             var value = bool.Parse(context.Bool().GetText());
-            return new ConstantExpression(value);
+            return new ConstantExpression(value)
+            {
+                LineNumber = _lineNumber
+            };
+            
         }
         else // context.Null() != null
         {
             // Create a ConstantExpression with null
-            return new ConstantExpression(null);
+            return new ConstantExpression(null)
+            {
+                LineNumber = _lineNumber
+            };
         }
     }
 
@@ -171,7 +137,10 @@ public override ASTNode VisitBoolExpr(EduGrammarParser.BoolExprContext context)
     {
         var right = VisitComparisonExpr(context.comparisonExpr(i)) as Expression;
         var op = OperatorExtensions.FromString(context.boolOp(i - 1).GetText());
-        left = new BinaryExpression(left, op, right);
+        left = new BinaryExpression(left, op, right)
+        {
+            LineNumber = _lineNumber
+        };
     }
     return left;
 }
@@ -183,7 +152,10 @@ public override ASTNode VisitComparisonExpr(EduGrammarParser.ComparisonExprConte
     {
         var right = VisitAdditionExpr(context.additionExpr(i)) as Expression;
         var op = OperatorExtensions.FromString(context.compareOp(i - 1).GetText());
-        left = new BinaryExpression(left, op, right);
+        left = new BinaryExpression(left, op, right)
+        {
+            LineNumber = _lineNumber
+        };
     }
     return left;
 }
@@ -195,7 +167,10 @@ public override ASTNode VisitAdditionExpr(EduGrammarParser.AdditionExprContext c
     {
         var right = VisitMultiplicationExpr(context.multiplicationExpr(i)) as Expression;
         var op = OperatorExtensions.FromString(context.addSubOp(i - 1).GetText());
-        left = new BinaryExpression(left, op, right);
+        left = new BinaryExpression(left, op, right)
+        {
+            LineNumber = _lineNumber
+        };
     }
     return left;
 }
@@ -207,7 +182,10 @@ public override ASTNode VisitMultiplicationExpr(EduGrammarParser.MultiplicationE
     {
         var right = VisitUnaryExpr(context.unaryExpr(i)) as Expression;
         var op = OperatorExtensions.FromString(context.GetChild(i).GetText());
-        left = new BinaryExpression(left, op, right);
+        left = new BinaryExpression(left, op, right)
+        {
+            LineNumber = _lineNumber
+        };
     }
     return left;
 }
@@ -221,7 +199,10 @@ public override ASTNode VisitUnaryExpr(EduGrammarParser.UnaryExprContext context
     var opContext = context.unOP()[0]; 
     var op = OperatorExtensions.FromString(opContext.GetText());
     var right = VisitTernaryExpr(context.ternaryExpr()) as Expression;
-    return new UnaryExpression(op, right);
+    return new UnaryExpression(op, right)
+    {
+        LineNumber = _lineNumber
+    };
 }
 public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext context)
 {
@@ -230,7 +211,10 @@ public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext con
         var condition = VisitTerm(context.term(0)) as Expression;
         var trueExpr = VisitTerm(context.term(1)) as Expression;
         var falseExpr = VisitTerm(context.term(2)) as Expression;
-        return new TernaryExpression(condition, trueExpr, falseExpr);
+        return new TernaryExpression(condition, trueExpr, falseExpr)
+        {
+            LineNumber = _lineNumber
+        };
     }
     return VisitTerm(context.term(0));
 }
@@ -258,17 +242,24 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
 }
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
-        return new IdentifierExpression(context.GetText());
+        return new IdentifierExpression(context.GetText())
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitType(EduGrammarParser.TypeContext context)
     {
-        return new Type(context.GetText());
+        return new Type(context.GetText())
+        {
+            LineNumber = _lineNumber
+        };
     }
     
-    public override ASTNode VisitBlock(EduGrammarParser.BlockContext context) {
+    public override ASTNode VisitBlock(EduGrammarParser.BlockContext context)
+    {
         var block = new BlockStatement();
-        foreach (var line in context.line()) {
-            var statementNode = Visit(line);
+        foreach (var statement in context.statement()) {
+            var statementNode = Visit(statement);
             if (statementNode != null) {
                 block.Statements.Add(statementNode as Statement);
             } else {
@@ -279,7 +270,10 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     }
     public override ASTNode VisitPrint(EduGrammarParser.PrintContext context)
     {
-        return new PrintStatement((Expression)Visit(context.expr()));
+        return new PrintStatement((Expression)Visit(context.expr()))
+        {
+            LineNumber = _lineNumber
+        };
     }
     
     public override ASTNode VisitAssignment(EduGrammarParser.AssignmentContext context)
@@ -289,8 +283,11 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
         {
             throw new InvalidCastException("Expected IdentifierExpression");
         }
-        var variableName = idNode.Name;
-        return new AssignmentStatement(variableName, (Expression)Visit(context.expr()));
+
+        return new AssignmentStatement(idNode, (Expression)Visit(context.expr()))
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
@@ -298,7 +295,10 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
         var ifBlock = (BlockStatement)Visit(context.block());
         var elseBlock = context.elseBlock() != null ? (BlockStatement)Visit(context.elseBlock()) : null;
 
-        return new IfBlock(condition, ifBlock, elseBlock);
+        return new IfBlock(condition, ifBlock, elseBlock)
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitElseBlock(EduGrammarParser.ElseBlockContext context)
     {
@@ -309,7 +309,10 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
         var condition = (Expression)Visit(context.expr());
         var block = (BlockStatement)Visit(context.block());
 
-        return new WhileBlock(condition, block);
+        return new WhileBlock(condition, block)
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitForLoop(EduGrammarParser.ForLoopContext context)
     {
@@ -318,18 +321,27 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
         var update = (Statement)Visit(context.assignment());
         var block = (BlockStatement)Visit(context.block());
 
-        return new ForLoopStatement(init, condition, update, block);
+        return new ForLoopStatement(init, condition, update, block)
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitReturnStatement(EduGrammarParser.ReturnStatementContext context)
     {
-        return new ReturnStatement((Expression)Visit(context.expr()));
+        return new ReturnStatement((Expression)Visit(context.expr()))
+        {
+            LineNumber = _lineNumber
+        };
     }
     public override ASTNode VisitFunctionCall(EduGrammarParser.FunctionCallContext context)
     {
         var functionName = context.id().GetText();
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) : new List<Expression>();
 
-        return new FunctionCallStatement(functionName, arguments);
+        return new FunctionCallStatement(functionName, arguments)
+        {
+            LineNumber = _lineNumber
+        };
     }
     public new List<Expression> VisitArgumentList(EduGrammarParser.ArgumentListContext context)
     {

@@ -1,7 +1,6 @@
 ﻿grammar EduGrammar;
 
-program: functionDeclaration* line* EOF;
-line: statement;
+program: functionDeclaration* statement* EOF;
 
 statement: 
       variableDeclaration
@@ -37,7 +36,7 @@ elseBlock: 'else' block;
 
 whileBlock: 'while' expr block;
 
-block: '{' line* '}';
+block: '{' statement* '}';
 
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
@@ -46,13 +45,12 @@ expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
 comparisonExpr     : additionExpr ( compareOp additionExpr )* ;
 additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
-multiplicationExpr : unaryExpr ( (multiOp) unaryExpr )* ;
+multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
 term               : id | constant | parenExpr | functionCall;
 
-
-binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
+//binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 
 unOP: '!' | '-';
 parenExpr: '(' expr ')' ;
@@ -61,7 +59,6 @@ constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;
 boolOp: AND | OR;
-ternaryOp: '?' | ':';
 compareOp: '==' | '!=' | '<' | '<=' | '>' | '>=';
 
 ADD: '+';
@@ -71,7 +68,7 @@ DIV: '/';
 AND: '&&';
 OR: '||';
 id : ID;
-ID: [a-zA-Z]+;
+ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 WS: [ \t]+ -> skip; // Skip spaces and tabs but not newlines
 NL: [\r\n]+ -> channel(HIDDEN); // Handle newlines separately
 
