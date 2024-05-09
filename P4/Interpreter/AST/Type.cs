@@ -24,7 +24,12 @@ public class Type : ASTNode {
 
         return false;
     }
-   
+
+    public override bool Equals(object obj)
+    {
+        return obj is Type type &&
+               TypeName == type.TypeName;
+    }
 
     public override string ToString() {
         return TypeName;

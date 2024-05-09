@@ -32,9 +32,11 @@ public class VisitVariableDeclaration_Should
         var VarType = new Type("Num");
         var node = new VariableDeclaration(VarIdExpression, VarType, VarExpression);
         var node2 = new VariableDeclaration(VarIdExpression, VarType, VarExpression);
-
+        _checker.Visit(node);
+        
+        
         // Act
-        var result = _checker.Visit(node);
+        
        
         // Assert
         Assert.Throws<Exception>(() => _checker.Visit(node2));
@@ -52,7 +54,7 @@ public class VisitVariableDeclaration_Should
         var node2 = new VariableDeclaration(VarIdExpression2, VarType, VarExpression);
 
         // Act
-        var result = _checker.Visit(node);
+         _checker.Visit(node);
         var result2 = _checker.Visit(node2);
        
         // Assert

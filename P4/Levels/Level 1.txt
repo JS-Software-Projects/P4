@@ -1,2 +1,2 @@
 Num x = 8;
-Num y = 8 + "no";
+x = "hhej";
