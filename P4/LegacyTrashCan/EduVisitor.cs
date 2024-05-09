@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+/*
 namespace P4.Interpreter;
 
 public class EduVisitor : EduGrammarBaseVisitor<object?>
@@ -85,4 +85,4 @@ public class EduVisitor : EduGrammarBaseVisitor<object?>
         throw new Exception("Invalid subtraction at line: "+_lineNumber);
     }
     */
-}
+//}

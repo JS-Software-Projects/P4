@@ -1,7 +1,6 @@
 ﻿grammar EduGrammar;
 
-program: functionDeclaration* line* EOF;
-line: statement;
+program: functionDeclaration* statement* EOF;
 
 statement: 
       variableDeclaration
@@ -37,7 +36,7 @@ elseBlock: 'else' block;
 
 whileBlock: 'while' expr block;
 
-block: '{' line* '}';
+block: '{' statement* '}';
 
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
@@ -50,7 +49,6 @@ multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
 term               : id | constant | parenExpr | functionCall;
-
 
 //binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 
