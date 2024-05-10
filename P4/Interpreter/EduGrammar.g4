@@ -72,7 +72,7 @@ ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 WS: [ \t]+ -> skip; // Skip spaces and tabs but not newlines
 NL: [\r\n]+ -> channel(HIDDEN); // Handle newlines separately
 
-Num: '-'?[0-9]+('.'[0-9]+)?;
+Num: [0-9]+('.'[0-9]+)?;
 String: '"' ~'"'* '"';
 Bool: 'true' | 'false';
 Null: 'null';
