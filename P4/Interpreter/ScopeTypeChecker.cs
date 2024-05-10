@@ -289,6 +289,11 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             return null;
         }
 
+        if (returnType.TypeName != "void" && blockType == null)
+        {
+            throw new Exception("Function must return a value. In line:"+node.LineNumber);
+        }
+
         if (returnType.TypeName != blockType.TypeName )
         {
             throw new Exception("Return type mismatch. In line:"+node.LineNumber);

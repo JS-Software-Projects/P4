@@ -119,13 +119,40 @@ public class VisitFunctionDeclaration_Should
         
     }
     [Fact]
-    public void Visit_FunctionDeclaration_ReturnMissmatch_Throws()
+    public void Visit_FunctionDeclaration_MissingReturnStatement_Throws()
     {
         // Arrange
 
         var funcName = new IdentifierExpression("testFunc");
-        var funcType = new Type("Num"); // forventer void da block statement ikke returnerer noget
+        var funcType = new Type("Num"); // forventer et return statement med typen Num
         var funcBody = new BlockStatement();
+       
+        var paramName = new IdentifierExpression("testParam");
+        var paramType = new Type("Num");
+        
+        var parameter1 = new ParameterNode(paramName, paramType);
+        var parameterList = new List<ParameterNode>();
+        parameterList.Add(parameter1);
+        
+        var parameters = new ParameterList(parameterList);
+        
+
+        // act
+        var funcDecl = new FunctionDeclaration(funcType, funcName, parameters, funcBody);
+
+        // assert
+        Assert.Throws<Exception>(() => _checker.Visit(funcDecl));
+        
+    }
+    [Fact]
+    public void Visit_FunctionDeclaration_TypeMissmatch_Throws()
+    {
+        // Arrange
+
+        var funcName = new IdentifierExpression("testFunc");
+        var funcType = new Type("Num"); // forventer et Num return statement
+        var funcBody = new BlockStatement();
+        funcBody.Statements.Add(new ReturnStatement(new ConstantExpression("string")));
        
         var paramName = new IdentifierExpression("testParam");
         var paramType = new Type("Num");
