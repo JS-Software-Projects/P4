@@ -43,7 +43,7 @@ public class RunTimeInterpretor : IASTVisitor<object>
     public object Visit(FunctionDeclaration node)
     {
 
-        var function = new FunctionDeclaration(node.FunctionName, node.ParameterList, node.Statements, node.ReturnType);
+        var function = new FunctionDeclaration(node.ReturnType, node.FunctionName, node.ParameterList, node.Statements);
         
         _functionTable.AddFunction(node.FunctionName.Name, function);
 
