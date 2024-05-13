@@ -1,2 +1,11 @@
-Num x = 8;
+function void getx(Num x){
+
+ x = 10;
+}
+
+
+
 x = 8-3;
+y = 10
+
+getx(y)
