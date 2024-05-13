@@ -36,10 +36,10 @@ public class VisitFunctionCallShould
         var funcDecl = new FunctionDeclaration(funcType, funcName, parameters, funcBody);
         
          _checker.Visit(funcDecl);
-        var callfuncName = "testFunc";
+        var callFuncName = "testFunc";
         var argument1 =new ConstantExpression("String");
         var arguments = new List<Expression> { argument1 };
-        var node = new FunctionCallStatement(callfuncName, arguments);
+        var node = new FunctionCallStatement(callFuncName, arguments);
        
         var exception = Assert.Throws<Exception>(() => _checker.Visit(node));
         Assert.Equal("Type mismatch in function call does not match declaration of testFunc", exception.Message);
