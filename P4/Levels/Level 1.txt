@@ -1,11 +1,9 @@
-function void getx(Num x){
-
+function Void getx(Num x){
  x = 10;
 }
 
 
 
-x = 8-3;
-y = 10
+Num x = 8;
 
-getx(y)
+getx(x);

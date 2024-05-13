@@ -286,6 +286,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         _symbolTableType.PopScope();
         if (returnType.TypeName == "Void" && blockType == null)
         {
+            _symbolTableType.Add(node.FunctionName.Name, returnType);
             return null;
         }
 
@@ -298,7 +299,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         {
             throw new Exception("Return type mismatch. In line:"+node.LineNumber);
         }
-
+        _symbolTableType.Add(node.FunctionName.Name, returnType);
         return null;
     }
 

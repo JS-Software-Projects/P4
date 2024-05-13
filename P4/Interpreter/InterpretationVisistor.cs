@@ -1,4 +1,5 @@
-﻿using P4.Interpreter.AST;
+﻿using System;
+using P4.Interpreter.AST;
 
 namespace P4.Interpreter;
 
@@ -63,7 +64,7 @@ public class InterpretationVisistor : IASTVisitor<object>
 
         _environment.PopScope();
         _environment = originalEnvironment; // Restore the original environment
-
+        Console.WriteLine("should return result succes");
         return result;
     }
 
@@ -77,12 +78,12 @@ public class InterpretationVisistor : IASTVisitor<object>
 
     public object Visit(ConstantExpression node)
     {
-        throw new System.NotImplementedException();
+        return node.Value;
     }
 
     public object Visit(IdentifierExpression node)
     {
-        return _environment.Get(node.Name);
+        return node.Name;
     }
 
     public object Visit(ParameterNode node)
