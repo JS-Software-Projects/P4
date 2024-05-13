@@ -1,15 +1,10 @@
 using System;
 using P4.Interpreter.AST;
 
-namespace P4.Interpreter.AST;
-public abstract class Expression : ASTNode // Abstract base class
-{
-    // No properties in the base class, subclasses will define their own value types
-    public override T Accept<T>(IASTVisitor<T> visitor)
-    {
-        return visitor.Visit(this);
-    }
-}
+namespace P4.Interpreter.AST.Nodes;
+
+//Abstract base class for all expressions
+public abstract class Expression : ASTNode { }
 
 public class IdentifierExpression : Expression
 {

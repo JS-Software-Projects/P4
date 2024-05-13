@@ -1,7 +1,7 @@
-﻿using System;
-using P4.Interpreter;
-using P4.Interpreter.AST;
-using Xunit;
+﻿using P4.Interpreter;
+using P4.Interpreter.AST.Nodes;
+
+namespace P4.Tests.Interpreter.ScopeTypeCheckerTests;
 
 public class VisitAssignmentStatement_Should
 {
@@ -11,14 +11,14 @@ public class VisitAssignmentStatement_Should
     public void VisitAssignmentStatement_VariableNotDeclared_ThrowsException()
     {
      
-    // Arrange    
-    var varName = new IdentifierExpression("x");
-    var varExpression = new ConstantExpression(1);
+        // Arrange    
+        var varName = new IdentifierExpression("x");
+        var varExpression = new ConstantExpression(1);
     
-    var node = new AssignmentStatement(varName,varExpression);
+        var node = new AssignmentStatement(varName,varExpression);
 
-    //Act+Assert
-    Assert.Throws<Exception>(() => _checker.Visit(node));
+        //Act+Assert
+        Assert.Throws<Exception>(() => _checker.Visit(node));
     }
     
     [Fact]

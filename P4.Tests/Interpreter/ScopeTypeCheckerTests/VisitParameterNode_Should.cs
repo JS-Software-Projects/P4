@@ -1,6 +1,9 @@
-﻿namespace P4.Interpreter.Tests.ScopeTypeCheckerTests;
+﻿using P4.Interpreter;
+
+namespace P4.Tests.Interpreter.ScopeTypeCheckerTests;
 using P4.Interpreter.AST;
 using Xunit;
+using P4.Interpreter.AST.Nodes;
 
 public class VisitParameterNode_Should
 {

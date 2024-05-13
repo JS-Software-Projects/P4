@@ -1,8 +1,11 @@
-function Void getx(Num x){
+function Void getx(Num x)                   
+{
  x = 10;
 }
 
+function void gety(Num x){
 
+}
 
 Num x = 8;
 

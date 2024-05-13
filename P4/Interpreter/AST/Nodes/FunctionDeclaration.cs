@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using P4.Interpreter;
 
+namespace P4.Interpreter.AST.Nodes;
 public class FunctionDeclaration : ASTNode
 {
     public IdentifierExpression FunctionName { get; set; }

@@ -1,9 +1,11 @@
 ﻿using System;
+using P4.Interpreter;
 using Xunit;
 using P4.Interpreter.AST;
+using P4.Interpreter.AST.Nodes;
 
-namespace P4.Interpreter.Tests.ScopeTypeCheckerTests
-{
+namespace P4.Tests.Interpreter.ScopeTypeCheckerTests;
+
     public class VisitBinaryExpressionShould
     {
         private readonly ScopeTypeChecker _checker = new();
@@ -167,4 +169,3 @@ namespace P4.Interpreter.Tests.ScopeTypeCheckerTests
             Assert.Throws<Exception>(() => _checker.Visit(node));
         }
     }
-}

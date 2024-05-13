@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter;
+using P4.Interpreter.AST.Nodes;
 
 public class ScopeTypeChecker : IASTVisitor<Type>
 {

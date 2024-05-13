@@ -1,8 +1,8 @@
 ﻿using Xunit;
 using P4.Interpreter.AST;
 using System.Text;
-namespace P4.Interpreter.Tests;
-
+namespace P4.Tests.Interpreter;
+using P4.Interpreter.AST.Nodes;
 public class ParameterNode_should
 {
     [Fact]
