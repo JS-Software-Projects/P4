@@ -179,7 +179,7 @@ public class RunTimeInterpretor : IASTVisitor<object>
         return node.Operator switch
         {
             Operator.Not => !(bool)value,
-            Operator.Subtract => -(int)value,
+            Operator.Subtract => -(double)value,
             _ => throw new Exception("Unknown operator")
         };
     }
