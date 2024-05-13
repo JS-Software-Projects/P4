@@ -170,7 +170,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (!_symbolTableType.IsVariableDeclared(node.FunctionName))
         {
-            throw new Exception("Function not declared. In line:"+node.LineNumber);
+            throw new Exception("Function not declared. In line: "+node.LineNumber);
         }
 
         var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
@@ -178,7 +178,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments[i]).TypeName)
             {
-                throw new Exception("Type mismatch in function call does not match declaration of"+node.FunctionName);
+                throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
             }
         }
 
