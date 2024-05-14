@@ -15,9 +15,10 @@ public class VisitFunctionCallShould
         var argument1 =new ConstantExpression("String");
         var arguments = new List<Expression> { argument1 };
         var node = new FunctionCallStatement(callfuncName, arguments);
+        node.LineNumber = 1;
 
         var exception = Assert.Throws<Exception>(() => _checker.Visit(node));
-        Assert.Equal("Function not declared. In line: 0", exception.Message);
+        Assert.Equal("Function not declared. In line: 1", exception.Message);
     }
 
     [Fact]

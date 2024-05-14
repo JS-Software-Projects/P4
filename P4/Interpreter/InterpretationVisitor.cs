@@ -23,21 +23,23 @@ public class InterpretationVisitor : IASTVisitor<object>
 
     public object Visit(BlockStatement node)
     {
-        object result = null;
+        
         foreach (var statement in node.Statements)
         {
-            result = Visit(statement);
+            if (statement is ReturnStatement)
+            {
+                return Visit(statement);
+            } 
+            Visit(statement);
+            
         }
-        return result;
+        return null;
     }
 
     public object Visit(BinaryExpression node)
     {
         var left = Visit(node.Left);
         var right = Visit(node.Right);
-        Console.WriteLine(left);
-        Console.WriteLine(right);
-        Console.WriteLine(node.Operator);
 
         return node.Operator switch
         {
@@ -81,7 +83,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         var value = Visit(node.Expression);
         
-        _environment.Set(node.VariableName.Name, value);
+        _environment.Add(node.VariableName.Name, value);
         return null;
     }
 

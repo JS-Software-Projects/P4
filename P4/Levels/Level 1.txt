@@ -1,4 +1,7 @@
 for(Num i=0; i < 2; i=i+1){
-
-print("hej");
+Num x = 2;
+Num y = 10;
+print(x);
+print(y);
+print(x+y);
 }
