@@ -4,7 +4,7 @@ public class Environment
 {
     private readonly SymbolTable<string, int> _locationTable;
     private readonly SymbolTable<int, object> _valueTable;
-    private int _nextLocation = 0;
+    private int _nextLocation;
 
     public Environment()
     {

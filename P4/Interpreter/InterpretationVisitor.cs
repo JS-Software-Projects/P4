@@ -4,7 +4,7 @@ using P4.Interpreter.AST.Nodes;
 
 namespace P4.Interpreter;
 
-public class InterpretationVisistor : IASTVisitor<object>
+public class InterpretationVisitor : IASTVisitor<object>
 {
     private Environment _environment = new();
     public object Visit(ASTNode node)
@@ -108,8 +108,11 @@ public class InterpretationVisistor : IASTVisitor<object>
     public object Visit(VariableDeclaration node)
     {
         _environment.DeclareVariable(node.VariableName.Name);
-        var value = Visit(node.Expression);
-        _environment.Add(node.VariableName.Name, value);
+        if (node.Expression != null)
+        {
+            var value = Visit(node.Expression);
+            _environment.Add(node.VariableName.Name, value);
+        }
         return null;
     }
 
