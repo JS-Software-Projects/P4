@@ -41,6 +41,17 @@ public class SymbolTable<TKey,TValue>
         return new SymbolTable<TKey, TValue>(reversedStack);
     }
     
+    public bool ContainsKey(TKey key)
+    {
+        foreach (var scope in _symbolTable)
+        {
+            if (scope.ContainsKey(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void Add(TKey name, TValue value)
     {

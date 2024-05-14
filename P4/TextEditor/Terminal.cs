@@ -42,7 +42,7 @@ public class Terminal
     public static void AddMessage(bool err,string line)
     {
         _error = err;
-        if (Lines.Count > 0)
+        if (Lines.Count == 0)
         {
             Lines[0] = line; // Replace the first line if Lines is not empty
         }

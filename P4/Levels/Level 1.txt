@@ -1,1 +1,4 @@
-Num x = 8;
+for(Num i=0; i < 2; i=i+1){
+
+print("hej");
+}

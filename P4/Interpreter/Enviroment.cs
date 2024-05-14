@@ -39,7 +39,14 @@ public class Environment
     public void Add(string name, object value)
     {
         int location = _locationTable.Get(name);
-        _valueTable.Add(location, value);
+        if (_valueTable.ContainsKey(location))
+        {
+            _valueTable.Set(location, value);
+        }
+        else
+        {
+            _valueTable.Add(location, value);
+        }
     }
 
     public object Get(string name)

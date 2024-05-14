@@ -35,6 +35,9 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         var left = Visit(node.Left);
         var right = Visit(node.Right);
+        Console.WriteLine(left);
+        Console.WriteLine(right);
+        Console.WriteLine(node.Operator);
 
         return node.Operator switch
         {
@@ -123,7 +126,7 @@ public class InterpretationVisitor : IASTVisitor<object>
 
     public object Visit(IdentifierExpression node)
     {
-        return node.Name;
+        return _environment.Get(node.Name);
     }
 
     public object Visit(ParameterNode node)
