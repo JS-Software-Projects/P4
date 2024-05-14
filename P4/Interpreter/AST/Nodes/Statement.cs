@@ -1,13 +1,8 @@
 ﻿using System.Collections.Generic;
 using P4.Interpreter.AST;
 
-public class Statement : ASTNode
-{
-    public override T Accept<T>(IASTVisitor<T> visitor)
-    {
-        return visitor.Visit(this);
-    }
-}
+namespace P4.Interpreter.AST.Nodes;
+public abstract class Statement : ASTNode { }
 
 public class AssignmentStatement : Statement
 {

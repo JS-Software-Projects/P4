@@ -3,22 +3,51 @@ using System.Collections.Generic;
 
 namespace P4.Interpreter;
 
-public class SymbolTable
+public class SymbolTable<TKey,TValue>
 {
-    private readonly Stack<Dictionary<string, object>> _symbolTable = new();
+    private Stack<Dictionary<TKey, TValue>> _symbolTable = new();
 
     public SymbolTable()
     {
         // Initialize with a global scope
-        _symbolTable.Push(new Dictionary<string, object>());
+        _symbolTable.Push(new Dictionary<TKey, TValue>());
+    }
+    // Copy constructor
+    private SymbolTable(Stack<Dictionary<TKey, TValue>> symbolTable)
+    {
+        _symbolTable = new Stack<Dictionary<TKey, TValue>>(symbolTable);
     }
 
-    public void Add(string name, object value)
+    // Copy method
+    public SymbolTable<TKey, TValue> Copy()
+    {
+        var tempStack = new Stack<Dictionary<TKey, TValue>>();
+
+        // Deep copy each scope (dictionary)
+        foreach (var scope in _symbolTable)
+        {
+            var newScope = new Dictionary<TKey, TValue>(scope);
+            tempStack.Push(newScope);
+        }
+
+        // Reverse the stack to maintain the original order
+        var reversedStack = new Stack<Dictionary<TKey, TValue>>();
+        while (tempStack.Count > 0)
+        {
+            reversedStack.Push(tempStack.Pop());
+        }
+
+        // Use the copy constructor to create a new SymbolTable with the reversed stack
+        return new SymbolTable<TKey, TValue>(reversedStack);
+    }
+    
+
+    public void Add(TKey name, TValue value)
     {
         _symbolTable.Peek().Add(name, value);
     }
 
-    public object Get(string name)
+    public TValue Get(TKey name)
     {
         foreach (var scope in _symbolTable)
         {
@@ -30,7 +59,7 @@ public class SymbolTable
 
         throw new Exception($"Variable {name} not found");
     }
-    public bool IsVariableDeclared(string varName)
+    public bool IsVariableDeclared(TKey varName)
     {
         foreach (var scope in _symbolTable)
         {
@@ -40,13 +69,13 @@ public class SymbolTable
         return false;
     }
     
-    public bool IsVariableDeclaredInScope(string varName)
+    public bool IsVariableDeclaredInScope(TKey varName)
     {
             if (_symbolTable.Peek().ContainsKey(varName))
                 return true;
             return false;
     }
-    public bool IsTypeCorrect(string varName, object value)
+    public bool IsTypeCorrect(TKey varName, TValue value)
     {
         foreach (var scope in _symbolTable)
         {
@@ -60,7 +89,7 @@ public class SymbolTable
     
     public void PushScope()
     {
-        _symbolTable.Push(new Dictionary<string, object>());
+        _symbolTable.Push(new Dictionary<TKey, TValue>());
     }
 
     public void PopScope()

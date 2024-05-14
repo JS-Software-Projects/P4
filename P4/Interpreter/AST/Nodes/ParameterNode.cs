@@ -1,4 +1,4 @@
-﻿namespace P4.Interpreter.AST;
+﻿namespace P4.Interpreter.AST.Nodes;
 
 public class ParameterNode : ASTNode {
     public IdentifierExpression ParameterName { get; set; }

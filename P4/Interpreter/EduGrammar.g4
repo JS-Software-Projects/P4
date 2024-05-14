@@ -54,7 +54,7 @@ term               : id | constant | parenExpr | functionCall;
 
 unOP: '!' | '-';
 parenExpr: '(' expr ')' ;
-type: 'Num' | 'String' | 'Bool';
+type: 'Num' | 'String' | 'Bool' | 'Void';
 constant: Num | String | Bool | Null;
 addSubOp: ADD | SUB;
 multiOp: MULT | DIV;

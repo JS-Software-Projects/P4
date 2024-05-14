@@ -25,7 +25,6 @@ public class TypeE : Type
                 return true;
             }
         }
-
         return false;
     }
 
