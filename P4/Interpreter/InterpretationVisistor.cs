@@ -23,27 +23,63 @@ public class InterpretationVisistor : IASTVisitor<object>
 
     public object Visit(BlockStatement node)
     {
-        throw new System.NotImplementedException();
+        object result = null;
+        foreach (var statement in node.Statements)
+        {
+            result = Visit(statement);
+        }
+        return result;
     }
 
     public object Visit(BinaryExpression node)
     {
-        throw new System.NotImplementedException();
+        var left = Visit(node.Left);
+        var right = Visit(node.Right);
+
+        return node.Operator switch
+        {
+            Operator.Add when left is double => (double)left + (double)right,
+            Operator.Add when left is string => (string)left + (string)right,
+            Operator.Subtract when left is double => (double)left - (double)right,
+            Operator.Multiply when left is double => (double)left * (double)right,
+            Operator.Divide when left is double && (double)right != 0.0 => (double)left / (double)right,
+            Operator.Divide when left is double && (double)right == 0.0 => throw new Exception("Division by zero"),
+            Operator.LessThan when left is double => (double)left < (double)right,
+            Operator.LessThanOrEqual when left is double => (double)left <= (double)right,
+            Operator.GreaterThan when left is double => (double)left > (double)right,
+            Operator.GreaterThanOrEqual when left is double => (double)left >= (double)right,
+            Operator.Equal => left == right,
+            Operator.NotEqual => left != right,
+            Operator.And => (bool)left && (bool)right,
+            Operator.Or => (bool)left || (bool)right,
+            _ => throw new Exception("Unknown operator")
+        };
     }
 
     public object Visit(UnaryExpression node)
     {
-        throw new System.NotImplementedException();
+        var value = Visit(node.Operand);
+
+        return node.Operator switch
+        {
+            Operator.Not => !(bool)value,
+            Operator.Subtract => -(double)value,
+            _ => throw new Exception("Unknown operator")
+        };
     }
 
     public object Visit(TernaryExpression node)
     {
-        throw new System.NotImplementedException();
+        var value = Visit(node.Condition);
+        return (bool)value ? Visit(node.ThenExpression) : Visit(node.ElseExpression);
     }
 
     public object Visit(AssignmentStatement node)
     {
-        throw new System.NotImplementedException();
+        var value = Visit(node.Expression);
+        
+        _environment.Set(node.VariableName.Name, value);
+        return null;
     }
 
     public object Visit(FunctionCallStatement node)
@@ -89,7 +125,7 @@ public class InterpretationVisistor : IASTVisitor<object>
 
     public object Visit(ParameterNode node)
     {
-        throw new System.NotImplementedException();
+        return Visit(node.ParameterName);
     }
 
     public object Visit(FunctionDeclaration node)
@@ -102,26 +138,57 @@ public class InterpretationVisistor : IASTVisitor<object>
 
     public object Visit(PrintStatement node)
     {
-        throw new System.NotImplementedException();
+        var valueToPrint = Visit(node.Expression);
+        
+        Console.WriteLine(valueToPrint);
+        
+        Terminal.AddMessage(false, valueToPrint.ToString());
+
+        return null;
     }
 
     public object Visit(IfBlock node)
     {
-        throw new System.NotImplementedException();
+        var condition = (bool)Visit(node.Condition);
+
+        if (condition)
+        {
+            return Visit(node.Block);
+        }
+        else if (node.ElseBlock != null)
+        {
+            return Visit(node.ElseBlock);
+        }
+
+        return null;
     }
 
     public object Visit(WhileBlock node)
     {
-        throw new System.NotImplementedException();
+        var condition = (bool)Visit(node.Condition);
+        if(condition)
+        {
+            Visit(node.Block);
+            return Visit(node);
+        }
+        return null;
     }
 
     public object Visit(ReturnStatement node)
     {
-        throw new System.NotImplementedException();
+        var valueToReturn = Visit(node.Expression);
+        
+        return valueToReturn;
     }
 
     public object Visit(ForLoopStatement node)
     {
-        throw new System.NotImplementedException();
+        Visit(node.Initialization);
+        while ((bool)Visit(node.Condition))
+        {
+            Visit(node.Block);
+            Visit(node.Increment);
+        }
+        return null;
     }
 }

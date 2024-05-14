@@ -59,6 +59,19 @@ public class SymbolTable<TKey,TValue>
 
         throw new Exception($"Variable {name} not found");
     }
+    public object Set(TKey name, TValue value)
+    {
+        foreach (var scope in _symbolTable)
+        {
+            if (scope.ContainsKey(name))
+            {
+                scope[name] = value;
+                return null;
+            }
+        }
+
+        throw new Exception($"Variable {name} not found");
+    }
     public bool IsVariableDeclared(TKey varName)
     {
         foreach (var scope in _symbolTable)
