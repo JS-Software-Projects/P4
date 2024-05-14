@@ -12,9 +12,9 @@ public class VisitForLoopStatement_Should
     [Fact]
     public void Visit_ForLoopStatement_ReturnsType_Success()
     {
-        var initialization = new Statement();
+        var initialization = new VariableDeclaration( new IdentifierExpression("testVar"), new Type("Num"), new ConstantExpression(1));
         var condition = new ConstantExpression(true);
-        var increment = new Statement();
+        var increment = new AssignmentStatement( new IdentifierExpression("testVar"), new ConstantExpression(1));
         var block = new BlockStatement();
 
         var node = new ForLoopStatement(initialization, condition, increment, block);
@@ -26,9 +26,10 @@ public class VisitForLoopStatement_Should
     [Fact]
     public void Visit_ForLoopStatement_conditionNum_ThrowsException()
     {
-        var initialization = new Statement();
+        
+        var initialization = new VariableDeclaration(new IdentifierExpression("testVar"), new Type("Num"), new ConstantExpression(1));
         var condition = new ConstantExpression(9);
-        var increment = new Statement();
+        var increment = new AssignmentStatement( new IdentifierExpression("testVar"), new ConstantExpression(1));
         var block = new BlockStatement();
 
         var node = new ForLoopStatement(initialization, condition, increment, block);
