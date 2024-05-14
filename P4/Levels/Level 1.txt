@@ -1,12 +1,7 @@
-function Void getx(Num x)                   
-{
- x = 10;
+for(Num i=0; i < 2; i=i+1){
+Num x = 2;
+Num y = 10;
+print(x);
+print(y);
+print(x+y);
 }
-
-function void gety(Num x){
-
-}
-
-Num x = 8;
-
-getx(x);

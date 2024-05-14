@@ -41,6 +41,17 @@ public class SymbolTable<TKey,TValue>
         return new SymbolTable<TKey, TValue>(reversedStack);
     }
     
+    public bool ContainsKey(TKey key)
+    {
+        foreach (var scope in _symbolTable)
+        {
+            if (scope.ContainsKey(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void Add(TKey name, TValue value)
     {
@@ -54,6 +65,19 @@ public class SymbolTable<TKey,TValue>
             if (scope.ContainsKey(name))
             {
                 return scope[name];
+            }
+        }
+
+        throw new Exception($"Variable {name} not found");
+    }
+    public object Set(TKey name, TValue value)
+    {
+        foreach (var scope in _symbolTable)
+        {
+            if (scope.ContainsKey(name))
+            {
+                scope[name] = value;
+                return null;
             }
         }
 

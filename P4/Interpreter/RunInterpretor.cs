@@ -28,7 +28,8 @@ public class RunInterpretor
             //var scopeChecker = new AstScopeChecker();
             Console.WriteLine(AST.ToString());
             //scopeChecker.Visit(AST);
-            
+            var interpretationVisitor = new InterpretationVisitor();
+            interpretationVisitor.Visit(AST);
             
             /*
             Console.WriteLine("\n");
@@ -61,7 +62,7 @@ public class RunInterpretor
         } catch (Exception e)
         {
             Terminal.SetError(true, e.Message);
-            Console.WriteLine("Error: "+e.Message);
+            Console.WriteLine("Error: "+e.StackTrace);
         }
     }
 }

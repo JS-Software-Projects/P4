@@ -170,7 +170,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         if (!_symbolTableType.IsVariableDeclared(node.FunctionName))
         {
-            throw new Exception("Function not declared. In line:"+node.LineNumber);
+            throw new Exception("Function not declared. In line: "+node.LineNumber);
         }
 
         var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
@@ -178,7 +178,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments[i]).TypeName)
             {
-                throw new Exception("Type mismatch in function call does not match declaration of"+node.FunctionName);
+                throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
             }
         }
 
@@ -340,13 +340,15 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     }
 
     public Type Visit(ForLoopStatement node)
-    {
+    {   
+        Visit(node.Initialization);
         if (Visit(node.Condition).TypeName != "Bool")
         {
             throw new Exception("Condition in for loop must be of type Bool. In line:"+node.LineNumber);
         }
         _symbolTableType.PushScope(); // Enter new scope for the for loop
         Visit(node.Block);
+        Visit(node.Increment);
         _symbolTableType.PopScope(); // Exit scope
         return null;
     }
