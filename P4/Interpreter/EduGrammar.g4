@@ -10,7 +10,8 @@ statement:
     | whileBlock 
     | functionCall
     | returnStatement
-    | forLoop;
+    | forLoop
+    | gameObject;
 
 variableDeclaration:
     type id '=' expr ';' | type id ';';
@@ -40,6 +41,12 @@ block: '{' statement* '}';
 
 returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
+
+gameObject:  gameObjectCall | gameObjectDeclaration;
+gameObjectDeclaration: class id '=' 'new' class '(' argumentList? ')' ';';
+gameObjectCall: id '.' ID '(' argumentList? ')' ';';
+
+class: 'Tower' | 'Hero';
 
 expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
