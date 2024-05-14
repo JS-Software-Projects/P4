@@ -72,4 +72,27 @@ public class InterpreterIntegrationTest
         // Assert
         Assert.Null(interpretationVisitor.Visit(AST));
     }
+    [Fact]
+    public void Testfile3ParsesAndASTisMade_InterpretationVisitorThrowsCorrectErrorMessage()
+    {
+        // Arrange
+        var testFilePath = "../../../TestFiles/TestFile3.txt";
+
+        // Act
+        var input = new AntlrInputStream(File.ReadAllText(testFilePath));
+        var lexer = new EduGrammarLexer(input);
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new EduGrammarParser(tokens);
+        var parseTree = parser.program();
+
+        var astMaker = new ASTMaker();
+        var AST = astMaker.VisitProgram(parseTree);
+
+        var interpretationVisitor = new InterpretationVisitor();
+        
+
+        // Assert
+        var exception = Assert.Throws<Exception>(() => interpretationVisitor.Visit(AST));
+        Assert.Equal("Division by zero", exception.Message);
+    }
 }
