@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using P4.Interpreter.AST;
 
 namespace P4.Interpreter;
+using P4.Interpreter.AST.Nodes;
 
 public class ScopeTypeChecker : IASTVisitor<Type>
 {
-    private readonly SymbolTable _symbolTableType = new();
+    private readonly SymbolTable<string,Type> _symbolTableType = new();
 
     public Type Visit(ASTNode node)
     {
@@ -24,6 +25,10 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     {
         foreach (var statement in node.Statements)
         {
+            if (statement is ReturnStatement)
+            {
+                return Visit(statement);
+            }
             Visit(statement);
         }
         return null;
@@ -278,13 +283,24 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         {
             _symbolTableType.Add(parameter.ParameterName.Name, Visit(parameter));
         }
-        var blockType = Visit(node.Statements);
-        
-        if (returnType != blockType)
+        var blockType = Visit(node.Block);
+        _symbolTableType.PopScope();
+        if (returnType.TypeName == "Void" && blockType == null)
+        {
+            _symbolTableType.Add(node.FunctionName.Name, returnType);
+            return null;
+        }
+
+        if (returnType.TypeName != "void" && blockType == null)
+        {
+            throw new Exception("Function must return a value. In line:"+node.LineNumber);
+        }
+
+        if (returnType.TypeName != blockType.TypeName )
         {
             throw new Exception("Return type mismatch. In line:"+node.LineNumber);
         }
-
+        _symbolTableType.Add(node.FunctionName.Name, returnType);
         return null;
     }
 
