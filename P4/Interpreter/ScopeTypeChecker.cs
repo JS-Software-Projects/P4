@@ -340,13 +340,15 @@ public class ScopeTypeChecker : IASTVisitor<Type>
     }
 
     public Type Visit(ForLoopStatement node)
-    {
+    {   
+        Visit(node.Initialization);
         if (Visit(node.Condition).TypeName != "Bool")
         {
             throw new Exception("Condition in for loop must be of type Bool. In line:"+node.LineNumber);
         }
         _symbolTableType.PushScope(); // Enter new scope for the for loop
         Visit(node.Block);
+        Visit(node.Increment);
         _symbolTableType.PopScope(); // Exit scope
         return null;
     }

@@ -1,12 +1,4 @@
-function Void getx(Num x)                   
-{
- x = 10;
+for(Num i=0; i < 2; i=i+1){
+
+print("hej");
 }
-
-function void gety(Num x){
-
-}
-
-Num x = 8;
-
-getx(x);

@@ -4,7 +4,7 @@ public class Environment
 {
     private readonly SymbolTable<string, int> _locationTable;
     private readonly SymbolTable<int, object> _valueTable;
-    private int _nextLocation = 0;
+    private int _nextLocation;
 
     public Environment()
     {
@@ -39,13 +39,25 @@ public class Environment
     public void Add(string name, object value)
     {
         int location = _locationTable.Get(name);
-        _valueTable.Add(location, value);
+        if (_valueTable.ContainsKey(location))
+        {
+            _valueTable.Set(location, value);
+        }
+        else
+        {
+            _valueTable.Add(location, value);
+        }
     }
 
     public object Get(string name)
     {
         int location = _locationTable.Get(name);
         return _valueTable.Get(location);
+    }
+    public object Set(string name, object value)
+    {
+        int location = _locationTable.Get(name);
+        return _valueTable.Set(location, value);
     }
 
     public void DeclareVariable(string name)

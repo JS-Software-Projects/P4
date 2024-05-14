@@ -39,6 +39,18 @@ public class Terminal
             Lines.Add(line); // Add the line as the first element if Lines is empty
         }
     }   
+    public static void AddMessage(bool err,string line)
+    {
+        _error = err;
+        if (Lines.Count == 0)
+        {
+            Lines[0] = line; // Replace the first line if Lines is not empty
+        }
+        else
+        {
+            Lines.Add(line); // Add the line as the first element if Lines is empty
+        }
+    }   
     
     public void Draw()
     {
