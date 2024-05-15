@@ -11,17 +11,18 @@ public class VisitInterpretationWhileBlock_Should
     [Fact]
     public void WhileBlock_Constructor_SetsPropertiesCorrectly()
     {
-        // Arrange
-        var declaration = new VariableDeclaration(new IdentifierExpression("x"), new Type("Num"), new ConstantExpression(1.0));
-        _visitor.Visit(declaration);
+        // 
         var variable = new IdentifierExpression("x");
+        var declaration = new VariableDeclaration(variable, new Type("Num"), new ConstantExpression(1.0));
+        _visitor.Visit(declaration);
+        
         var add = new BinaryExpression(variable, Operator.Add, new ConstantExpression(1.0));
-        var lessThan = new BinaryExpression(new IdentifierExpression("x"), Operator.LessThan, new ConstantExpression(2.0));
+        var condition = new BinaryExpression(variable, Operator.LessThan, new ConstantExpression(2.0));
         
             
-        var condition = new ConstantExpression(lessThan);
+    
         var block = new BlockStatement();
-        block.Statements.Add(new AssignmentStatement(new IdentifierExpression("x"), add));
+        block.Statements.Add(new AssignmentStatement(variable, add));
         var whileBlock = new WhileBlock(condition, block);
         
         // Act
