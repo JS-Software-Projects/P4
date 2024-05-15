@@ -35,10 +35,10 @@ public class GameManager
             Console.WriteLine("tileX: "+tile._mapX+" tileY: "+tile._mapY);
             Console.WriteLine("count: "+tile._boundry.Count+" Blocked? "+tile.Blocked +" Path "+tile.Path);
 
-        }
-  */   
+        }*/
+  
       
-      if (_map.Tiles[x, y-1]._boundry.Count != 2)
+      if (_map.Tiles[x-1, y-1]._boundry.Count != 2)
         {
             Terminal.SetError(true,"Cannot move hero to Tile : " + x + " " + y + ". Tile is not a path");
             return;

@@ -2,4 +2,4 @@ Tower tower = new Tower(3,3);
 Tower tower2 = new Tower(5,3);
 
 Hero hero = new Hero();
-hero.move(6,5);
+hero.move(8,8);

@@ -26,7 +26,8 @@ public class VisitFunctionCallStatement_Should
         var callFuncName = "testFunc";
         var argument1 =new ConstantExpression(12);
         var arguments = new List<Expression> { argument1 };
-        var node = new FunctionCallStatement(callFuncName, arguments);
+        var argumentList = new ArgumentList(arguments);
+        var node = new FunctionCallStatement(callFuncName, argumentList);
 
         var result = _visitor.Visit(node);
             
