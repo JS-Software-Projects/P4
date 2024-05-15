@@ -149,13 +149,49 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(VariableDeclaration node)
     {
         _environment.DeclareVariable(node.VariableName.Name);
+
+        if (node.Expression == null)
+        {
+            // No expression, set default value based on type
+            switch (node.Type.TypeName)
+            {
+                case "Num":
+                    _environment.Add(node.VariableName.Name, 0.0);
+                    break;
+                case "String":
+                    _environment.Add(node.VariableName.Name, " ");
+                    break;
+                case "Bool":
+                    _environment.Add(node.VariableName.Name, false);
+                    break;
+                default:
+                    // Handle unexpected type (optional)
+                    throw new ArgumentException("Unsupported variable type: " + node.Type.TypeName);
+            }
+        }
+        else
+        {
+            var value = Visit(node.Expression);
+            _environment.Add(node.VariableName.Name, value);
+        }
+
+        return null;
+    }
+    
+    
+    /*
+    public object Visit(VariableDeclaration node)
+    {
+        _environment.DeclareVariable(node.VariableName.Name);
         if (node.Expression != null)
         {
             var value = Visit(node.Expression);
             _environment.Add(node.VariableName.Name, value);
         }
+        
         return null;
     }
+    */
 
     public object Visit(ConstantExpression node)
     {
