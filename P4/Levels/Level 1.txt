@@ -1,7 +1,5 @@
-for(Num i=0; i < 2; i=i+1){
-Num x = 2;
-Num y = 10;
-print(x);
-print(y);
-print(x+y);
-}
+Tower tower = new Tower(3,3);
+Tower tower2 = new Tower(5,3);
+
+Hero hero = new Hero();
+hero.move(8,8);

@@ -38,6 +38,12 @@ public class VariableDeclaration : Statement
         Type = type;
         Expression = expression;
     }
+    
+    public VariableDeclaration(IdentifierExpression variableName, Type type)
+    {
+        VariableName = variableName;
+        Type = type;
+    }
 
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
@@ -138,13 +144,13 @@ public class BlockStatement : Statement
 public class FunctionCallStatement : Statement
 {
     public string FunctionName { get; set; }
-    public List<Expression> Arguments { get; set; } 
+    public ArgumentList Arguments { get; set; } 
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
     }
 
-    public FunctionCallStatement(string functionName, List<Expression> arguments)
+    public FunctionCallStatement(string functionName, ArgumentList arguments)
     {
         FunctionName = functionName;
         Arguments = arguments;
@@ -153,6 +159,24 @@ public class FunctionCallStatement : Statement
     public override string ToString()
     {
         return $"FunctionCall: {FunctionName}({string.Join(", ", Arguments)})";
+    }
+}
+
+public class GameObjectCall : Statement
+{
+    public IdentifierExpression ObjectName { get; set; }
+    public string MethodName { get; set; }
+    public ArgumentList ArgumentList { get; set; }
+    
+    public GameObjectCall(IdentifierExpression objectName, string methodName, ArgumentList argumentList)
+    {
+        ObjectName = objectName;
+        MethodName = methodName;
+        ArgumentList = argumentList;
+    }
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
     }
 }
 

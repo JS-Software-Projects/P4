@@ -62,6 +62,7 @@ public class RunInterpretor
         } catch (Exception e)
         {
             Terminal.SetError(true, e.Message);
+            Console.WriteLine("Error:"+e.Message);
             Console.WriteLine("Error: "+e.StackTrace);
         }
     }

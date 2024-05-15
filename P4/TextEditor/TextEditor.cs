@@ -72,7 +72,7 @@ public class TextEditor
     {
         RequestReset();
         // Actions to take when the button is clicked
-        InputManager.SetExecute(true,8,8);
+        //InputManager.SetExecute(true,8,8);
         // Concatenate all lines into a single string
         var allText = string.Join("\n", lines);
 

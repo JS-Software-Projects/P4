@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using p4.Actors;
+using P4.Actors.Towers;
 using P4.Interpreter.AST;
 using P4.Interpreter.AST.Nodes;
+using P4.managers;
+using P4.Managers;
 
 namespace P4.Interpreter;
 
@@ -41,36 +46,73 @@ public class InterpretationVisitor : IASTVisitor<object>
         var left = Visit(node.Left);
         var right = Visit(node.Right);
 
-        return node.Operator switch
+        object result;
+        switch (node.Operator)
         {
-            Operator.Add when left is double => (double)left + (double)right,
-            Operator.Add when left is string => (string)left + (string)right,
-            Operator.Subtract when left is double => (double)left - (double)right,
-            Operator.Multiply when left is double => (double)left * (double)right,
-            Operator.Divide when left is double && (double)right != 0.0 => (double)left / (double)right,
-            Operator.Divide when left is double && (double)right == 0.0 => throw new Exception("Division by zero"),
-            Operator.LessThan when left is double => (double)left < (double)right,
-            Operator.LessThanOrEqual when left is double => (double)left <= (double)right,
-            Operator.GreaterThan when left is double => (double)left > (double)right,
-            Operator.GreaterThanOrEqual when left is double => (double)left >= (double)right,
-            Operator.Equal => left == right,
-            Operator.NotEqual => left != right,
-            Operator.And => (bool)left && (bool)right,
-            Operator.Or => (bool)left || (bool)right,
-            _ => throw new Exception("Unknown operator")
-        };
+            case Operator.Add when left is double:
+                result = (double)left + (double)right;
+                break;
+            case Operator.Add when left is string:
+                result = (string)left + (string)right;
+                break;
+            case Operator.Subtract when left is double:
+                result = (double)left - (double)right;
+                break;
+            case Operator.Multiply when left is double:
+                result = (double)left * (double)right;
+                break;
+            case Operator.Divide when left is double && (double)right != 0.0:
+                result = (double)left / (double)right;
+                break;
+            case Operator.Divide when left is double && (double)right == 0.0:
+                throw new Exception("Division by zero");
+            case Operator.LessThan when left is double:
+                result = (double)left < (double)right;
+                break;
+            case Operator.LessThanOrEqual when left is double:
+                result = (double)left <= (double)right;
+                break;
+            case Operator.GreaterThan when left is double:
+                result = (double)left > (double)right;
+                break;
+            case Operator.GreaterThanOrEqual when left is double:
+                result = (double)left >= (double)right;
+                break;
+            case Operator.Equal:
+                result = left.ToString() == right.ToString();
+                break;
+            case Operator.NotEqual:
+                result = left.ToString() != right.ToString();
+                break;
+            case Operator.And:
+                result = (bool)left && (bool)right;
+                break;
+            case Operator.Or:
+                result = (bool)left || (bool)right;
+                break;
+            default:
+                throw new Exception("Unknown operator");
+        }
+        return result;
     }
 
     public object Visit(UnaryExpression node)
     {
         var value = Visit(node.Operand);
 
-        return node.Operator switch
+        object result;
+        switch (node.Operator)
         {
-            Operator.Not => !(bool)value,
-            Operator.Subtract => -(double)value,
-            _ => throw new Exception("Unknown operator")
-        };
+            case Operator.Not:
+                result = !(bool)value;
+                break;
+            case Operator.Subtract:
+                result = -(double)value;
+                break;
+            default:
+                throw new Exception("Unknown operator");
+        }
+        return result;
     }
 
     public object Visit(TernaryExpression node)
@@ -94,10 +136,10 @@ public class InterpretationVisitor : IASTVisitor<object>
         _environment = function.GetEnvironment().Copy(); // Switch to the function's environment
         _environment.PushScope();
 
-        for (int i = 0; i < node.Arguments.Count; i++)
+        for (int i = 0; i < node.Arguments.Arguments.Count; i++)
         {
             var param = function.ParameterList.Parameters[i];
-            var argValue = Visit(node.Arguments[i]);
+            var argValue = Visit(node.Arguments.Arguments[i]);
             _environment.DeclareVariable(param.ParameterName.Name);
             _environment.Add(param.ParameterName.Name, argValue);
         }
@@ -106,10 +148,88 @@ public class InterpretationVisitor : IASTVisitor<object>
 
         _environment.PopScope();
         _environment = originalEnvironment; // Restore the original environment
-        Console.WriteLine("should return result succes");
         return result;
     }
 
+    public object Visit(GameObjectDeclaration node)
+    {
+
+        if (node.ClassType.ClassName == "Tower")
+        {
+            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+            
+           BasicTower tower =  new(Globals.Content.Load<Texture2D>("Cannon"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
+           GameManager.AddTower(tower);
+           Terminal.AddMessage(false,"Tower added");
+           node.SetGameObject(tower);
+           _environment.DeclareVariable(node.ObjectName.Name);
+           _environment.Add(node.ObjectName.Name,node);
+        } else if (node.ClassType.ClassName == "Hero")
+        {
+            /*
+            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+            Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
+            GameManager.AddHero(hero);
+            Terminal.AddMessage(false,"Hero added");
+            */
+            _environment.DeclareVariable(node.ObjectName.Name);
+            _environment.Add(node.ObjectName.Name,node);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        return null;
+    }
+
+    public object Visit(GameObjectCall node)
+    {
+        var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
+        if (Gameobject.ClassType.ClassName == "Hero" && node.MethodName == "move"){
+            var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
+            var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
+        GameManager.HeroMove(arg1,arg2);
+        }
+        return null;
+    }
+
+    public object Visit(VariableDeclaration node)
+    {
+        _environment.DeclareVariable(node.VariableName.Name);
+
+        if (node.Expression == null)
+        {
+            // No expression, set default value based on type
+            switch (node.Type.TypeName)
+            {
+                case "Num":
+                    _environment.Add(node.VariableName.Name, 0.0);
+                    break;
+                case "String":
+                    _environment.Add(node.VariableName.Name, " ");
+                    break;
+                case "Bool":
+                    _environment.Add(node.VariableName.Name, false);
+                    break;
+                default:
+                    // Handle unexpected type (optional)
+                    throw new ArgumentException("Unsupported variable type: " + node.Type.TypeName);
+            }
+        }
+        else
+        {
+            var value = Visit(node.Expression);
+            _environment.Add(node.VariableName.Name, value);
+        }
+
+        return null;
+    }
+    
+    
+    /*
     public object Visit(VariableDeclaration node)
     {
         _environment.DeclareVariable(node.VariableName.Name);
@@ -118,8 +238,10 @@ public class InterpretationVisitor : IASTVisitor<object>
             var value = Visit(node.Expression);
             _environment.Add(node.VariableName.Name, value);
         }
+        
         return null;
     }
+    */
 
     public object Visit(ConstantExpression node)
     {
@@ -130,6 +252,8 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         return _environment.Get(node.Name);
     }
+    
+    
 
     public object Visit(ParameterNode node)
     {
