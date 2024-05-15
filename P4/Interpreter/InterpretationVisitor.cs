@@ -74,10 +74,10 @@ public class InterpretationVisitor : IASTVisitor<object>
                 result = (double)left >= (double)right;
                 break;
             case Operator.Equal:
-                result = left == right;
+                result = left.ToString() == right.ToString();
                 break;
             case Operator.NotEqual:
-                result = left != right;
+                result = left.ToString() != right.ToString();
                 break;
             case Operator.And:
                 result = (bool)left && (bool)right;
@@ -143,7 +143,6 @@ public class InterpretationVisitor : IASTVisitor<object>
 
         _environment.PopScope();
         _environment = originalEnvironment; // Restore the original environment
-        Console.WriteLine("should return result succes");
         return result;
     }
 
