@@ -1,10 +1,11 @@
 ﻿using System;
+using P4.Interpreter;
 using P4.Interpreter.AST;
 using P4.Interpreter.AST.Nodes;
 using Xunit;
 
 
-namespace P4.Interpreter.Tests.ScopeTypeCheckerTests;
+namespace P4.Tests.Interpreter.ScopeTypeCheckerTests;
 
 public class VisitIfBlock_Should
 {
