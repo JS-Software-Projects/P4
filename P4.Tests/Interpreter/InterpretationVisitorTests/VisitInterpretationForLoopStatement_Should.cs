@@ -11,9 +11,11 @@ public class VisitInterpretationForLoopStatement_Should
     public void ForLoopStatement_Constructor_SetsPropertiesCorrectly()
     {
         // Arrange
-        var initialization = new AssignmentStatement(new IdentifierExpression("i"), new ConstantExpression(0));
-        var condition = new BinaryExpression(new IdentifierExpression("i"), new ConstantExpression(10), BinaryOperator.LessThan);
-        var increment = new AssignmentStatement(new IdentifierExpression("i"), new BinaryExpression(new IdentifierExpression("i"), new ConstantExpression(1), BinaryOperator.Add));
+        var declaration = new VariableDeclaration(new IdentifierExpression("i"), new Type("Num"), new ConstantExpression(0.0));
+        _visitor.Visit(declaration);
+        var initialization = new AssignmentStatement(new IdentifierExpression("i"), new ConstantExpression(0.0));
+        var condition = new BinaryExpression(new IdentifierExpression("i"), Operator.LessThan, new ConstantExpression(10.0));
+        var increment = new AssignmentStatement(new IdentifierExpression("i"), new BinaryExpression(new IdentifierExpression("i"),Operator.Add, new ConstantExpression(1.0)));
         var block = new BlockStatement();
 
         // Act
