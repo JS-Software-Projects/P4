@@ -174,9 +174,9 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
 
         var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
-        for (int i = 0; i < node.Arguments.Count; i++)
+        for (int i = 0; i < node.Arguments.Arguments.Count; i++)
         {
-            if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments[i]).TypeName)
+            if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
             {
                 throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
             }
@@ -185,7 +185,72 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         return null;
     }
 
-    
+    public Type Visit(GameObjectDeclaration node)
+    {
+        if (_symbolTableType.IsVariableDeclared(node.ObjectName.Name))
+        {
+            throw new Exception("gameObject already declared. In line:"+node.LineNumber);
+        }
+        
+        if (!node.ClassType.isCorrectType())
+        {
+            throw new Exception("Unknown gameClass in GameObject declaration. In line:"+node.LineNumber);
+        }
+        var typeList = new List<Type>();
+
+        List<Type> TowerTypes = new List<Type>();
+        TowerTypes.Add(new Type("Num"));
+        TowerTypes.Add(new Type("Num"));
+        
+        if (node.ClassType.ClassName == "Tower")
+        {
+            if (node.ArgumentLists.Arguments.Count != TowerTypes.Count)
+            {
+                throw new Exception("Incorrect number of arguments in Tower GameObject declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
+            }
+            for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
+            {
+                if (node.ArgumentLists.Arguments[i] != null){
+                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != TowerTypes[i].TypeName)
+                    {
+                        throw new Exception("Type mismatch in Tower GameObject declaration. In line:"+node.LineNumber);
+                    }
+                }
+            }
+            
+        }
+
+     
+        var type = new Type(node.ClassType.ClassName);
+        
+        
+        _symbolTableType.Add(node.ObjectName.Name, type);
+        return null;
+    }
+
+    public Type Visit(GameObjectCall node)
+    {
+        if (!_symbolTableType.IsVariableDeclared(node.ObjectName.Name))
+        {
+            throw new Exception("GameObject not declared. In line:"+node.LineNumber);
+        }
+        var objType = _symbolTableType.Get(node.ObjectName.Name);
+        if (node.MethodName == "move" && objType.TypeName == "Hero")
+        {
+            if (node.ArgumentList.Arguments.Count != 2)
+            {
+                throw new Exception("Incorrect number of arguments in Hero GameObject call. Needs one argument (Num) In line:"+node.LineNumber);
+            }
+            if (Visit(node.ArgumentList.Arguments[0]).TypeName != "Num" && Visit(node.ArgumentList.Arguments[1]).TypeName != "Num")
+            {
+                throw new Exception("Type mismatch in Hero GameObject call. In line:"+node.LineNumber);
+            }
+        }
+
+        return null;
+    }
+
+
     public Type Visit(VariableDeclaration node)
     {
         // Scope rule 

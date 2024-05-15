@@ -30,7 +30,12 @@ public class Terminal
     public static void SetError(bool err,string line)
     {
         _error = err;
-        if (Lines.Count > 0)
+        if (Lines.Count > 1)
+        {
+            resetLines();
+        }
+        
+        if (Lines.Count == 1)
         {
             Lines[0] = line; // Replace the first line if Lines is not empty
         }
@@ -42,7 +47,8 @@ public class Terminal
     public static void AddMessage(bool err,string line)
     {
         _error = err;
-        if (Lines.Count == 0)
+    
+        if (Lines.Count == 1)
         {
             Lines[0] = line; // Replace the first line if Lines is not empty
         }
@@ -50,7 +56,13 @@ public class Terminal
         {
             Lines.Add(line); // Add the line as the first element if Lines is empty
         }
-    }   
+    }
+
+    public static void resetLines()
+    {
+        Lines.Clear();
+        Lines.Add("");
+    }
     
     public void Draw()
     {
@@ -63,7 +75,9 @@ public class Terminal
 
         for (var i = 0; i < Lines.Count; i++)
         {
-            var lineNumber = i + 1 + "."; // Line numbers start at 1
+           
+                 var lineNumber = i +1 + "."; // Line numbers start at 1
+
             var line = Lines[i];
             _spriteBatch.DrawString(_spriteFont, line, new Vector2(40, _textAreaY + i * _spriteFont.LineSpacing + 10),
                 _error ? Color.Firebrick : Color.Black); // Draw line number
