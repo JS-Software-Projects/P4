@@ -6,9 +6,9 @@ public class Tile : Sprite
 {
     public bool Blocked { get; set; }
     public bool Path { get; set; }
-    private readonly int _mapX;
-    private readonly int _mapY;
-    private List<string> _boundry = new();
+    public readonly int _mapX;
+    public readonly int _mapY;
+    public List<string> _boundry = new();
 
     public Tile(Texture2D texture, Vector2 position, int mapX, int mapY) : base(texture, position)
     {
@@ -65,6 +65,7 @@ public class Tile : Sprite
                     break;
             }
         }
+        
     }
 
 }

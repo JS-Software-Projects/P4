@@ -153,7 +153,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (Gameobject.ClassType.ClassName == "Hero" && node.MethodName == "move"){
             var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-        InputManager.SetExecute(true,arg1,arg2);
+        GameManager.HeroMove(arg1,arg2);
         }
         return null;
     }
