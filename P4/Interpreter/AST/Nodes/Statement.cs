@@ -38,6 +38,12 @@ public class VariableDeclaration : Statement
         Type = type;
         Expression = expression;
     }
+    
+    public VariableDeclaration(IdentifierExpression variableName, Type type)
+    {
+        VariableName = variableName;
+        Type = type;
+    }
 
     public override T Accept<T>(IASTVisitor<T> visitor)
     {

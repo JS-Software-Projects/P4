@@ -54,15 +54,7 @@ public class Environment
         int location = _locationTable.Get(name);
         return _valueTable.Get(location);
     }
-    
-    //Ikke brugt
-   /* public object Set(string name, object value)
-    {
-        int location = _locationTable.Get(name);
-        return _valueTable.Set(location, value);
-    }
-    */
-
+  
     public void DeclareVariable(string name)
     {
         int location = _nextLocation++;
