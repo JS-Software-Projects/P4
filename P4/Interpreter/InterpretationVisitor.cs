@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using p4.Actors;
+using P4.Actors.Towers;
 using P4.Interpreter.AST;
 using P4.Interpreter.AST.Nodes;
+using P4.managers;
+using P4.Managers;
 
 namespace P4.Interpreter;
 
@@ -131,10 +136,10 @@ public class InterpretationVisitor : IASTVisitor<object>
         _environment = function.GetEnvironment().Copy(); // Switch to the function's environment
         _environment.PushScope();
 
-        for (int i = 0; i < node.Arguments.Count; i++)
+        for (int i = 0; i < node.Arguments.Arguments.Count; i++)
         {
             var param = function.ParameterList.Parameters[i];
-            var argValue = Visit(node.Arguments[i]);
+            var argValue = Visit(node.Arguments.Arguments[i]);
             _environment.DeclareVariable(param.ParameterName.Name);
             _environment.Add(param.ParameterName.Name, argValue);
         }
@@ -144,6 +149,51 @@ public class InterpretationVisitor : IASTVisitor<object>
         _environment.PopScope();
         _environment = originalEnvironment; // Restore the original environment
         return result;
+    }
+
+    public object Visit(GameObjectDeclaration node)
+    {
+
+        if (node.ClassType.ClassName == "Tower")
+        {
+            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+            
+           BasicTower tower =  new(Globals.Content.Load<Texture2D>("Cannon"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
+           GameManager.AddTower(tower);
+           Terminal.AddMessage(false,"Tower added");
+           node.SetGameObject(tower);
+           _environment.DeclareVariable(node.ObjectName.Name);
+           _environment.Add(node.ObjectName.Name,node);
+        } else if (node.ClassType.ClassName == "Hero")
+        {
+            /*
+            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+            Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
+            GameManager.AddHero(hero);
+            Terminal.AddMessage(false,"Hero added");
+            */
+            _environment.DeclareVariable(node.ObjectName.Name);
+            _environment.Add(node.ObjectName.Name,node);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        return null;
+    }
+
+    public object Visit(GameObjectCall node)
+    {
+        var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
+        if (Gameobject.ClassType.ClassName == "Hero" && node.MethodName == "move"){
+            var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
+            var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
+        GameManager.HeroMove(arg1,arg2);
+        }
+        return null;
     }
 
     public object Visit(VariableDeclaration node)

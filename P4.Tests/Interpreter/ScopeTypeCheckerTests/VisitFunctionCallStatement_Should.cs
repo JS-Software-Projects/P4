@@ -14,8 +14,10 @@ public class VisitFunctionCallShould
         var callfuncName = "testFunc";
         var argument1 =new ConstantExpression("String");
         var arguments = new List<Expression> { argument1 };
-        var node = new FunctionCallStatement(callfuncName, arguments);
+        var argumentList = new ArgumentList(arguments);
+        var node = new FunctionCallStatement(callfuncName, argumentList);
         node.LineNumber = 1;
+
 
         var exception = Assert.Throws<Exception>(() => _checker.Visit(node));
         Assert.Equal("Function not declared. In line: 1", exception.Message);
@@ -40,7 +42,8 @@ public class VisitFunctionCallShould
         var callFuncName = "testFunc";
         var argument1 =new ConstantExpression("String");
         var arguments = new List<Expression> { argument1 };
-        var node = new FunctionCallStatement(callFuncName, arguments);
+        var argumentList = new ArgumentList(arguments);
+        var node = new FunctionCallStatement(callFuncName, argumentList);
        
         var exception = Assert.Throws<Exception>(() => _checker.Visit(node));
         Assert.Equal("Type mismatch in function call does not match declaration of testFunc", exception.Message);
@@ -64,7 +67,8 @@ public class VisitFunctionCallShould
         var callfuncName = "testFunc";
         var argument1 =new ConstantExpression(1);
         var arguments = new List<Expression> { argument1 };
-        var node = new FunctionCallStatement(callfuncName, arguments);
+        var argumentList = new ArgumentList(arguments);
+        var node = new FunctionCallStatement(callfuncName, argumentList);
        
         var result = _checker.Visit(node);
         

@@ -1,6 +1,6 @@
 ﻿namespace P4.Actors.Towers;
 
-internal class BasicTower : Tower
+public class BasicTower : Tower
 {
     public BasicTower(Texture2D texture, Vector2 position, Color color) : base(texture, position, color)
     {

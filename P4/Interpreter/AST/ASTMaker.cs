@@ -36,6 +36,34 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         _lineNumber = token.Line;
         return base.VisitStatement(context);
     }
+    public override ASTNode VisitGameObjectDeclaration(EduGrammarParser.GameObjectDeclarationContext context)
+    {
+        var classType = (TypeClass)VisitGameType(context.gameType()[0]);
+        var objectName = VisitId(context.id()) as IdentifierExpression;
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
+
+        return new GameObjectDeclaration(classType, objectName, arguments)
+        {
+            LineNumber = _lineNumber
+        };
+    }
+    public override ASTNode VisitGameObjectMethodCall(EduGrammarParser.GameObjectMethodCallContext context)
+    {
+        var objectName = VisitId(context.id()) as IdentifierExpression;
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
+        var methodName = context.ID().GetText();
+        return new GameObjectCall(objectName,methodName, arguments)
+        {
+            LineNumber = _lineNumber
+        };
+    }
+    public override ASTNode VisitGameType(EduGrammarParser.GameTypeContext context)
+    {
+        return new TypeClass(context.GetText())
+        {
+            LineNumber = _lineNumber
+        };
+    }
    
     public override ASTNode VisitParameterList(EduGrammarParser.ParameterListContext context) {
         var parameters = new List<ParameterNode>();
@@ -336,14 +364,14 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     public override ASTNode VisitFunctionCall(EduGrammarParser.FunctionCallContext context)
     {
         var functionName = context.id().GetText();
-        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) : new List<Expression>();
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
 
         return new FunctionCallStatement(functionName, arguments)
         {
             LineNumber = _lineNumber
         };
     }
-    public new List<Expression> VisitArgumentList(EduGrammarParser.ArgumentListContext context)
+    public override ASTNode VisitArgumentList(EduGrammarParser.ArgumentListContext context)
     {
         var arguments = new List<Expression>();
 
@@ -357,7 +385,8 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
             arguments.Add(argument);
         }
 
-        return arguments;
+        var argumentNode = new ArgumentList(arguments);
+        return argumentNode;
     }
     // Continue with other methods for other types of nodes
 }
