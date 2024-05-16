@@ -25,8 +25,7 @@ public class Environment_Copy_Should
         object testvalue = 42;
         
         // Act
-        testenvironment.DeclareVariable(testvariablename);
-        testenvironment.Add(testvariablename,testvalue);
+        testenvironment.DeclareVariable(testvariablename,testvalue);
         var copiedenvironment = testenvironment.Copy();
         var copiedvalue = copiedenvironment.Get(testvariablename);
         
@@ -43,11 +42,10 @@ public class Environment_Copy_Should
         object testvalue = 42;
         
         // Act
-        testenvironment.DeclareVariable(testvariablename);
-        testenvironment.Add(testvariablename,testvalue);
+        testenvironment.DeclareVariable(testvariablename,testvalue);
         
         var copiedenvironment = testenvironment.Copy();
-        copiedenvironment.DeclareVariable(testvariablename2);
+        copiedenvironment.DeclareVariable(testvariablename2,null);
         var copiedvalue = copiedenvironment.Get(testvariablename2);
         
         // Assert
@@ -63,11 +61,10 @@ public class Environment_Copy_Should
         object testvalue = 42;
         
         // Act
-        testenvironment.DeclareVariable(testvariablename);
-        testenvironment.Add(testvariablename,testvalue);
+        testenvironment.DeclareVariable(testvariablename,testvalue);
         
         var copiedenvironment = testenvironment.Copy();
-        copiedenvironment.DeclareVariable(testvariablename2);
+        copiedenvironment.DeclareVariable(testvariablename2, null);
         
         // Assert
         Assert.Throws<Exception>(() => testenvironment.Get(testvariablename2));

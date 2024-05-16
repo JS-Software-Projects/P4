@@ -15,7 +15,7 @@ public class Environment_VariableDeclare_Should
         
 
         // Act
-        testenvironment.DeclareVariable(teststring);
+        testenvironment.DeclareVariable(teststring,null);
         object result = testenvironment.Get(teststring);
 
         // Assert
@@ -30,8 +30,7 @@ public class Environment_VariableDeclare_Should
         object testvalue = "testvalue";
         
         // Act
-        testenvironment.DeclareVariable(teststring);
-        testenvironment.Add(teststring, testvalue);
+        testenvironment.DeclareVariable(teststring, testvalue);
         object achievedvalue = testenvironment.Get(teststring);
         
         // Assert

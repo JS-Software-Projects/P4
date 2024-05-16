@@ -14,25 +14,24 @@ public class EnvironmentAdd_should
         // Arrange
         var name = "testVar";
         var value = 1;
-        _environment.DeclareVariable(name);
         
         
         // Act
-        _environment.Add(name, value);
+        _environment.DeclareVariable(name, value);
     
         // Assert
         Assert.Equal(value, _environment.Get(name));
     }
    
     [Fact]
-    public void Add_AddsValueToEnvironment_ThrowsException()
+    public void Set_UpdatesValueToEnvironment_ThrowsException()
     {
         // Arrange
         var name = "testVar";
         var value = 1;
         
         // Act + Assert
-        Assert.Throws<Exception>(() => _environment.Add(name, value));
+        Assert.Throws<Exception>(() => _environment.Set(name, value));
     }
    
 }
