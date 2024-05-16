@@ -35,30 +35,20 @@ public class Environment
     {
         return new Environment(_locationTable.Copy(), _valueTable.Copy(), _nextLocation);
     }   
-
-    public void Add(string name, object value)
+    public void DeclareVariable(string name, object value)
     {
-        int location = _locationTable.Get(name);
-        if (_valueTable.ContainsKey(location))
-        {
-            _valueTable.Set(location, value);
-        }
-        else
-        {
-            _valueTable.Add(location, value);
-        }
+        int location = _nextLocation++;
+        _locationTable.Add(name, location);
+        _valueTable.Add(location, value);
     }
-
     public object Get(string name)
     {
         int location = _locationTable.Get(name);
         return _valueTable.Get(location);
     }
-  
-    public void DeclareVariable(string name)
+    public void Set(string name, object value)
     {
-        int location = _nextLocation++;
-        _locationTable.Add(name, location);
-        _valueTable.Add(location, null);
+        int location = _locationTable.Get(name);
+        _valueTable.Set(location, value);
     }
 }

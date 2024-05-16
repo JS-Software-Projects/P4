@@ -125,7 +125,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         var value = Visit(node.Expression);
         
-        _environment.Add(node.VariableName.Name, value);
+        _environment.Set(node.VariableName.Name, value);
         return null;
     }
 
@@ -140,8 +140,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         {
             var param = function.ParameterList.Parameters[i];
             var argValue = Visit(node.Arguments.Arguments[i]);
-            _environment.DeclareVariable(param.ParameterName.Name);
-            _environment.Add(param.ParameterName.Name, argValue);
+            _environment.DeclareVariable(param.ParameterName.Name, argValue);
         }
 
         var result = Visit(function.Block); // Execute the function body in the new environment
@@ -163,8 +162,7 @@ public class InterpretationVisitor : IASTVisitor<object>
            GameManager.AddTower(tower);
            Terminal.AddMessage(false,"Tower added");
            node.SetGameObject(tower);
-           _environment.DeclareVariable(node.ObjectName.Name);
-           _environment.Add(node.ObjectName.Name,node);
+           _environment.DeclareVariable(node.ObjectName.Name,node);
         } else if (node.ClassType.ClassName == "Hero")
         {
             /*
@@ -174,8 +172,7 @@ public class InterpretationVisitor : IASTVisitor<object>
             GameManager.AddHero(hero);
             Terminal.AddMessage(false,"Hero added");
             */
-            _environment.DeclareVariable(node.ObjectName.Name);
-            _environment.Add(node.ObjectName.Name,node);
+            _environment.DeclareVariable(node.ObjectName.Name,node);
         }
         else
         {
@@ -198,20 +195,18 @@ public class InterpretationVisitor : IASTVisitor<object>
 
     public object Visit(VariableDeclaration node)
     {
-        _environment.DeclareVariable(node.VariableName.Name);
-
         if (node.Expression == null)
         {
             switch (node.Type.TypeName)
             {
                 case "Num":
-                    _environment.Add(node.VariableName.Name, 0.0);
+                    _environment.DeclareVariable(node.VariableName.Name, 0.0);
                     break;
                 case "String":
-                    _environment.Add(node.VariableName.Name, " ");
+                    _environment.DeclareVariable(node.VariableName.Name, " ");
                     break;
                 case "Bool":
-                    _environment.Add(node.VariableName.Name, false);
+                    _environment.DeclareVariable(node.VariableName.Name, false);
                     break;
                 default:
                     throw new Exception("Internal error: Type error not caught by type checker in variable declaration");
@@ -220,7 +215,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         else
         {
             var value = Visit(node.Expression);
-            _environment.Add(node.VariableName.Name, value);
+            _environment.DeclareVariable(node.VariableName.Name, value);
         }
         return null;
     }
@@ -233,7 +228,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (node.Expression != null)
         {
             var value = Visit(node.Expression);
-            _environment.Add(node.VariableName.Name, value);
+            _environment.DeclareVariable(node.VariableName.Name, value);
         }
         
         return null;
@@ -260,8 +255,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(FunctionDeclaration node)
     {
         node.SetEnvironment(_environment);
-        _environment.DeclareVariable(node.FunctionName.Name);
-        _environment.Add(node.FunctionName.Name, node);
+        _environment.DeclareVariable(node.FunctionName.Name, node);
         return null;
     }
 
