@@ -202,7 +202,6 @@ public class InterpretationVisitor : IASTVisitor<object>
 
         if (node.Expression == null)
         {
-            // No expression, set default value based on type
             switch (node.Type.TypeName)
             {
                 case "Num":
@@ -215,8 +214,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                     _environment.Add(node.VariableName.Name, false);
                     break;
                 default:
-                    // Handle unexpected type (optional)
-                    throw new ArgumentException("Unsupported variable type: " + node.Type.TypeName);
+                    throw new Exception("Internal error: Type error not caught by type checker in variable declaration");
             }
         }
         else
