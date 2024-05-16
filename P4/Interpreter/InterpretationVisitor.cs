@@ -222,7 +222,6 @@ public class InterpretationVisitor : IASTVisitor<object>
             var value = Visit(node.Expression);
             _environment.Add(node.VariableName.Name, value);
         }
-
         return null;
     }
     
