@@ -176,7 +176,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         }
         else
         {
-            throw new NotImplementedException();
+            throw new Exception("Internal error: Unknown GameObject type");
         }
 
         return null;
