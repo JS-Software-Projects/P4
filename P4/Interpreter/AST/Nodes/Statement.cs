@@ -161,14 +161,44 @@ public class FunctionCallStatement : Statement
         return $"FunctionCall: {FunctionName}({string.Join(", ", Arguments)})";
     }
 }
+public class GameObjectDeclaration : Statement
+{
+    public ObjectType ObjectType { get; set; }
+    public IdentifierExpression ObjectName { get; set; }
+    public ArgumentList ArgumentLists { get; set; }
+    private object GameObject { get; set; }
 
-public class GameObjectCall : Statement
+    public GameObjectDeclaration(ObjectType objectType, IdentifierExpression objectName, ArgumentList argument)
+    {
+        ObjectType = objectType;
+        ObjectName = objectName;
+        ArgumentLists = argument;
+    }
+
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+    
+    public object GetGameObject()
+    {
+        return GameObject;
+    }
+    public void SetGameObject(object obj)
+    {
+        GameObject = obj;
+    }
+    
+}
+
+
+public class GameObjectMethodCall : Statement
 {
     public IdentifierExpression ObjectName { get; set; }
     public string MethodName { get; set; }
     public ArgumentList ArgumentList { get; set; }
     
-    public GameObjectCall(IdentifierExpression objectName, string methodName, ArgumentList argumentList)
+    public GameObjectMethodCall(IdentifierExpression objectName, string methodName, ArgumentList argumentList)
     {
         ObjectName = objectName;
         MethodName = methodName;

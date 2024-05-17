@@ -10,21 +10,20 @@ public class GameManager
 {
     private static Map _map;
     private readonly Hero _hero;
-    public static List<BasicTower> _tower = new List<BasicTower>();
+    public static List<BasicTower> _tower;
     List<Vector2> enemyPositions = new List<Vector2>();
 
     public GameManager()
     {
+        _tower = new List<BasicTower>();
         _map = new();
         var position = _map.MapToScreen(0, 3);
         _hero = new(Globals.Content.Load<Texture2D>("hero"),position);
         Pathfinder.Init(_map, _hero);
-        //BasicTower tower = new BasicTower(Globals.Content.Load<Texture2D>("Cannon"), new Vector2(5*Globals.TileSize, 5*Globals.TileSize), Color.White);
-        //_tower.Add(tower);
     }
     public static void AddTower(BasicTower tower)
     {
-        _tower.Add(tower);
+      _tower.Add(tower);
     }
 
     public static void HeroMove(int x, int y)

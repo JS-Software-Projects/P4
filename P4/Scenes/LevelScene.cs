@@ -13,7 +13,7 @@ public class LevelScene : IScreen
     {
         InitializeLevel(path);
     }
-    public void InitializeLevel(string path)
+    private void InitializeLevel(string path)
     {
         _textEditor = new TextEditor(Globals.graphicsDevice, Globals.SpriteBatch, Globals.spriteFont, path);
         _terminal = new Terminal(Globals.graphicsDevice , Globals.SpriteBatch, Globals.spriteFont);
@@ -23,9 +23,7 @@ public class LevelScene : IScreen
     }
     private void TextEditor_ResetRequested(object sender, EventArgs e)
     {
-        // Reset the GameManager and any other objects that need to be reset
         _gameManager = new GameManager(); // Reinitialize GameManager
-        // Add logic to reset other objects if needed
     }
     public void AddCharacterToEditor(char character)
     {

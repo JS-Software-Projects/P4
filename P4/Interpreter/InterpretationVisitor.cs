@@ -153,7 +153,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(GameObjectDeclaration node)
     {
 
-        if (node.ClassType.ClassName == "Tower")
+        if (node.ObjectType.TypeName == "Tower")
         {
             var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
             var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
@@ -163,7 +163,7 @@ public class InterpretationVisitor : IASTVisitor<object>
            Terminal.AddMessage(false,"Tower added");
            node.SetGameObject(tower);
            _environment.DeclareVariable(node.ObjectName.Name,node);
-        } else if (node.ClassType.ClassName == "Hero")
+        } else if (node.ObjectType.TypeName == "Hero")
         {
             /*
             var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
@@ -182,10 +182,10 @@ public class InterpretationVisitor : IASTVisitor<object>
         return null;
     }
 
-    public object Visit(GameObjectCall node)
+    public object Visit(GameObjectMethodCall node)
     {
         var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
-        if (Gameobject.ClassType.ClassName == "Hero" && node.MethodName == "move"){
+        if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
             var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
         GameManager.HeroMove(arg1,arg2);

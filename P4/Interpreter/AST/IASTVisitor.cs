@@ -12,7 +12,7 @@ public interface IASTVisitor<T>
     T Visit(AssignmentStatement node);
     T Visit(FunctionCallStatement node);
     T Visit(GameObjectDeclaration node);
-    T Visit(GameObjectCall node);
+    T Visit(GameObjectMethodCall node);
     T Visit(VariableDeclaration node);
     T Visit(ConstantExpression node);
     T Visit(IdentifierExpression node);

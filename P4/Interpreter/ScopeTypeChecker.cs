@@ -173,7 +173,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             throw new Exception("Function not declared. In line: "+node.LineNumber);
         }
 
-        var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
+        var functionType = _symbolTableType.Get(node.FunctionName) as TypeExtended;
         for (int i = 0; i < node.Arguments.Arguments.Count; i++)
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
@@ -192,7 +192,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             throw new Exception("gameObject already declared. In line:"+node.LineNumber);
         }
         
-        if (!node.ClassType.isCorrectType())
+        if (!node.ObjectType.IsCorrectType())
         {
             throw new Exception("Unknown gameClass in GameObject declaration. In line:"+node.LineNumber);
         }
@@ -202,7 +202,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         TowerTypes.Add(new Type("Num"));
         TowerTypes.Add(new Type("Num"));
         
-        if (node.ClassType.ClassName == "Tower")
+        if (node.ObjectType.TypeName == "Tower")
         {
             if (node.ArgumentLists.Arguments.Count != TowerTypes.Count)
             {
@@ -221,14 +221,14 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
 
      
-        var type = new Type(node.ClassType.ClassName);
+        var type = new Type(node.ObjectType.TypeName);
         
         
         _symbolTableType.Add(node.ObjectName.Name, type);
         return null;
     }
 
-    public Type Visit(GameObjectCall node)
+    public Type Visit(GameObjectMethodCall node)
     {
         if (!_symbolTableType.IsVariableDeclared(node.ObjectName.Name))
         {
@@ -337,7 +337,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             typeList.Add(Visit(parameter));
         }
         
-        var returnType = new TypeE(typeList,node.ReturnType.TypeName);
+        var returnType = new TypeExtended(typeList,node.ReturnType.TypeName);
         if (!returnType.IsCorrectTypeE())
         {
             throw new Exception("Unknown type in function declaration. In line:"+node.LineNumber);

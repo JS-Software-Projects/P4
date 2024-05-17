@@ -38,7 +38,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitGameObjectDeclaration(EduGrammarParser.GameObjectDeclarationContext context)
     {
-        var classType = (TypeClass)VisitGameType(context.gameType()[0]);
+        var classType = (ObjectType)VisitObjectType(context.objectType()[0]);
         var objectName = VisitId(context.id()) as IdentifierExpression;
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
 
@@ -52,14 +52,14 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         var objectName = VisitId(context.id()) as IdentifierExpression;
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
         var methodName = context.ID().GetText();
-        return new GameObjectCall(objectName,methodName, arguments)
+        return new GameObjectMethodCall(objectName,methodName, arguments)
         {
             LineNumber = _lineNumber
         };
     }
-    public override ASTNode VisitGameType(EduGrammarParser.GameTypeContext context)
+    public override ASTNode VisitObjectType(EduGrammarParser.ObjectTypeContext context)
     {
-        return new TypeClass(context.GetText())
+        return new ObjectType(context.GetText())
         {
             LineNumber = _lineNumber
         };

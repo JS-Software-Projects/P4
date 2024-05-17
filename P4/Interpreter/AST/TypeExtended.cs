@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace P4.Interpreter.AST;
 
-public class TypeE : Type
+public class TypeExtended : Type
 {
     public List<Type> Args { get; set; }
-    public TypeE(List<Type> args,string type) : base(type)
+    public TypeExtended(List<Type> args,string type) : base(type)
     {
         this.Args = args;
     }
@@ -18,7 +18,7 @@ public class TypeE : Type
    
     public bool IsCorrectTypeE()
     {
-        foreach (TypesE type in Enum.GetValues(typeof(TypesE)))
+        foreach (TypesExtendedEnum type in Enum.GetValues(typeof(TypesExtendedEnum)))
         {
             if (TypeName == type.ToString())
             {
@@ -39,7 +39,7 @@ public class TypeE : Type
     }
 }
 
-public enum TypesE
+public enum TypesExtendedEnum
 {
     Num,
     String,
