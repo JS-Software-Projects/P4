@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-namespace P4.HomeScreen;
+namespace P4.HomeScreen
+{
     public class LevelSelectionScene : IScreen
     {
         private Button[] _levelButtons;
@@ -10,8 +14,12 @@ namespace P4.HomeScreen;
         private Texture2D _buttonTexture;
         public event Action<string> LevelSelected;
         private HashSet<string> _completedLevels;
+        private static readonly object fileLock = new object();
+        private const string CompletedLevelsFileName = "completedLevels.txt";
+
         public LevelSelectionScene()
         {
+            _completedLevels = LoadCompletedLevels();
             LoadContent();
             InitializeLevelButtons();
         }
@@ -22,7 +30,6 @@ namespace P4.HomeScreen;
             _font = Globals.spriteFont;
             _buttonTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             _buttonTexture.SetData(new[] { Color.White });
-            LoadCompletedLevels();
         }
 
         private void InitializeLevelButtons()
@@ -37,31 +44,71 @@ namespace P4.HomeScreen;
                 string levelPath = levelFiles[i];
                 string levelName = Path.GetFileNameWithoutExtension(levelPath);
                 Rectangle buttonBounds = new Rectangle(Globals.WindowSize.X / 2 - 100, yPos, 200, 50);
-                _levelButtons[i] = new Button(buttonBounds, levelName, _font, _buttonTexture, Color.White, Color.Gray, Color.DarkGray);
+
+                // Set button color based on completion status
+                Color buttonColor = IsLevelCompleted(levelName) ? Color.Green : Color.Gray;
+
+                _levelButtons[i] = new Button(buttonBounds, levelName, _font, _buttonTexture, Color.White, buttonColor, Color.DarkGray);
                 _levelButtons[i].Click += () => LevelSelected?.Invoke(levelPath); // Pass the full path
 
                 yPos += 60; // Increment y position for the next button
             }
         }
+
         private HashSet<string> LoadCompletedLevels()
         {
             HashSet<string> completedLevels = new HashSet<string>();
-            string filePath = Path.Combine(Globals.Content.RootDirectory, "completedLevels.txt");
+            string filePath = Path.Combine(Globals.Content.RootDirectory, CompletedLevelsFileName);
 
-            if (File.Exists(filePath))
+            lock (fileLock)
             {
-                var lines = File.ReadAllLines(filePath);
-                foreach (var line in lines)
+                if (File.Exists(filePath))
                 {
-                    completedLevels.Add(line.Trim());
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            completedLevels.Add(line.Trim());
+                        }
+                    }
                 }
-            }
-            else
-            {
-                File.Create(filePath).Close();
+                else
+                {
+                    File.Create(filePath).Close();
+                }
             }
 
             return completedLevels;
+        }
+
+        private void SaveCompletedLevels()
+        {
+            string filePath = Path.Combine(Globals.Content.RootDirectory, CompletedLevelsFileName);
+
+            lock (fileLock)
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    foreach (var level in _completedLevels)
+                    {
+                        sw.WriteLine(level);
+                    }
+                }
+            }
+        }
+
+        public void ResetCompletedLevels()
+        {
+            string filePath = Path.Combine(Globals.Content.RootDirectory, CompletedLevelsFileName);
+
+            lock (fileLock)
+            {
+                File.WriteAllText(filePath, string.Empty);
+                _completedLevels.Clear();
+            }
         }
 
         public void MarkLevelAsCompleted(string levelName)
@@ -73,21 +120,12 @@ namespace P4.HomeScreen;
             }
         }
 
-        private void SaveCompletedLevels()
-        {
-            string filePath = Path.Combine(Globals.Content.RootDirectory, "completedLevels.txt");
-            File.WriteAllLines(filePath, _completedLevels);
-        }
         private bool IsLevelCompleted(string levelName)
         {
-            if (_completedLevels == null)
-            {
-                _completedLevels = LoadCompletedLevels();
-            }
             return _completedLevels.Contains(levelName);
         }
-        
-        public void Update(GameTime gameTime,MouseState mouseState)
+
+        public void Update(GameTime gameTime, MouseState mouseState)
         {
             MouseState currentMouseState = mouseState;
             foreach (var button in _levelButtons)
@@ -116,4 +154,4 @@ namespace P4.HomeScreen;
             Globals.SpriteBatch.End();
         }
     }
-
+}

@@ -68,39 +68,43 @@ public class TextEditor
     {
         ResetRequested?.Invoke(this, EventArgs.Empty);
     }
+    private static readonly object fileLock = new object();
+
     private void OnPlayButtonClick()
     {
-        RequestReset();
-        // Actions to take when the button is clicked
-        //InputManager.SetExecute(true,8,8);
-        // Concatenate all lines into a single string
-        var allText = string.Join("\n", lines);
-
-        // Get the current directory of the running program
-        var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var outputDirectoryName = "../../../Levels"; // Name of your desired output directory
-        var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
-
-        // Create the output directory if it does not exist
-        Directory.CreateDirectory(directoryPath);
-
-        // Combine the directory path with the desired file name and write the text to the file
-        if (_localfilePath != null)
+        lock (fileLock)
         {
-            var fullPath = Path.Combine(directoryPath,Path.GetFileName(_localfilePath)); 
-            File.WriteAllText(fullPath, allText);
+            RequestReset();
+            // Actions to take when the button is clicked
+            var allText = string.Join("\n", lines);
 
-            // Log the full path or open the folder containing the file
-            Debug.WriteLine($"File written to: {fullPath}");
-            RunInterpretor.Execute(fullPath);
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var outputDirectoryName = "../../../Levels";
+            var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
+
+            Directory.CreateDirectory(directoryPath);
+
+            if (_localfilePath != null)
+            {
+                var fullPath = Path.Combine(directoryPath, Path.GetFileName(_localfilePath));
+            
+                using (FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.Write(allText);
+                }
+
+                Debug.WriteLine($"File written to: {fullPath}");
+                RunInterpretor.Execute(fullPath);
+            }
+            else
+            {
+                throw new Exception("File path is null");
+            }
         }
-        else
-        {
-            throw new Exception("File path is null");
-        }
-        
-        
     }
+
+
 
     public void LoadFileContent(string filePath)
     {
@@ -113,21 +117,29 @@ public class TextEditor
             {
                 return;
             }
-            
-            // Read all lines of the file
-            var fileLines = File.ReadAllLines(filePath);
 
-            // Clear current text and reset cursor
-            lines.Clear();
-            currentLine = 0;
-            
+            // Read all lines of the file using FileStream
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader sr = new StreamReader(fs))
+            {
+                var fileLines = new List<string>();
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    fileLines.Add(line);
+                }
 
-            // Add each line from the file to the lines list
-            foreach (var line in fileLines) lines.Add(line);
-            cursorPosition = lines[currentLine].Length;
-            
-            // If the file is empty, ensure there is at least one empty line
-            if (lines.Count == 0) lines.Add("");
+                // Clear current text and reset cursor
+                lines.Clear();
+                currentLine = 0;
+
+                // Add each line from the file to the lines list
+                foreach (var fileLine in fileLines) lines.Add(fileLine);
+                cursorPosition = lines[currentLine].Length;
+
+                // If the file is empty, ensure there is at least one empty line
+                if (lines.Count == 0) lines.Add("");
+            }
         }
         else
         {
@@ -135,6 +147,7 @@ public class TextEditor
             Debug.WriteLine($"File not found: {filePath}");
         }
     }
+
 
     public void AddCharacter(char character)
     {
