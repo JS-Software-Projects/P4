@@ -26,6 +26,10 @@ public class ObjectType : ASTNode
 
         return false;
     }
+    public override string ToString()
+    {
+        return $"ObjectType: {TypeName}";
+    }
 }
 public enum ObjectTypesEnum
 {

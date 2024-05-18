@@ -107,6 +107,13 @@ public class TextEditor
         // Check if the file exists before trying to read
         if (File.Exists(filePath))
         {
+            // Check if the file is empty
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (fileInfo.Length == 0)
+            {
+                return;
+            }
+            
             // Read all lines of the file
             var fileLines = File.ReadAllLines(filePath);
 

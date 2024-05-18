@@ -33,7 +33,9 @@ public static class Pathfinder
 
     public static bool Ready()
     {
-        return _hero.MoveDone;
+        if (_hero != null)
+            return _hero.MoveDone;
+        return false;
     }
 
     public static (int x, int y) ScreenToMap(Vector2 pos)

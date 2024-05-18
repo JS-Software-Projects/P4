@@ -1,4 +1,7 @@
-﻿namespace P4;
+﻿using System;
+using System.IO;
+
+namespace P4;
 using P4.HomeScreen;
 public class Game1 : Game
 {
@@ -53,13 +56,26 @@ public class Game1 : Game
         
         _stateManager.ScreenChanged += OnScreenChanged;
         _uiManager.HomeClicked += () => _stateManager.ChangeScreen(homeScreen);
-        homeScreen.OnPlayClicked += () => _stateManager.ChangeScreen(levelSelectionScene);
+        homeScreen.OnPlayClicked += () =>
+        {
+            _stateManager.ChangeScreen(levelSelectionScene);
+            Terminal.resetLines();
+        };
         homeScreen.OnQuitClicked += HandleQuitClicked;
+        homeScreen.OnResetLevelsClicked += HandleResetLevelsClicked;
         levelSelectionScene.LevelSelected += (path) =>
         {
             LevelScene levelScene = new LevelScene(path);
             _stateManager.ChangeScreen(levelScene);
+            levelScene.ChangeSceneRequested += () =>
+            {
+                string levelName = Path.GetFileNameWithoutExtension(path);
+                levelSelectionScene.MarkLevelAsCompleted(levelName);
+                _stateManager.ChangeScreen(levelSelectionScene);
+            };
+            
         };
+        
         _stateManager.ChangeScreen(homeScreen); // Start with the home screen
         
         Window.TextInput += TextInputHandler;
@@ -71,6 +87,38 @@ public class Game1 : Game
     private void HandleQuitClicked()
     {
         Exit();  // Exit the game
+    }
+    private void HandleResetLevelsClicked()
+    {
+        string levelsDirectory = Path.Combine(Globals.Content.RootDirectory, "../../../../Levels");
+        string[] levelFiles = Directory.GetFiles(levelsDirectory, "*.txt");
+        string initialDirectory = Path.Combine(levelsDirectory, "InitialLevels");
+        
+        if (!Directory.Exists(initialDirectory))
+        {
+            Console.WriteLine("Source directory does not exist.");
+            return;
+        }
+
+        if (!Directory.Exists(levelsDirectory))
+        {
+            Console.WriteLine("Target directory does not exist. Creating it.");
+           // Directory.CreateDirectory(levelsDirectory);
+        }
+
+        // Get all files in the source directory
+        string[] files = Directory.GetFiles(levelsDirectory, "*.txt");
+
+        foreach (string sourceFilePath in files)
+        {
+            string fileName = Path.GetFileName(sourceFilePath);
+            string targetFilePath = Path.Combine(levelsDirectory, fileName);
+
+            // Copy the file, overwrite if it already exists
+            File.Copy(sourceFilePath, targetFilePath, true);
+        }
+
+        Console.WriteLine("Levels have been reset.");
     }
 
     private void TextInputHandler(object sender, TextInputEventArgs e)

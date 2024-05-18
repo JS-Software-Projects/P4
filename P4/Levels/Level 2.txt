@@ -1,1 +1,4 @@
-Num y = 2;
+Hero hero = new Hero();
+Num x = 5;
+
+hero.move(x,4);

@@ -19,6 +19,13 @@ public class ArgumentList : ASTNode
 
     public override string ToString()
     {
+        // Check if Arguments is null
+        if (Arguments == null)
+        {
+            return "ArgumentList: (null)";
+        }
+
         return $"ArgumentList: ({string.Join(", ", Arguments)})";
     }
+
 }

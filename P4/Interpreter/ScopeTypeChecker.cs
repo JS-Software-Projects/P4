@@ -198,29 +198,46 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         }
         var typeList = new List<Type>();
 
-        List<Type> TowerTypes = new List<Type>();
-        TowerTypes.Add(new Type("Num"));
-        TowerTypes.Add(new Type("Num"));
+        List<Type> VectorTypes = new List<Type>();
+        VectorTypes.Add(new Type("Num"));
+        VectorTypes.Add(new Type("Num"));
         
         if (node.ObjectType.TypeName == "Tower")
         {
-            if (node.ArgumentLists.Arguments.Count != TowerTypes.Count)
+            if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
             {
                 throw new Exception("Incorrect number of arguments in Tower GameObject declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
             }
             for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
             {
                 if (node.ArgumentLists.Arguments[i] != null){
-                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != TowerTypes[i].TypeName)
+                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != VectorTypes[i].TypeName)
                     {
                         throw new Exception("Type mismatch in Tower GameObject declaration. In line:"+node.LineNumber);
                     }
                 }
             }
+        }
+        /*
+        if (node.ObjectType.TypeName == "Hero")
+        {
             
+            if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
+            {
+                throw new Exception("Incorrect number of arguments in Hero GameObject \n declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
+            }
+            for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
+            {
+                if (node.ArgumentLists.Arguments[i] != null){
+                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != VectorTypes[i].TypeName)
+                    {
+                        throw new Exception("Type mismatch in Hero GameObject declaration. In line:"+node.LineNumber);
+                    }
+                }
+            }
         }
 
-     
+     */
         var type = new Type(node.ObjectType.TypeName);
         
         
