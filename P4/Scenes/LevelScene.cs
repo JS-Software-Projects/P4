@@ -10,6 +10,7 @@ public class LevelScene : IScreen
     private Terminal _terminal;
     private GameManager _gameManager;
     private readonly string _path;
+    private int _level;
     public event Action ChangeSceneRequested;
     
     public LevelScene(string path)
@@ -21,8 +22,10 @@ public class LevelScene : IScreen
     {
         _textEditor = new TextEditor(Globals.graphicsDevice, Globals.SpriteBatch, Globals.spriteFont, path);
         _terminal = new Terminal(Globals.graphicsDevice , Globals.SpriteBatch, Globals.spriteFont);
-        _gameManager = new GameManager(GetNumberFromPath(path));
-        
+        _level = GetNumberFromPath(path);
+        _gameManager = new GameManager(_level);
+        if (_level != 1)
+            _textEditor.LockLine(1);
         _textEditor.ResetRequested += TextEditor_ResetRequested;
         _gameManager.OnHomeClicked += goBack;
     }
@@ -44,7 +47,7 @@ public class LevelScene : IScreen
     }
     private void TextEditor_ResetRequested(object sender, EventArgs e)
     {
-        _gameManager = new GameManager(GetNumberFromPath(_path)); // Reinitialize GameManager
+        _gameManager = new GameManager(_level); // Reinitialize GameManager
         _gameManager.OnHomeClicked += goBack;
         Terminal.resetLines();
     }
