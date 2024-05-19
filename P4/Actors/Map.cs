@@ -8,7 +8,7 @@ public class Map
     public Vector2 MapToScreen(int x, int y) =>  new(x * TileSize.X, y * TileSize.Y);
     public (int x, int y) ScreenToMap(Vector2 pos) => ((int)pos.X / TileSize.X, (int)pos.Y / TileSize.Y);
 
-    public Map()
+    public Map(int level)
     {
         Tiles = new Tile[Size.X, Size.Y];
         var texture = Globals.Content.Load<Texture2D>("tile");
@@ -22,6 +22,27 @@ public class Map
             }
         }
 
+        switch (level)
+        {
+            case 1:
+                defaultLevel();
+                Tiles[3, 4].AddCircle(Color.Blue);
+                Tiles[6, 4].AddCircle(Color.Blue);
+                break;
+            case 2:
+                Tiles[4, 3].AddCircle(Color.LightGreen);
+                break;
+            case 3:
+                
+                break;
+        }
+        
+        
+
+    }
+
+    public void defaultLevel()
+    {
         for (int x = 0; x < Size.X - 3; x++)
         {
             Tiles[x, 4].Blocked = true;
@@ -52,9 +73,8 @@ public class Map
             }
             
         }
-
     }
-
+    
     public void Update()
     {
         for (int y = 0; y < Size.Y; y++)

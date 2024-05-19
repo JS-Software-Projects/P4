@@ -1,1 +1,1 @@
-x
+Hero hero = new Hero();

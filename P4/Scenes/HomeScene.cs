@@ -6,10 +6,12 @@ namespace P4.HomeScreen;
     {
         private Button _playButton;
         private Button _quitButton;
+        private Button _resetLevelsButton;
         private SpriteFont _font;
         private Texture2D _buttonTexture;
         public event Action OnPlayClicked;
         public event Action OnQuitClicked;
+        public event Action OnResetLevelsClicked;
         public HomeScene()
         {
             LoadContent();
@@ -36,8 +38,12 @@ namespace P4.HomeScreen;
             _playButton.Click += PlayButton_Click;
 
             // Create the Quit button
-            _quitButton = new Button(new Rectangle(Globals.WindowSize.X / 2 - 100, Globals.WindowSize.Y / 2 + 10, 200, 50), "Quit", _font, _buttonTexture, textColor, backgroundColor, hoverColor);
+            _quitButton = new Button(new Rectangle(Globals.WindowSize.X / 2 - 100, Globals.WindowSize.Y / 2 + 70, 200, 50), "Quit", _font, _buttonTexture, textColor, backgroundColor, hoverColor);
             _quitButton.Click += QuitButton_Click;
+            
+            // Create the Reset Levels button
+            _resetLevelsButton = new Button(new Rectangle(Globals.WindowSize.X / 2 - 100, Globals.WindowSize.Y / 2 + 10, 200, 50), "Reset Levels", _font, _buttonTexture, textColor, backgroundColor, hoverColor);
+            _resetLevelsButton.Click += ResetLevelsButton_Click;
         }
 
         private void PlayButton_Click()
@@ -51,6 +57,11 @@ namespace P4.HomeScreen;
             // Code to quit the game
             OnQuitClicked?.Invoke();
         }
+        private void ResetLevelsButton_Click()
+        {
+            // Code to reset levels
+            OnResetLevelsClicked?.Invoke();
+        }
 
         public void Update(GameTime gameTime, MouseState mouseState)
         {
@@ -58,6 +69,7 @@ namespace P4.HomeScreen;
             MouseState currentMouseState = mouseState;
             _playButton.Update(currentMouseState);
             _quitButton.Update(currentMouseState);
+            _resetLevelsButton.Update(currentMouseState);
         }
 
         public void Draw(GameTime gameTime)
@@ -65,6 +77,7 @@ namespace P4.HomeScreen;
             Globals.SpriteBatch.Begin();
             _playButton.Draw(Globals.SpriteBatch);
             _quitButton.Draw(Globals.SpriteBatch);
+            _resetLevelsButton.Draw(Globals.SpriteBatch);
             Globals.SpriteBatch.End();
         }
     }

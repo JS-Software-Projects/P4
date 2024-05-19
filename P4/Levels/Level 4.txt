@@ -1,1 +1,1 @@
-Num x = 10;
+Hero hero = new Hero();

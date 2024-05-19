@@ -163,15 +163,16 @@ public class InterpretationVisitor : IASTVisitor<object>
            Terminal.AddMessage(false,"Tower added");
            node.SetGameObject(tower);
            _environment.DeclareVariable(node.ObjectName.Name,node);
-        } else if (node.ObjectType.TypeName == "Hero")
+        } 
+        else if (node.ObjectType.TypeName == "Hero")
         {
-            /*
-            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
-            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
-            Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
-            GameManager.AddHero(hero);
-            Terminal.AddMessage(false,"Hero added");
-            */
+            
+            //var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            //var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+           // Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, (arg2-1)*Globals.TileSize));
+           // GameManager.CreateHero(hero);
+           // Terminal.AddMessage(false,"Hero added");
+           // node.SetGameObject(hero);
             _environment.DeclareVariable(node.ObjectName.Name,node);
         }
         else
@@ -188,7 +189,10 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
             var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-        GameManager.HeroMove(arg1,arg2);
+            //var hero = (Hero)Gameobject.GetGameObject();
+           // hero.MoveHero(arg1,arg2);
+           Terminal.AddMessage(false,"moving hero to: " + arg1 + " , " + arg2);
+            GameManager.HeroMove(arg1,arg2);
         }
         return null;
     }

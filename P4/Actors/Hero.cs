@@ -25,7 +25,13 @@ public class Hero : Sprite
         Position = initialPosition; // Assuming you have an initialPosition field or property in your Hero class
         MoveDone = true; // Set MoveDone flag to true to indicate that the hero has not started moving yet
     }
-
+    
+    public void MoveHero(int arg1,int arg2)
+    {
+        var pos = new Vector2(arg1 * Globals.TileSize, (arg2 - 1) * Globals.TileSize);
+        DestinationPosition = pos;
+        MoveDone = false;
+    }
 
     public void SetPath(List<Vector2> path)
     {

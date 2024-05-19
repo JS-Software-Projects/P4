@@ -9,67 +9,174 @@ namespace P4.Managers;
 public class GameManager
 {
     private static Map _map;
-    private readonly Hero _hero;
+    private Hero _hero;
     public static List<BasicTower> _tower;
     List<Vector2> enemyPositions = new List<Vector2>();
+    public int _circleCount = 0;
+    public static int _level;
+    private Button _playButton;
+    public event Action OnHomeClicked;
+    private Rectangle _backgroundBox;
+    private Vector2 _textPosition;
+    private string WonText = "You have completed level: ";
+    private Texture2D _buttonTexture;
 
-    public GameManager()
+    public GameManager(int level)
     {
+        _buttonTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
+        _buttonTexture.SetData(new[] { Color.White });
+        _level = level;
+        WonText += level;
         _tower = new List<BasicTower>();
-        _map = new();
-        var position = _map.MapToScreen(0, 3);
+        _map = new(level);
+        if (level != 1)
+        {
+            CreateHero();
+        }
+        //var position = _map.MapToScreen(0, 2);
+        //_hero = new(Globals.Content.Load<Texture2D>("hero"),position);
+        InitializeBackground();
+        InitializeButtons();
+    }
+    public void CreateHero()
+    {
+        var position = _map.MapToScreen(0, 2);
         _hero = new(Globals.Content.Load<Texture2D>("hero"),position);
         Pathfinder.Init(_map, _hero);
     }
+
+    public void checkHeroCircleHit()
+    {
+        foreach (var tile in _map.Tiles)
+        {
+            //+32 since hero and circle are not centered the same way
+            if (tile.CircleExist() && _hero.Position.X+32 == tile.getCircle().Position.X && _hero.Position.Y+32 == tile.getCircle().Position.Y)
+            {
+                var x = _hero.Position.X / Globals.TileSize;
+                var y = _hero.Position.Y / Globals.TileSize;
+                _map.Tiles[(int)x, (int)y].removeCircle();
+                break;
+            }
+        }
+    }
     public static void AddTower(BasicTower tower)
     {
+        var x = tower.Position.X / Globals.TileSize;
+        var y = tower.Position.Y / Globals.TileSize;
       _tower.Add(tower);
+        _map.Tiles[(int)x-1, (int)y-1].removeCircle();
     }
 
     public static void HeroMove(int x, int y)
     {
-/*
-        foreach (var tile in _map.Tiles)
-        {
-            Console.WriteLine("tileX: "+tile._mapX+" tileY: "+tile._mapY);
-            Console.WriteLine("count: "+tile._boundry.Count+" Blocked? "+tile.Blocked +" Path "+tile.Path);
-
-        }*/
-  
-      
+        /* // Restriction for the hero to move only on the path
       if (_map.Tiles[x-1, y-1]._boundry.Count != 2)
-        {
-            Terminal.SetError(true,"Cannot move hero to Tile : " + x + " " + y + ". Tile is not a path");
-            return;
-        }
-        
-        InputManager.SetExecute(true, x, y);
+      {
+          Terminal.SetError(true,"Cannot move hero to Tile : " + x + " " + y + ". Tile is not a path");
+          return;
+      }
+        */
+      InputManager.SetExecute(true, x, y);
     }
+    public void CheckCircles()
+    {
+        var count = 0;
+        if(_map.Tiles != null)
+        {
+            foreach (var tile in _map.Tiles)
+            {
+                if (tile.CircleExist())
+                {
+                    count++;
+                }
+            }
+        }
+        //Sandbox for the level 3+
+        if (_level != 1 && _level != 2)
+        {
+            count = -1;
+        }
+        _circleCount = count;
+    }
+    public void CheckScore()
+    {
+        if (_circleCount == 0)
+        {
+            Terminal.SetError(false,"You Win");
+        }
+    }
+    private void InitializeBackground()
+    {
+        int boxWidth = 400;
+        int boxHeight = 200;
+        int centerX = Globals.WindowSize.X / 2;
+        int centerY = Globals.WindowSize.Y / 2;
+    
+        _backgroundBox = new Rectangle(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight);
+        Vector2 textSize = Globals.spriteFont.MeasureString(WonText);
+        _textPosition = new Vector2(centerX - textSize.X / 2, centerY - textSize.Y / 2 - 50);
+    }
+    private void InitializeButtons()
+    {
+        // Define the button colors
+        Color textColor = Color.White;
+        Color backgroundColor = Color.Gray;
+        Color hoverColor = Color.DarkGray;
+            
+        // Create the Play button
+        _playButton = new Button(new Rectangle(Globals.WindowSize.X / 2 - 100, Globals.WindowSize.Y / 2, 200, 50), "Go back to Levels", Globals.spriteFont, _buttonTexture, textColor, backgroundColor, hoverColor);
+        _playButton.Click += PlayButton_Click;
+    }
+    private void PlayButton_Click()
+    {
+        // Code to go back
+        OnHomeClicked?.Invoke();
+    }
+
     
 
-    public void Update()
+    public void Update(MouseState mouseState)
     {
         _map.Update();
-        _hero.Update();
-        enemyPositions.Clear();
-        enemyPositions.Add(_hero.Position);
-        foreach (var tower in _tower)
+       
+        if (_hero != null)
         {
-            if (tower != null)
-                tower.Update(enemyPositions);
+            _hero.Update();
+            enemyPositions.Clear();
+            enemyPositions.Add(_hero.Position);
+            foreach (var tower in _tower)
+            {
+                if (tower != null)
+                    tower.Update(enemyPositions);
+            }   
+            checkHeroCircleHit();
         }
         
+        CheckCircles();
+        CheckScore();
+        if (_circleCount == 0){
+            _playButton.Update(mouseState);
+        }
     }
 
     public void Draw()
     {
         Globals.SpriteBatch.Begin();
         _map.Draw();
-        _hero.Draw();
+        if (_hero != null)
+            _hero.Draw();
         foreach (var tower in _tower)
         {
             if (tower != null)
-                 tower.Draw();    
+                tower.Draw();    
+        }
+        if (_circleCount == 0){
+            
+            // Draw the background box
+            Globals.SpriteBatch.Draw(_buttonTexture, _backgroundBox, Color.Black * 0.7f);
+            // Draw the "Welcome" text
+            Globals.SpriteBatch.DrawString(Globals.spriteFont, WonText, _textPosition, Color.White);
+            _playButton.Draw(Globals.SpriteBatch);
         }
         Globals.SpriteBatch.End();
     }

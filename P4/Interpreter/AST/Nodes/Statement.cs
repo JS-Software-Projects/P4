@@ -188,7 +188,11 @@ public class GameObjectDeclaration : Statement
     {
         GameObject = obj;
     }
-    
+
+    public override string ToString()
+    {
+        return $"GameObjectDeclaration: {ObjectType} {ObjectName} = {ArgumentLists}";
+    }
 }
 
 
@@ -207,6 +211,10 @@ public class GameObjectMethodCall : Statement
     public override T Accept<T>(IASTVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+    public override string ToString()
+    {
+        return $"GameObjectMethodCall: {ObjectName}.{MethodName}({string.Join(", ", ArgumentList)})";
     }
 }
 
