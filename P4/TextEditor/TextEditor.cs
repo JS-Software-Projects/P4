@@ -10,6 +10,62 @@ using P4.managers;
 
 namespace P4
 {
+
+    private readonly Rectangle buttomLine;
+    private int currentLine;
+    private int cursorPosition;
+    private readonly GraphicsDevice graphicsDevice;
+    private readonly List<string> lines = new() { "" };
+    private readonly Rectangle numberArea;
+    string _localfilePath = "";
+    public event EventHandler ResetRequested;
+    private readonly Button playButton;
+
+    // to move left and right up and down
+    private KeyboardState previousKeyboardState;
+    private MouseState previousMouseState;
+    private readonly SpriteBatch spriteBatch;
+    private readonly SpriteFont spriteFont;
+    private Rectangle textAreaRectangle;
+    private MessageTextBox _textBox;
+
+    public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont,string localfilePath)
+    {
+        this.graphicsDevice = graphicsDevice;
+        this.spriteBatch = spriteBatch;
+        this.spriteFont = spriteFont;
+        _localfilePath = localfilePath;
+        
+        // Calculate dimensions to fill 35% of the right-hand side of the window
+        var textAreaWidth =
+            (int)(Globals.WindowSize.X * 0.38)+4; // 35% of the window width, accessed directly from Globals
+        var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
+        var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
+        var textAreaY = 0; // Start at the top
+
+        textAreaRectangle = new Rectangle(textAreaX, textAreaY, textAreaWidth, textAreaHeight);
+        numberArea = new Rectangle(textAreaX - 40, textAreaY, 40, textAreaHeight);
+        buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
+        
+        var textboxRectangle = new Rectangle(50, 50, 500, 500);
+        _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), "For this level, try to move the hero\nto the exit using");
+        
+        
+        // Initialize your button here
+        var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
+        buttonTexture.SetData(new[] { Color.White });
+        var buttonX = textAreaX + textAreaWidth / 2 - 90; // Centering of the text area
+        playButton = new Button(new Rectangle(buttonX, graphicsDevice.Viewport.Height - 60, 180, 40), "Execute and run",
+            spriteFont, buttonTexture, Color.Black, Color.Salmon, Color.DarkSalmon);
+        playButton.Click += OnPlayButtonClick;
+
+        //load file content
+        // Get the current directory of the running program
+        var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        var filePath = Path.Combine(baseDirectory, localfilePath);
+
+        LoadFileContent(filePath);
+
     public class TextEditor
     {
         private readonly Rectangle buttomLine;
@@ -23,6 +79,7 @@ namespace P4
         public event EventHandler ResetRequested;
 
         private readonly Button playButton;
+
 
         // to move left and right up and down
         private KeyboardState previousKeyboardState;
@@ -87,11 +144,16 @@ namespace P4
                 var outputDirectoryName = "../../../Levels";
                 var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
 
+
+        // Calculate maximum number of lines allowed based on maxHeight and line spacing
+        var maxLines = ((maxHeight - textAreaRectangle.Y)-70) / spriteFont.LineSpacing;
+
                 Directory.CreateDirectory(directoryPath);
 
                 if (_localfilePath != null)
                 {
                     var fullPath = Path.Combine(directoryPath, Path.GetFileName(_localfilePath));
+
 
                     using (FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     using (StreamWriter sw = new StreamWriter(fs))
@@ -379,7 +441,42 @@ namespace P4
             previousMouseState = mouseState;
         }
 
+
+    public void Draw()
+    {
+        spriteBatch.Begin();
+        var textAreaBackground = new Texture2D(graphicsDevice, 1, 1);
+        textAreaBackground.SetData(new[] { Color.LightGray });
+        spriteBatch.Draw(textAreaBackground, textAreaRectangle, Color.White); // Use the calculated rectangle
+        spriteBatch.Draw(textAreaBackground, numberArea, Color.LightSeaGreen);
+        spriteBatch.Draw(textAreaBackground, buttomLine, Color.LightSeaGreen);
+        
+        DrawBorder(spriteBatch, textAreaRectangle, 2, Color.Black);
+        DrawBorder(spriteBatch, numberArea, 2, Color.Black);
+        DrawBorder(spriteBatch, buttomLine, 2, Color.Black);
+        
+        // Set starting position for text (adjust margins as needed)
+        var textStartX = textAreaRectangle.X + 10; // 10 pixels from the left edge of the text area
+        var textStartY = textAreaRectangle.Y + 10; // 10 pixels from the top edge of the text area
+        
+        _textBox.Draw(spriteBatch);
+        
+        
+        // Calculate the y-coordinate of the line based on maxLines and line spacing
+        var maxLines = ((textAreaRectangle.Height - 70) / spriteFont.LineSpacing);
+        var lineY = textAreaRectangle.Y + maxLines * spriteFont.LineSpacing;
+        
+        // Create a 1x1 pixel texture for the line
+        var lineTexture = new Texture2D(graphicsDevice, 1, 1);
+        lineTexture.SetData(new[] { Color.Chartreuse });
+
+        // Draw the line from the calculated y-coordinate to the bottom of the text area
+        spriteBatch.Draw(lineTexture, new Rectangle(textAreaRectangle.X,(textAreaRectangle.Height - 170), textAreaRectangle.Width, 2), Color.Black);
+        
+        for (var i = 0; i < lines.Count; i++)
+
         public void Draw()
+
         {
             spriteBatch.Begin();
             var textAreaBackground = new Texture2D(graphicsDevice, 1, 1);
@@ -440,5 +537,6 @@ namespace P4
             // Draw bottom line
             spriteBatch.Draw(pixelTexture, new Rectangle(rectangle.X, rectangle.Bottom, rectangle.Width, thickness), color);
         }
+
     }
 }
