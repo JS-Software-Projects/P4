@@ -1,6 +1,2 @@
+Tower tower = new Tower(2,2);
 
-Tower tower2 = new Tower(5,3);
-Tower tower3 = new Tower(8,3)
-
-Hero hero = new Hero();
-hero.move(8,8);

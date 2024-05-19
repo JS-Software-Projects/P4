@@ -173,7 +173,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             throw new Exception("Function not declared. In line: "+node.LineNumber);
         }
 
-        var functionType = _symbolTableType.Get(node.FunctionName) as TypeE;
+        var functionType = _symbolTableType.Get(node.FunctionName) as TypeExtended;
         for (int i = 0; i < node.Arguments.Arguments.Count; i++)
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
@@ -192,43 +192,60 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             throw new Exception("gameObject already declared. In line:"+node.LineNumber);
         }
         
-        if (!node.ClassType.isCorrectType())
+        if (!node.ObjectType.IsCorrectType())
         {
             throw new Exception("Unknown gameClass in GameObject declaration. In line:"+node.LineNumber);
         }
         var typeList = new List<Type>();
 
-        List<Type> TowerTypes = new List<Type>();
-        TowerTypes.Add(new Type("Num"));
-        TowerTypes.Add(new Type("Num"));
+        List<Type> VectorTypes = new List<Type>();
+        VectorTypes.Add(new Type("Num"));
+        VectorTypes.Add(new Type("Num"));
         
-        if (node.ClassType.ClassName == "Tower")
+        if (node.ObjectType.TypeName == "Tower")
         {
-            if (node.ArgumentLists.Arguments.Count != TowerTypes.Count)
+            if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
             {
                 throw new Exception("Incorrect number of arguments in Tower GameObject declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
             }
             for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
             {
                 if (node.ArgumentLists.Arguments[i] != null){
-                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != TowerTypes[i].TypeName)
+                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != VectorTypes[i].TypeName)
                     {
                         throw new Exception("Type mismatch in Tower GameObject declaration. In line:"+node.LineNumber);
                     }
                 }
             }
+        }
+        /*
+        if (node.ObjectType.TypeName == "Hero")
+        {
             
+            if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
+            {
+                throw new Exception("Incorrect number of arguments in Hero GameObject \n declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
+            }
+            for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
+            {
+                if (node.ArgumentLists.Arguments[i] != null){
+                    if (Visit(node.ArgumentLists.Arguments[i]).TypeName != VectorTypes[i].TypeName)
+                    {
+                        throw new Exception("Type mismatch in Hero GameObject declaration. In line:"+node.LineNumber);
+                    }
+                }
+            }
         }
 
-     
-        var type = new Type(node.ClassType.ClassName);
+     */
+        var type = new Type(node.ObjectType.TypeName);
         
         
         _symbolTableType.Add(node.ObjectName.Name, type);
         return null;
     }
 
-    public Type Visit(GameObjectCall node)
+    public Type Visit(GameObjectMethodCall node)
     {
         if (!_symbolTableType.IsVariableDeclared(node.ObjectName.Name))
         {
@@ -337,7 +354,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             typeList.Add(Visit(parameter));
         }
         
-        var returnType = new TypeE(typeList,node.ReturnType.TypeName);
+        var returnType = new TypeExtended(typeList,node.ReturnType.TypeName);
         if (!returnType.IsCorrectTypeE())
         {
             throw new Exception("Unknown type in function declaration. In line:"+node.LineNumber);

@@ -66,7 +66,9 @@ public class InterpreterIntegrationTest
 
         var astMaker = new ASTMaker();
         var AST = astMaker.VisitProgram(parseTree);
-
+        
+        var scopeTypeChecker = new ScopeTypeChecker();
+        scopeTypeChecker.Visit(AST);
         var interpretationVisitor = new InterpretationVisitor();
 
         // Assert
@@ -87,7 +89,9 @@ public class InterpreterIntegrationTest
 
         var astMaker = new ASTMaker();
         var AST = astMaker.VisitProgram(parseTree);
-
+        
+        var scopeTypeChecker = new ScopeTypeChecker();
+        scopeTypeChecker.Visit(AST);
         var interpretationVisitor = new InterpretationVisitor();
         
 

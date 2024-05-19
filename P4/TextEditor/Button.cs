@@ -4,9 +4,9 @@ namespace P4;
 
 public class Button
 {
-    private readonly Color backgroundColor;
+    private  Color backgroundColor;
     private readonly SpriteFont font;
-    private readonly Color hoverColor;
+    private  Color hoverColor;
     private bool isHovering;
     private MouseState previousMouseState;
     private readonly Color textColor;
@@ -29,6 +29,14 @@ public class Button
 
     public event Action Click;
 
+    public void setColor(Color color)
+    {
+        backgroundColor = color;
+    }
+    public void setHover(Color color)
+    {
+        hoverColor = color;
+    }
     public void Update(MouseState currentMouseState)
     {
         // Check if the mouse is over the button

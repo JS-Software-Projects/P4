@@ -125,7 +125,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         var value = Visit(node.Expression);
         
-        _environment.Add(node.VariableName.Name, value);
+        _environment.Set(node.VariableName.Name, value);
         return null;
     }
 
@@ -140,8 +140,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         {
             var param = function.ParameterList.Parameters[i];
             var argValue = Visit(node.Arguments.Arguments[i]);
-            _environment.DeclareVariable(param.ParameterName.Name);
-            _environment.Add(param.ParameterName.Name, argValue);
+            _environment.DeclareVariable(param.ParameterName.Name, argValue);
         }
 
         var result = Visit(function.Block); // Execute the function body in the new environment
@@ -154,7 +153,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(GameObjectDeclaration node)
     {
 
-        if (node.ClassType.ClassName == "Tower")
+        if (node.ObjectType.TypeName == "Tower")
         {
             var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
             var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
@@ -163,68 +162,65 @@ public class InterpretationVisitor : IASTVisitor<object>
            GameManager.AddTower(tower);
            Terminal.AddMessage(false,"Tower added");
            node.SetGameObject(tower);
-           _environment.DeclareVariable(node.ObjectName.Name);
-           _environment.Add(node.ObjectName.Name,node);
-        } else if (node.ClassType.ClassName == "Hero")
+           _environment.DeclareVariable(node.ObjectName.Name,node);
+        } 
+        else if (node.ObjectType.TypeName == "Hero")
         {
-            /*
-            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
-            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
-            Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
-            GameManager.AddHero(hero);
-            Terminal.AddMessage(false,"Hero added");
-            */
-            _environment.DeclareVariable(node.ObjectName.Name);
-            _environment.Add(node.ObjectName.Name,node);
+            
+            //var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
+            //var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+           // Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, (arg2-1)*Globals.TileSize));
+           // GameManager.CreateHero(hero);
+           // Terminal.AddMessage(false,"Hero added");
+           // node.SetGameObject(hero);
+            _environment.DeclareVariable(node.ObjectName.Name,node);
         }
         else
         {
-            throw new NotImplementedException();
+            throw new Exception("Internal error: Unknown GameObject type");
         }
 
         return null;
     }
 
-    public object Visit(GameObjectCall node)
+    public object Visit(GameObjectMethodCall node)
     {
         var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
-        if (Gameobject.ClassType.ClassName == "Hero" && node.MethodName == "move"){
+        if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
             var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-        GameManager.HeroMove(arg1,arg2);
+            //var hero = (Hero)Gameobject.GetGameObject();
+           // hero.MoveHero(arg1,arg2);
+           Terminal.AddMessage(false,"moving hero to: " + arg1 + " , " + arg2);
+            GameManager.HeroMove(arg1,arg2);
         }
         return null;
     }
 
     public object Visit(VariableDeclaration node)
     {
-        _environment.DeclareVariable(node.VariableName.Name);
-
         if (node.Expression == null)
         {
-            // No expression, set default value based on type
             switch (node.Type.TypeName)
             {
                 case "Num":
-                    _environment.Add(node.VariableName.Name, 0.0);
+                    _environment.DeclareVariable(node.VariableName.Name, 0.0);
                     break;
                 case "String":
-                    _environment.Add(node.VariableName.Name, " ");
+                    _environment.DeclareVariable(node.VariableName.Name, " ");
                     break;
                 case "Bool":
-                    _environment.Add(node.VariableName.Name, false);
+                    _environment.DeclareVariable(node.VariableName.Name, false);
                     break;
                 default:
-                    // Handle unexpected type (optional)
-                    throw new ArgumentException("Unsupported variable type: " + node.Type.TypeName);
+                    throw new Exception("Internal error: Type error not caught by type checker in variable declaration");
             }
         }
         else
         {
             var value = Visit(node.Expression);
-            _environment.Add(node.VariableName.Name, value);
+            _environment.DeclareVariable(node.VariableName.Name, value);
         }
-
         return null;
     }
     
@@ -236,7 +232,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (node.Expression != null)
         {
             var value = Visit(node.Expression);
-            _environment.Add(node.VariableName.Name, value);
+            _environment.DeclareVariable(node.VariableName.Name, value);
         }
         
         return null;
@@ -263,8 +259,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(FunctionDeclaration node)
     {
         node.SetEnvironment(_environment);
-        _environment.DeclareVariable(node.FunctionName.Name);
-        _environment.Add(node.FunctionName.Name, node);
+        _environment.DeclareVariable(node.FunctionName.Name, node);
         return null;
     }
 

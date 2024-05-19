@@ -38,7 +38,7 @@ public class VisitVariableDeclarationShould
     public void ThrowsExceptionWhenUnsupportedVariableTypeProvided()
     {
         var node = new VariableDeclaration(new IdentifierExpression("x"), new Type("UnsupportedType"), null);
-        Assert.Throws<ArgumentException>(() => _visitor.Visit(node));
+        Assert.Throws<Exception>(() => _visitor.Visit(node));
     }
 
     [Fact]

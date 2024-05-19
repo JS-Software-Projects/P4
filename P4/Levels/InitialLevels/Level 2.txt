@@ -1,7 +1,5 @@
-
 Hero hero = new Hero();
 
 Num x = _;
 
 hero.move(x,y);
-

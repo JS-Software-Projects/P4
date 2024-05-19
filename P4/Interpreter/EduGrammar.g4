@@ -1,6 +1,6 @@
 ﻿grammar EduGrammar;
 
-program: gameObjectDeclaration* functionDeclaration* statement* EOF;
+program: functionDeclaration* statement* EOF;
 
 statement: 
       variableDeclaration
@@ -11,8 +11,9 @@ statement:
     | functionCall
     | returnStatement
     | forLoop
+    | gameObjectDeclaration
     | gameObjectMethodCall;
-
+    
 variableDeclaration:
     type id '=' expr ';' | type id ';';
 
@@ -43,10 +44,10 @@ returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
 
-gameObjectDeclaration: gameType id '=' 'new' gameType '(' argumentList? ')' ';';
+gameObjectDeclaration: objectType id '=' 'new' objectType '(' argumentList? ')' ';';
 gameObjectMethodCall: id '.' ID '(' argumentList? ')' ';';
 
-gameType: 'Tower' | 'Hero';
+objectType: 'Tower' | 'Hero';
 
 expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
