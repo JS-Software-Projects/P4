@@ -34,7 +34,7 @@ namespace P4
         
         private MessageTextBox _textBox;
 
-        public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont, string localfilePath)
+        public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont, string localfilePath,int level)
         {
             this.graphicsDevice = graphicsDevice;
             this.spriteBatch = spriteBatch;
@@ -52,7 +52,18 @@ namespace P4
             buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
 
             var textboxRectangle = new Rectangle(50, 50, 500, 500);
-            _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), "For this level, try to move the hero\nto the exit using");
+            
+            var textMessage = level switch
+            {
+                1 => "For this level, try to create two \n towers on the blue circles",
+                2 => "For this level, try to move the hero\n to the green circle",
+                3 => "Sandbox mode! You can write your own\n code",
+                4 => "Sandbox mode! You can write your own\n code",
+                5 => "Sandbox mode! You can write your own\n code",
+                _ => "Unknown level"
+            };
+                
+            _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), textMessage);
             
             // Initialize your button here
             var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
@@ -92,10 +103,6 @@ namespace P4
                 var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 var outputDirectoryName = "../../../Levels";
                 var directoryPath = Path.Combine(baseDirectory, outputDirectoryName);
-
-
-        // Calculate maximum number of lines allowed based on maxHeight and line spacing
-        var maxLines = ((maxHeight - textAreaRectangle.Y)-70) / spriteFont.LineSpacing;
 
                 Directory.CreateDirectory(directoryPath);
 
@@ -184,7 +191,7 @@ namespace P4
             var maxHeight = Globals.WindowSize.Y - 90; // Maximum height for text lines
 
             // Calculate maximum number of lines allowed based on maxHeight and line spacing
-            var maxLines = (maxHeight - textAreaRectangle.Y) / spriteFont.LineSpacing;
+            var maxLines = ((maxHeight - textAreaRectangle.Y)-70) / spriteFont.LineSpacing;
 
             // Handle backspace
             if (character == '\b')
@@ -422,26 +429,6 @@ namespace P4
         // Draw the line from the calculated y-coordinate to the bottom of the text area
         spriteBatch.Draw(lineTexture, new Rectangle(textAreaRectangle.X,(textAreaRectangle.Height - 170), textAreaRectangle.Width, 2), Color.Black);
         
-        for (var i = 0; i < lines.Count; i++)
-
-        public void Draw()
-
-        {
-            spriteBatch.Begin();
-            var textAreaBackground = new Texture2D(graphicsDevice, 1, 1);
-            textAreaBackground.SetData(new[] { Color.LightGray });
-            spriteBatch.Draw(textAreaBackground, textAreaRectangle, Color.White); // Use the calculated rectangle
-            spriteBatch.Draw(textAreaBackground, numberArea, Color.LightSeaGreen);
-            spriteBatch.Draw(textAreaBackground, buttomLine, Color.LightSeaGreen);
-
-            DrawBorder(spriteBatch, textAreaRectangle, 2, Color.Black);
-            DrawBorder(spriteBatch, numberArea, 2, Color.Black);
-            DrawBorder(spriteBatch, buttomLine, 2, Color.Black);
-
-            // Set starting position for text (adjust margins as needed)
-            var textStartX = textAreaRectangle.X + 10; // 10 pixels from the left edge of the text area
-            var textStartY = textAreaRectangle.Y + 10; // 10 pixels from the top edge of the text area
-
             for (var i = 0; i < lines.Count; i++)
             {
                 var lineNumber = i + 1 + "."; // Line numbers start at 1

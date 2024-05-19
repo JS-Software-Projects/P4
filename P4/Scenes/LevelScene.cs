@@ -20,9 +20,9 @@ public class LevelScene : IScreen
     }
     private void InitializeLevel(string path)
     {
-        _textEditor = new TextEditor(Globals.graphicsDevice, Globals.SpriteBatch, Globals.spriteFont, path);
-        _terminal = new Terminal(Globals.graphicsDevice , Globals.SpriteBatch, Globals.spriteFont);
         _level = GetNumberFromPath(path);
+        _textEditor = new TextEditor(Globals.graphicsDevice, Globals.SpriteBatch, Globals.spriteFont, path, _level);
+        _terminal = new Terminal(Globals.graphicsDevice , Globals.SpriteBatch, Globals.spriteFont);
         _gameManager = new GameManager(_level);
         if (_level != 1)
             _textEditor.LockLine(1);
