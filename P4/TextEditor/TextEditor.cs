@@ -17,7 +17,6 @@ public class TextEditor
     private readonly Rectangle numberArea;
     string _localfilePath = "";
     public event EventHandler ResetRequested;
-
     private readonly Button playButton;
 
     // to move left and right up and down
@@ -26,6 +25,7 @@ public class TextEditor
     private readonly SpriteBatch spriteBatch;
     private readonly SpriteFont spriteFont;
     private Rectangle textAreaRectangle;
+    private MessageTextBox _textBox;
 
     public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont,string localfilePath)
     {
@@ -33,7 +33,7 @@ public class TextEditor
         this.spriteBatch = spriteBatch;
         this.spriteFont = spriteFont;
         _localfilePath = localfilePath;
-
+        
         // Calculate dimensions to fill 35% of the right-hand side of the window
         var textAreaWidth =
             (int)(Globals.WindowSize.X * 0.38)+4; // 35% of the window width, accessed directly from Globals
@@ -44,7 +44,11 @@ public class TextEditor
         textAreaRectangle = new Rectangle(textAreaX, textAreaY, textAreaWidth, textAreaHeight);
         numberArea = new Rectangle(textAreaX - 40, textAreaY, 40, textAreaHeight);
         buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
-
+        
+        var textboxRectangle = new Rectangle(50, 50, 500, 500);
+        _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), "For this level, try to move the hero\nto the exit using");
+        
+        
         // Initialize your button here
         var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
         buttonTexture.SetData(new[] { Color.White });
@@ -136,7 +140,7 @@ public class TextEditor
         var maxHeight = Globals.WindowSize.Y - 90; // Maximum height for text lines
 
         // Calculate maximum number of lines allowed based on maxHeight and line spacing
-        var maxLines = (maxHeight - textAreaRectangle.Y) / spriteFont.LineSpacing;
+        var maxLines = ((maxHeight - textAreaRectangle.Y)-70) / spriteFont.LineSpacing;
 
         // Handle backspace
         if (character == '\b')
@@ -321,11 +325,25 @@ public class TextEditor
         DrawBorder(spriteBatch, textAreaRectangle, 2, Color.Black);
         DrawBorder(spriteBatch, numberArea, 2, Color.Black);
         DrawBorder(spriteBatch, buttomLine, 2, Color.Black);
-
+        
         // Set starting position for text (adjust margins as needed)
         var textStartX = textAreaRectangle.X + 10; // 10 pixels from the left edge of the text area
         var textStartY = textAreaRectangle.Y + 10; // 10 pixels from the top edge of the text area
+        
+        _textBox.Draw(spriteBatch);
+        
+        
+        // Calculate the y-coordinate of the line based on maxLines and line spacing
+        var maxLines = ((textAreaRectangle.Height - 70) / spriteFont.LineSpacing);
+        var lineY = textAreaRectangle.Y + maxLines * spriteFont.LineSpacing;
+        
+        // Create a 1x1 pixel texture for the line
+        var lineTexture = new Texture2D(graphicsDevice, 1, 1);
+        lineTexture.SetData(new[] { Color.Chartreuse });
 
+        // Draw the line from the calculated y-coordinate to the bottom of the text area
+        spriteBatch.Draw(lineTexture, new Rectangle(textAreaRectangle.X,(textAreaRectangle.Height - 170), textAreaRectangle.Width, 2), Color.Black);
+        
         for (var i = 0; i < lines.Count; i++)
         {
             var lineNumber = i + 1 + "."; // Line numbers start at 1
@@ -371,5 +389,7 @@ public class TextEditor
 
         // Draw bottom line
         spriteBatch.Draw(pixelTexture, new Rectangle(rectangle.X, rectangle.Bottom, rectangle.Width, thickness), color);
+        
+        
     }
 }

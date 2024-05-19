@@ -7,11 +7,14 @@ namespace P4.HomeScreen;
         private Button[] _levelButtons;
         private SpriteFont _font;
         private Texture2D _buttonTexture;
+        private MessageTextBox _introBox;
         public event Action<string> LevelSelected;
         public LevelSelectionScene()
         {
             LoadContent();
             InitializeLevelButtons();
+            _introBox = new MessageTextBox(new Rectangle(320, 20, 370, 0), " Welcome to the level selection screen!\n              Select a level to play!");
+            
         }
 
         private void LoadContent()
@@ -53,6 +56,7 @@ namespace P4.HomeScreen;
         public void Draw(GameTime gameTime)
         {
             Globals.SpriteBatch.Begin();
+            _introBox.Draw(Globals.SpriteBatch);
             foreach (var button in _levelButtons)
             {
                 button.Draw(Globals.SpriteBatch);
