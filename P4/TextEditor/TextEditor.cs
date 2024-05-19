@@ -10,62 +10,6 @@ using P4.managers;
 
 namespace P4
 {
-
-    private readonly Rectangle buttomLine;
-    private int currentLine;
-    private int cursorPosition;
-    private readonly GraphicsDevice graphicsDevice;
-    private readonly List<string> lines = new() { "" };
-    private readonly Rectangle numberArea;
-    string _localfilePath = "";
-    public event EventHandler ResetRequested;
-    private readonly Button playButton;
-
-    // to move left and right up and down
-    private KeyboardState previousKeyboardState;
-    private MouseState previousMouseState;
-    private readonly SpriteBatch spriteBatch;
-    private readonly SpriteFont spriteFont;
-    private Rectangle textAreaRectangle;
-    private MessageTextBox _textBox;
-
-    public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont,string localfilePath)
-    {
-        this.graphicsDevice = graphicsDevice;
-        this.spriteBatch = spriteBatch;
-        this.spriteFont = spriteFont;
-        _localfilePath = localfilePath;
-        
-        // Calculate dimensions to fill 35% of the right-hand side of the window
-        var textAreaWidth =
-            (int)(Globals.WindowSize.X * 0.38)+4; // 35% of the window width, accessed directly from Globals
-        var textAreaHeight = Globals.WindowSize.Y; // Full height, accessed directly from Globals
-        var textAreaX = Globals.WindowSize.X - textAreaWidth; // Positioned on the right, accessed directly from Globals
-        var textAreaY = 0; // Start at the top
-
-        textAreaRectangle = new Rectangle(textAreaX, textAreaY, textAreaWidth, textAreaHeight);
-        numberArea = new Rectangle(textAreaX - 40, textAreaY, 40, textAreaHeight);
-        buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
-        
-        var textboxRectangle = new Rectangle(50, 50, 500, 500);
-        _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), "For this level, try to move the hero\nto the exit using");
-        
-        
-        // Initialize your button here
-        var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
-        buttonTexture.SetData(new[] { Color.White });
-        var buttonX = textAreaX + textAreaWidth / 2 - 90; // Centering of the text area
-        playButton = new Button(new Rectangle(buttonX, graphicsDevice.Viewport.Height - 60, 180, 40), "Execute and run",
-            spriteFont, buttonTexture, Color.Black, Color.Salmon, Color.DarkSalmon);
-        playButton.Click += OnPlayButtonClick;
-
-        //load file content
-        // Get the current directory of the running program
-        var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var filePath = Path.Combine(baseDirectory, localfilePath);
-
-        LoadFileContent(filePath);
-
     public class TextEditor
     {
         private readonly Rectangle buttomLine;
@@ -87,6 +31,8 @@ namespace P4
         private readonly SpriteBatch spriteBatch;
         private readonly SpriteFont spriteFont;
         private Rectangle textAreaRectangle;
+        
+        private MessageTextBox _textBox;
 
         public TextEditor(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont, string localfilePath)
         {
@@ -105,6 +51,9 @@ namespace P4
             numberArea = new Rectangle(textAreaX - 40, textAreaY, 40, textAreaHeight);
             buttomLine = new Rectangle(textAreaX, textAreaY + textAreaHeight - 80, textAreaWidth, 80);
 
+            var textboxRectangle = new Rectangle(50, 50, 500, 500);
+            _textBox = new MessageTextBox(new Rectangle(620, 472, 370, 0), "For this level, try to move the hero\nto the exit using");
+            
             // Initialize your button here
             var buttonTexture = new Texture2D(graphicsDevice, 1, 1);
             buttonTexture.SetData(new[] { Color.White });
