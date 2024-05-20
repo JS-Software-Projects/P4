@@ -1,1 +1,4 @@
-Tower tower = new Tower(2,2);
+
+for(Num x =1; x<9; x=x+1);{ 
+Tower tower= new Tower(x,3);
+}
