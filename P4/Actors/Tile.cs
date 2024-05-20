@@ -26,12 +26,12 @@ public class Tile : Sprite
 
     public void Update()
     {
-        if (Pathfinder.Ready() && Rectangle.Contains(InputManager.tile))
+        if (Pathfinder.Ready() && Rectangle.Contains(InputManager.CurrentTarget))
         {
             if (InputManager.execute)
             {
                 Pathfinder.BFSearch(_mapX, _mapY);
-                InputManager.SetExecute(false,_mapX, _mapY);
+                InputManager.MoveToNextTarget();
             }
         }
 
