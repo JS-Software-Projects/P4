@@ -159,7 +159,10 @@ namespace P4
                     cursorPosition = lines[currentLine].Length;
 
                     // If the file is empty, ensure there is at least one empty line
-                    if (lines.Count == 0) lines.Add("");
+                    if (lines.Count == 1)
+                    {
+                        lines.Add("");
+                    }
                 }
             }
             else
