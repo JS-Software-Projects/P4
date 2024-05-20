@@ -149,6 +149,7 @@ namespace P4
                     {
                         fileLines.Add(line);
                     }
+                    
 
                     // Clear current text and reset cursor
                     lines.Clear();

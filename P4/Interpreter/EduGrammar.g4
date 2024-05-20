@@ -33,10 +33,10 @@ assignment: id '=' expr ';';
 
 print: 'print' '(' expr ')' ';';
 
-ifBlock: 'if' expr block elseBlock?;
+ifBlock: 'if' '(' expr ')' block  elseBlock?;
 elseBlock: 'else' block;
 
-whileBlock: 'while' expr block;
+whileBlock: 'while' '(' expr ')' block;
 
 block: '{' statement* '}';
 

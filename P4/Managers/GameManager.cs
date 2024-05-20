@@ -146,8 +146,8 @@ public class GameManager
             enemyPositions.Add(_hero.Position);
             foreach (var tower in _tower)
             {
-                if (tower != null)
-                    tower.Update(enemyPositions);
+             //   if (tower != null)
+                  //  tower.Update(enemyPositions);
             }   
             checkHeroCircleHit();
         }
