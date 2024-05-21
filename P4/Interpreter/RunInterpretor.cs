@@ -25,9 +25,7 @@ public class RunInterpretor
             
             var scopeTypeChecker = new ScopeTypeChecker();
             scopeTypeChecker.Visit(AST);
-            //var scopeChecker = new AstScopeChecker();
             Console.WriteLine(AST.ToString());
-            //scopeChecker.Visit(AST);
             var interpretationVisitor = new InterpretationVisitor();
             interpretationVisitor.Visit(AST);
             
