@@ -1,5 +1,5 @@
 Hero hero = new Hero(0,3);
 
-Num x = _;
+Num x = 10;
 
-hero.move(x,y);
+hero.move(x,3);

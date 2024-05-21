@@ -185,6 +185,15 @@ public class InterpretationVisitor : IASTVisitor<object>
             var x = (double)Visit(node.ArgumentLists.Arguments[0]);
             var y = (double)Visit(node.ArgumentLists.Arguments[1]);
             
+            if (x > 8 || x < 1)
+            {
+                throw new Exception("Cannot create tower, value X is out \n of bounds. X must be between 1 and 8");
+            }
+            if (y > 8 || y < 1)
+            {
+                throw new Exception("Cannot create tower, value Y is out \n of bounds. Y must be between 1 and 8");
+            }
+            
            var tower = GameManager.AddTower(x,y);
            Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
            node.SetGameObject(tower);
@@ -215,7 +224,17 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
             var x = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var y = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-           Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
+
+            if (x > 8 || x < 1)
+            {
+                throw new Exception("Cannot move hero, value X is out \n of bounds. X must be between 1 and 8");
+            }
+            if (y > 8 || y < 1)
+            {
+                throw new Exception("Cannot move hero, value Y is out \n of bounds. Y must be between 1 and 8");
+            }
+
+            Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
             GameManager.HeroMove(x,y);
         }
         return null;
@@ -247,21 +266,6 @@ public class InterpretationVisitor : IASTVisitor<object>
         }
         return null;
     }
-    
-    
-    /*
-    public object Visit(VariableDeclaration node)
-    {
-        _environment.DeclareVariable(node.VariableName.Name);
-        if (node.Expression != null)
-        {
-            var value = Visit(node.Expression);
-            _environment.DeclareVariable(node.VariableName.Name, value);
-        }
-        
-        return null;
-    }
-    */
 
     public object Visit(ConstantExpression node)
     {
