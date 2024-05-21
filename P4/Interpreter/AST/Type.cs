@@ -14,7 +14,7 @@ public class Type : ASTNode {
 
     public bool IsCorrectType()
     {
-        foreach (Types type in Enum.GetValues(typeof(Types)))
+        foreach (TypesEnum type in Enum.GetValues(typeof(TypesEnum)))
         {
             if (TypeName == type.ToString())
             {
@@ -36,7 +36,7 @@ public class Type : ASTNode {
     }
 }
 
-public enum Types
+public enum TypesEnum
 {
     Num,
     String,

@@ -1,5 +1,3 @@
-Tower tower = new Tower(3,3);
-Tower tower2 = new Tower(5,3);
 
-Hero hero = new Hero();
-hero.move(8,8);
+
+Tower tower= new Tower(4,5);

@@ -38,7 +38,7 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     }
     public override ASTNode VisitGameObjectDeclaration(EduGrammarParser.GameObjectDeclarationContext context)
     {
-        var classType = (TypeClass)VisitGameType(context.gameType()[0]);
+        var classType = (ObjectType)VisitObjectType(context.objectType()[0]);
         var objectName = VisitId(context.id()) as IdentifierExpression;
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
 
@@ -52,14 +52,14 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
         var objectName = VisitId(context.id()) as IdentifierExpression;
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
         var methodName = context.ID().GetText();
-        return new GameObjectCall(objectName,methodName, arguments)
+        return new GameObjectMethodCall(objectName,methodName, arguments)
         {
             LineNumber = _lineNumber
         };
     }
-    public override ASTNode VisitGameType(EduGrammarParser.GameTypeContext context)
+    public override ASTNode VisitObjectType(EduGrammarParser.ObjectTypeContext context)
     {
-        return new TypeClass(context.GetText())
+        return new ObjectType(context.GetText())
         {
             LineNumber = _lineNumber
         };
@@ -243,9 +243,10 @@ public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext con
         {
             LineNumber = _lineNumber
         };
-    }
+    } 
     return VisitTerm(context.term(0));
 }
+
 
 public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
 {
@@ -261,13 +262,17 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     {
         return VisitParenExpr(context.parenExpr());
     }
-    else if (context.functionCall() != null)
+    else if (context.functionCallExpr() != null)
     {
-        return VisitFunctionCall(context.functionCall());
+        return VisitFunctionCallExpr(context.functionCallExpr());
     }
 
     return null;
 }
+    public override ASTNode VisitParenExpr(EduGrammarParser.ParenExprContext context)
+    {
+        return Visit(context.expr());
+    }
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
         return new IdentifierExpression(context.GetText())
@@ -361,12 +366,20 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
             LineNumber = _lineNumber
         };
     }
-    public override ASTNode VisitFunctionCall(EduGrammarParser.FunctionCallContext context)
+    public override ASTNode VisitFunctionCallStatement(EduGrammarParser.FunctionCallStatementContext context)
     {
         var functionName = context.id().GetText();
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
-
         return new FunctionCallStatement(functionName, arguments)
+        {
+            LineNumber = _lineNumber
+        };
+    }
+    public override ASTNode VisitFunctionCallExpr(EduGrammarParser.FunctionCallExprContext context)
+    {
+        var functionName = context.id().GetText();
+        var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
+        return new FunctionCallExpression(functionName, arguments)
         {
             LineNumber = _lineNumber
         };

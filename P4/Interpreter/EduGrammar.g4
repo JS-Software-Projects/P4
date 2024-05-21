@@ -1,6 +1,6 @@
 ﻿grammar EduGrammar;
 
-program: gameObjectDeclaration* functionDeclaration* statement* EOF;
+program: functionDeclaration* statement* EOF;
 
 statement: 
       variableDeclaration
@@ -8,11 +8,12 @@ statement:
     | print  
     | ifBlock 
     | whileBlock 
-    | functionCall
+    | functionCallStatement
     | returnStatement
     | forLoop
+    | gameObjectDeclaration
     | gameObjectMethodCall;
-
+    
 variableDeclaration:
     type id '=' expr ';' | type id ';';
 
@@ -23,8 +24,11 @@ parameterList:
 parameter:
     type id;
     
-functionCall:
+functionCallStatement:
     id '(' argumentList? ')' ';';
+functionCallExpr:
+    id '(' argumentList? ')' ';';
+    
 argumentList:
     expr (',' expr)*;    
 
@@ -32,10 +36,10 @@ assignment: id '=' expr ';';
 
 print: 'print' '(' expr ')' ';';
 
-ifBlock: 'if' expr block elseBlock?;
+ifBlock: 'if' '(' expr ')' block  elseBlock?;
 elseBlock: 'else' block;
 
-whileBlock: 'while' expr block;
+whileBlock: 'while' '(' expr ')' block;
 
 block: '{' statement* '}';
 
@@ -43,10 +47,10 @@ returnStatement: 'return' expr ';';
 forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
 
 
-gameObjectDeclaration: gameType id '=' 'new' gameType '(' argumentList? ')' ';';
+gameObjectDeclaration: objectType id '=' 'new' objectType '(' argumentList? ')' ';';
 gameObjectMethodCall: id '.' ID '(' argumentList? ')' ';';
 
-gameType: 'Tower' | 'Hero';
+objectType: 'Tower' | 'Hero';
 
 expr: boolExpr;
 boolExpr           : comparisonExpr ( boolOp comparisonExpr )* ;
@@ -55,7 +59,7 @@ additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
 multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
-term               : id | constant | parenExpr | functionCall;
+term               : id | constant | parenExpr | functionCallExpr;
 
 //binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 

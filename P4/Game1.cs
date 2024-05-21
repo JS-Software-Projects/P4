@@ -1,4 +1,7 @@
-﻿namespace P4;
+﻿using System;
+using System.IO;
+
+namespace P4;
 using P4.HomeScreen;
 public class Game1 : Game
 {
@@ -8,6 +11,7 @@ public class Game1 : Game
     private StateManager _stateManager;
     private UIManager _uiManager;
     private IScreen _currentScene;
+    private LevelSelectionScene _levelSelectionScene;
 
     public Game1()
     {
@@ -49,17 +53,30 @@ public class Game1 : Game
         base.Initialize();
         _uiManager = new UIManager();
         HomeScene homeScreen = new HomeScene();
-        LevelSelectionScene levelSelectionScene = new LevelSelectionScene();
+        _levelSelectionScene = new LevelSelectionScene();
         
         _stateManager.ScreenChanged += OnScreenChanged;
         _uiManager.HomeClicked += () => _stateManager.ChangeScreen(homeScreen);
-        homeScreen.OnPlayClicked += () => _stateManager.ChangeScreen(levelSelectionScene);
+        homeScreen.OnPlayClicked += () =>
+        {
+            _stateManager.ChangeScreen(_levelSelectionScene);
+            Terminal.resetLines();
+        };
         homeScreen.OnQuitClicked += HandleQuitClicked;
-        levelSelectionScene.LevelSelected += (path) =>
+        homeScreen.OnResetLevelsClicked += HandleResetLevelsClicked;
+        _levelSelectionScene.LevelSelected += (path) =>
         {
             LevelScene levelScene = new LevelScene(path);
             _stateManager.ChangeScreen(levelScene);
+            levelScene.ChangeSceneRequested += () =>
+            {
+                string levelName = Path.GetFileNameWithoutExtension(path);
+                _levelSelectionScene.MarkLevelAsCompleted(levelName);
+                _stateManager.ChangeScreen(_levelSelectionScene);
+            };
+            
         };
+        
         _stateManager.ChangeScreen(homeScreen); // Start with the home screen
         
         Window.TextInput += TextInputHandler;
@@ -72,6 +89,65 @@ public class Game1 : Game
     {
         Exit();  // Exit the game
     }
+    private static readonly object fileLock = new object();
+
+    private void HandleResetLevelsClicked()
+    {
+        string levelsDirectory = Path.Combine(Globals.Content.RootDirectory, "../../../../Levels");
+        string initialDirectory = Path.Combine(levelsDirectory, "InitialLevels");
+        _levelSelectionScene.ResetCompletedLevels();
+        
+        if (!Directory.Exists(initialDirectory))
+        {
+            Console.WriteLine("Source directory does not exist.");
+            return;
+        }
+
+        if (!Directory.Exists(levelsDirectory))
+        {
+            Console.WriteLine("Target directory does not exist. Creating it.");
+            Directory.CreateDirectory(levelsDirectory);
+        }
+
+        // Get all files in the source directory
+        string[] sourceFiles = Directory.GetFiles(initialDirectory, "*.txt");
+
+        foreach (string sourceFilePath in sourceFiles)
+        {
+            string fileName = Path.GetFileName(sourceFilePath);
+            string targetFilePath = Path.Combine(levelsDirectory, fileName);
+
+            bool copied = false;
+            int retries = 3;
+
+            while (!copied && retries > 0)
+            {
+                try
+                {
+                    // Copy the file, overwrite if it already exists
+                    lock (fileLock)
+                    {
+                        File.Copy(sourceFilePath, targetFilePath, true);
+                    }
+                    copied = true;
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine($"IOException encountered: {ex.Message}");
+                    retries--;
+                    System.Threading.Thread.Sleep(100); // Wait for 100 milliseconds before retrying
+                }
+            }
+
+            if (!copied)
+            {
+                Console.WriteLine($"Failed to copy {fileName} after multiple attempts.");
+            }
+        }
+
+        Console.WriteLine("Levels have been reset.");
+    }
+
 
     private void TextInputHandler(object sender, TextInputEventArgs e)
     {

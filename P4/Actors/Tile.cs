@@ -9,6 +9,9 @@ public class Tile : Sprite
     public readonly int _mapX;
     public readonly int _mapY;
     public List<string> _boundry = new();
+    
+    // List to store circles
+    private Circle _circle;
 
     public Tile(Texture2D texture, Vector2 position, int mapX, int mapY) : base(texture, position)
     {
@@ -23,14 +26,15 @@ public class Tile : Sprite
 
     public void Update()
     {
-        if (Pathfinder.Ready() && Rectangle.Contains(InputManager.tile))
+        if (Pathfinder.Ready() && Rectangle.Contains(InputManager.CurrentTarget))
         {
             if (InputManager.execute)
             {
                 Pathfinder.BFSearch(_mapX, _mapY);
-                InputManager.SetExecute(false,_mapX, _mapY);
+                InputManager.MoveToNextTarget();
             }
         }
+
 
         Color = Path ? Color.Green : Color.White;
         //Color = Blocked ? Color.Red : Color;
@@ -38,6 +42,27 @@ public class Tile : Sprite
         {
             Color = Color.RosyBrown;
         }
+    }
+    public Circle getCircle()
+    {
+            return _circle;
+    }
+    public void AddCircle(Color color)
+    {
+        // Create a circle with a radius of 10 and a border thickness of 2
+        _circle = new Circle(new Vector2(Position.X + texture.Width / 2, Position.Y + texture.Height / 2), 20, color, 1);
+    }
+    public void removeCircle()
+    {
+        _circle = null;
+    }
+    public bool CircleExist()
+    {
+        if (_circle != null)
+        {
+            return true;
+        }
+        return false;
     }
     public override void Draw()
     {
@@ -65,7 +90,10 @@ public class Tile : Sprite
                     break;
             }
         }
-        
+        // Draw the circles on the tile
+
+        _circle?.Draw(Globals.SpriteBatch, Globals.Pixel);
+
     }
 
 }
