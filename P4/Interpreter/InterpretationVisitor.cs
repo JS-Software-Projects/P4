@@ -182,18 +182,16 @@ public class InterpretationVisitor : IASTVisitor<object>
 
         if (node.ObjectType.TypeName == "Tower")
         {
-            var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
-            var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
+            var x = (double)Visit(node.ArgumentLists.Arguments[0]);
+            var y = (double)Visit(node.ArgumentLists.Arguments[1]);
             
-           BasicTower tower =  new(Globals.Content.Load<Texture2D>("Cannon"), new Vector2(arg1*Globals.TileSize, arg2*Globals.TileSize), Color.White);
-           GameManager.AddTower(tower);
-           Terminal.AddMessage(false,"Tower added");
+           var tower = GameManager.AddTower(x,y);
+           Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
            node.SetGameObject(tower);
            _environment.DeclareVariable(node.ObjectName.Name,node);
         } 
         else if (node.ObjectType.TypeName == "Hero")
         {
-            
             //var arg1 = (float)(double)Visit(node.ArgumentLists.Arguments[0]);
             //var arg2 = (float)(double)Visit(node.ArgumentLists.Arguments[1]);
            // Hero hero = new(Globals.Content.Load<Texture2D>("Hero"), new Vector2(arg1*Globals.TileSize, (arg2-1)*Globals.TileSize));
@@ -213,13 +211,12 @@ public class InterpretationVisitor : IASTVisitor<object>
     public object Visit(GameObjectMethodCall node)
     {
         var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
+        
         if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
-            var arg1 = (int)(double)Visit(node.ArgumentList.Arguments[0]);
-            var arg2 = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-            //var hero = (Hero)Gameobject.GetGameObject();
-           // hero.MoveHero(arg1,arg2);
-           Terminal.AddMessage(false,"moving hero to: " + arg1 + " , " + arg2);
-            GameManager.HeroMove(arg1,arg2);
+            var x = (int)(double)Visit(node.ArgumentList.Arguments[0]);
+            var y = (int)(double)Visit(node.ArgumentList.Arguments[1]);
+           Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
+            GameManager.HeroMove(x,y);
         }
         return null;
     }

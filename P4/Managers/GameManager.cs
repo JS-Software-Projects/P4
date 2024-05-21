@@ -59,23 +59,18 @@ public class GameManager
             }
         }
     }
-    public static void AddTower(BasicTower tower)
+    public static BasicTower AddTower(double x,double y)
     {
-        var x = tower.Position.X / Globals.TileSize;
-        var y = tower.Position.Y / Globals.TileSize;
-      _tower.Add(tower);
-        _map.Tiles[(int)x-1, (int)y-1].removeCircle();
+        BasicTower tower =  new(Globals.Content.Load<Texture2D>("Cannon"), new Vector2((float)x*Globals.TileSize, (float)y*Globals.TileSize), Color.White);
+        _tower.Add(tower);
+        if (_map.Tiles[(int) x-1, (int) y-1].CircleExist()){
+            _map.Tiles[(int)x-1, (int)y-1].removeCircle();
+        }
+        return tower;
     }
 
     public static void HeroMove(int x, int y)
     {
-        /* // Restriction for the hero to move only on the path
-      if (_map.Tiles[x-1, y-1]._boundry.Count != 2)
-      {
-          Terminal.SetError(true,"Cannot move hero to Tile : " + x + " " + y + ". Tile is not a path");
-          return;
-      }
-        */
       InputManager.SetExecute(true, x, y);
     }
     public void CheckCircles()
