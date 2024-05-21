@@ -1,3 +1,1 @@
-
-
-Tower tower= new Tower(10,5);
+Bool a= true
