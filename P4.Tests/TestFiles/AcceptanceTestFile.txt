@@ -1,4 +1,4 @@
-﻿function Num doublevalue(Num f) {
+﻿function Num doubleValue(Num f) {
     return f * 2;
 }
 Num x = 0;
@@ -8,12 +8,12 @@ print(y);
 while (x > 2) {
     x = x - 1;
 }
-x = doubleValue(x);
+doubleValue(x);
 if (y == "Hello") {
-    x = x + 2
+    x = x + 2;
 }
 else {
-    x = x - 1
+    x = x - 1;
 }
 if (5 >= x) {
     print("function did not work");
@@ -34,8 +34,8 @@ for (Num i = 0; i <= 5; i = i + 1) {
 if (x == 10 && x != 11) {
     print("all good");
 }
-Num z = 4;
-if (x == 2 || z == 4) {
+Num z = -4;
+if (x == 2 || z == -4) {
     x= x + 1;
 }
-x<12 ? x + 1 :  x - 1;
+x<12 ?x = x + 1 : x = x - 1;

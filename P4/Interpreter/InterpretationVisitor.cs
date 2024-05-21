@@ -11,7 +11,7 @@ namespace P4.Interpreter;
 
 public class InterpretationVisitor : IASTVisitor<object>
 {
-    public Environment _environment = new();
+    private Environment _environment = new();
     
     public object Visit(ASTNode node)
     {

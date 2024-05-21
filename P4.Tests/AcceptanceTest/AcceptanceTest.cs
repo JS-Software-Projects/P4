@@ -29,7 +29,7 @@ public class AcceptanceTest
         interpretationVisitor.Visit(AST);
 
         // Get the value of x from the environment
-        var xValue = interpretationVisitor._environment.Get("x");
+        var xValue = interpretationVisitor.Visit(new IdentifierExpression ("x"));
 
         // Assert
         Assert.Equal(12, xValue);
