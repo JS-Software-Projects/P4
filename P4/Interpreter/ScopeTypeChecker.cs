@@ -12,6 +12,7 @@ public  ScopeTypeChecker()
     {
         _symbolTableType.Add("true", new Type("Bool"));
         _symbolTableType.Add("false", new Type("Bool"));
+        _symbolTableType.Add("null", null);
         
     }
     public Type Visit(ASTNode node)

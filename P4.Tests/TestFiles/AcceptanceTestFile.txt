@@ -1,6 +1,10 @@
 function Num doubleValue(Num f) {
     return f * 2;
 }
+function Void printNogetFedt(String s) {
+    print(s);
+    return null;
+}
 Num x = 0;
 String y = "Hello";
 x = 10;
@@ -38,5 +42,5 @@ Num z = -4;
 if (x == 2 || z == -4) {
     x= x + 1;
 }
-
 x = (x < 16) ?  (x + 1 ) : (x - 1);
+printNogetFedt("Noget Fedt");

@@ -16,7 +16,7 @@ public class InterpretationVisitor : IASTVisitor<object>
     {
         _environment.DeclareVariable("true", true);
         _environment.DeclareVariable("false", false);
-        
+        _environment.DeclareVariable("null", null);
     }
     public object Visit(ASTNode node)
     {
