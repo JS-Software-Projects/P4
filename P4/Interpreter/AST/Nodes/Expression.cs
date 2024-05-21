@@ -69,7 +69,25 @@ public class BinaryExpression : Expression
         return $"({leftExpr} {Operator} {rightExpr})";
     
     }
-    
+}
+public class FunctionCallExpression : Expression
+{
+    public string FunctionName { get; set; }
+    public ArgumentList Arguments { get; set; } 
+    public override T Accept<T>(IASTVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
+
+    public FunctionCallExpression(string functionName, ArgumentList arguments)
+    {
+        FunctionName = functionName;
+        Arguments = arguments;
+    }
+    public override string ToString()
+    {
+        return $"FunctionCall: {FunctionName}({string.Join(", ", Arguments)})";
+    }
 }
 
 public class UnaryExpression : Expression

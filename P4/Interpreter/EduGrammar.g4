@@ -8,7 +8,7 @@ statement:
     | print  
     | ifBlock 
     | whileBlock 
-    | functionCall
+    | functionCallStatement
     | returnStatement
     | forLoop
     | gameObjectDeclaration
@@ -24,8 +24,11 @@ parameterList:
 parameter:
     type id;
     
-functionCall:
+functionCallStatement:
     id '(' argumentList? ')' ';';
+functionCallExpr:
+    id '(' argumentList? ')' ';';
+    
 argumentList:
     expr (',' expr)*;    
 
@@ -56,7 +59,7 @@ additionExpr       : multiplicationExpr ( addSubOp multiplicationExpr )* ;
 multiplicationExpr : unaryExpr ( multiOp unaryExpr )* ;
 unaryExpr          : ( unOP)* ternaryExpr ;
 ternaryExpr        : term('?' term ':' term)* ;
-term               : id | constant | parenExpr | functionCall;
+term               : id | constant | parenExpr | functionCallExpr;
 
 //binOP: addSubOp | multiOp | boolOp | compareOp | ternaryOp;
 
