@@ -12,7 +12,12 @@ namespace P4.Interpreter;
 public class InterpretationVisitor : IASTVisitor<object>
 {
     private Environment _environment = new();
-    
+    public  InterpretationVisitor()
+    {
+        _environment.DeclareVariable("true", true);
+        _environment.DeclareVariable("false", false);
+        
+    }
     public object Visit(ASTNode node)
     {
         return node.Accept(this);

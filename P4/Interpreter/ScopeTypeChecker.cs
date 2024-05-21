@@ -8,7 +8,12 @@ using P4.Interpreter.AST.Nodes;
 public class ScopeTypeChecker : IASTVisitor<Type>
 {
     private readonly SymbolTable<string,Type> _symbolTableType = new();
-
+public  ScopeTypeChecker()
+    {
+        _symbolTableType.Add("true", new Type("Bool"));
+        _symbolTableType.Add("false", new Type("Bool"));
+        
+    }
     public Type Visit(ASTNode node)
     {
         return node.Accept(this);
@@ -182,7 +187,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             }
         }
 
-        return null;
+        return functionType;
     }
 
     public Type Visit(GameObjectDeclaration node)

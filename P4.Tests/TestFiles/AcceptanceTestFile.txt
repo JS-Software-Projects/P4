@@ -8,7 +8,7 @@ print(y);
 while (x > 2) {
     x = x - 1;
 }
-doubleValue(x);
+x = doubleValue(x);
 if (y == "Hello") {
     x = x + 2;
 }
@@ -38,4 +38,4 @@ Num z = -4;
 if (x == 2 || z == -4) {
     x= x + 1;
 }
-x<12 ?x = x + 1 : x = x - 1;
+
