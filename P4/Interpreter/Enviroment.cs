@@ -11,6 +11,7 @@ public class Environment
         _locationTable = new SymbolTable<string, int>();
         _valueTable = new SymbolTable<int, object>();
         _nextLocation = 0;
+        
     }
 
     private Environment(SymbolTable<string, int> locationTable, SymbolTable<int, object> valueTable, int nextLocation)
