@@ -58,11 +58,13 @@ public class RunInterpretor
             visitor.Visit(tree);
             */
             
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
             Terminal.SetError(true, e.Message);
             Console.WriteLine("Error:"+e.Message);
             Console.WriteLine("Error: "+e.StackTrace);
         }
+        
     }
 }
