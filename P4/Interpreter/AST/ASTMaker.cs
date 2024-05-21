@@ -243,9 +243,10 @@ public override ASTNode VisitTernaryExpr(EduGrammarParser.TernaryExprContext con
         {
             LineNumber = _lineNumber
         };
-    }
+    } 
     return VisitTerm(context.term(0));
 }
+
 
 public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
 {
@@ -268,6 +269,10 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
 
     return null;
 }
+    public override ASTNode VisitParenExpr(EduGrammarParser.ParenExprContext context)
+    {
+        return Visit(context.expr());
+    }
     public override ASTNode VisitId(EduGrammarParser.IdContext context)
     {
         return new IdentifierExpression(context.GetText())

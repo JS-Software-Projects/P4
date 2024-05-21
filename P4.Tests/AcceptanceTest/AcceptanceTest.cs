@@ -32,6 +32,6 @@ public class AcceptanceTest
         var xValue = interpretationVisitor.Visit(new IdentifierExpression ("x"));
 
         // Assert
-        Assert.Equal(12.0, xValue);
+        Assert.Equal(13.0, xValue);
     }
 }
