@@ -8,7 +8,13 @@ using P4.Interpreter.AST.Nodes;
 public class ScopeTypeChecker : IASTVisitor<Type>
 {
     private readonly SymbolTable<string,Type> _symbolTableType = new();
-
+public  ScopeTypeChecker()
+    {
+        _symbolTableType.Add("true", new Type("Bool"));
+        _symbolTableType.Add("false", new Type("Bool"));
+        _symbolTableType.Add("null", null);
+        
+    }
     public Type Visit(ASTNode node)
     {
         return node.Accept(this);
@@ -161,7 +167,7 @@ public class ScopeTypeChecker : IASTVisitor<Type>
         
         if (!_symbolTableType.IsTypeCorrect(varName.Name, expression))
         {
-            throw new Exception("Type mismatch. In line:"+node.LineNumber);
+            throw new Exception("Type mismatch."+"exprType:"+expression.TypeName+" In line:"+node.LineNumber);
         }
         return null;
     }
@@ -182,7 +188,25 @@ public class ScopeTypeChecker : IASTVisitor<Type>
             }
         }
 
-        return null;
+        return functionType;
+    }
+    public Type Visit(FunctionCallExpression node)
+    {
+        if (!_symbolTableType.IsVariableDeclared(node.FunctionName))
+        {
+            throw new Exception("Function not declared. In line: "+node.LineNumber);
+        }
+
+        var functionType = _symbolTableType.Get(node.FunctionName) as TypeExtended;
+        for (int i = 0; i < node.Arguments.Arguments.Count; i++)
+        {
+            if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
+            {
+                throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
+            }
+        }
+
+        return functionType;
     }
 
     public Type Visit(GameObjectDeclaration node)

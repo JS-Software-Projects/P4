@@ -11,6 +11,7 @@ public interface IASTVisitor<T>
     T Visit(TernaryExpression node);
     T Visit(AssignmentStatement node);
     T Visit(FunctionCallStatement node);
+    T Visit(FunctionCallExpression node);
     T Visit(GameObjectDeclaration node);
     T Visit(GameObjectMethodCall node);
     T Visit(VariableDeclaration node);

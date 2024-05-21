@@ -1,0 +1,46 @@
+function Num doubleValue(Num f) {
+    return f * 2;
+}
+function Void printNogetFedt(String s) {
+    print(s);
+    return null;
+}
+Num x = 0;
+String y = "Hello";
+x = 10;
+print(y);
+while (x > 2) {
+    x = x - 1;
+}
+x = doubleValue(x);
+if (y == "Hello") {
+    x = x + 2;
+}
+else {
+    x = x - 1;
+}
+if (5 >= x) {
+    print("function did not work");
+}
+else {
+    x = x / 2;
+}
+Bool b = false;
+if (!b) {
+    x = x + 2;
+}
+else {
+    print("unary operator did not work");
+}
+for (Num i = 0; i <= 5; i = i + 1) {
+    x = x + 1;
+}
+if (x == 10 && x != 11) {
+    print("all good");
+}
+Num z = -4;
+if (x == 2 || z == -4) {
+    x= x + 1;
+}
+x = (x < 16) ?  (x + 1 ) : (x - 1);
+printNogetFedt("Noget Fedt");

@@ -1,1 +1,3 @@
-Tower tower = new Tower(2,2);
+
+
+Tower tower= new Tower(1,3);

@@ -12,6 +12,12 @@ namespace P4.Interpreter;
 public class InterpretationVisitor : IASTVisitor<object>
 {
     private Environment _environment = new();
+    public  InterpretationVisitor()
+    {
+        _environment.DeclareVariable("true", true);
+        _environment.DeclareVariable("false", false);
+        _environment.DeclareVariable("null", null);
+    }
     public object Visit(ASTNode node)
     {
         return node.Accept(this);
@@ -130,6 +136,27 @@ public class InterpretationVisitor : IASTVisitor<object>
     }
 
     public object Visit(FunctionCallStatement node)
+    {
+        var function = (FunctionDeclaration)_environment.Get(node.FunctionName);
+        var originalEnvironment = _environment; // Save the current environment
+        _environment = function.GetEnvironment().Copy(); // Switch to the function's environment
+        _environment.PushScope();
+
+        for (int i = 0; i < node.Arguments.Arguments.Count; i++)
+        {
+            var param = function.ParameterList.Parameters[i];
+            var argValue = Visit(node.Arguments.Arguments[i]);
+            _environment.DeclareVariable(param.ParameterName.Name, argValue);
+        }
+
+        var result = Visit(function.Block); // Execute the function body in the new environment
+
+        _environment.PopScope();
+        _environment = originalEnvironment; // Restore the original environment
+        return result;
+    }
+
+    public object Visit(FunctionCallExpression node)
     {
         var function = (FunctionDeclaration)_environment.Get(node.FunctionName);
         var originalEnvironment = _environment; // Save the current environment
