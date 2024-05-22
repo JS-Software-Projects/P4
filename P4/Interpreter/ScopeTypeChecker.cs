@@ -230,7 +230,7 @@ public  ScopeTypeChecker()
         {
             if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
             {
-                throw new Exception("Incorrect number of arguments in Tower GameObject declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
+                throw new Exception("Incorrect number of arguments in Tower GameObject \n declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
             }
             for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
             {

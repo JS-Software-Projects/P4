@@ -40,6 +40,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     {
         var classType = (ObjectType)VisitObjectType(context.objectType()[0]);
         var objectName = VisitId(context.id()) as IdentifierExpression;
+        if (context.objectType().Length < 2)
+        {
+            throw new SyntaxErrorException("Expected token twice. Only received Token:\""+classType.TypeName+"\" once \n Pleas write in the format: "+classType.TypeName+" "+objectName.Name+" = new "+classType.TypeName+"(x,y);", _lineNumber,19);
+            
+        }
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
 
         return new GameObjectDeclaration(classType, objectName, arguments)
