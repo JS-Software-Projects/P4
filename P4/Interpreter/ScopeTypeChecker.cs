@@ -102,7 +102,7 @@ public  ScopeTypeChecker()
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Bool.");
+                    throw new Exception("Type mismatch in binary expression: expected a Bool.In line:"+node.LineNumber);
                 }
                
             default:
