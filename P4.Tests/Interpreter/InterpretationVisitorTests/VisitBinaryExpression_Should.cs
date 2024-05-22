@@ -70,7 +70,7 @@ public class VisitBinaryExpressionShould
         var node = new BinaryExpression(leftExpression, Operator.Divide, rightExpression);
         
         var exception = Assert.Throws<Exception>(() => _visitor.Visit(node));
-        Assert.Equal("Division by zero", exception.Message);
+        Assert.Equal("Division by zero in line: 0", exception.Message);
     }
     [Theory]
     [InlineData(3.0, 4.0, true)]
@@ -186,6 +186,6 @@ public class VisitBinaryExpressionShould
         var node = new BinaryExpression(leftExpression, Operator.Not, rightExpression);
 
         var exception = Assert.Throws<Exception>(() => _visitor.Visit(node));
-        Assert.Equal("Unknown operator", exception.Message);
+        Assert.Equal("Unknown operator in line: 0", exception.Message);
     }
 }

@@ -188,7 +188,7 @@ public  ScopeTypeChecker()
             }
         }
 
-        return functionType;
+        return null;
     }
     public Type Visit(FunctionCallExpression node)
     {

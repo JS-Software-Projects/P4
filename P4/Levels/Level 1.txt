@@ -1,1 +1,1 @@
-Num x = 12
+Tower tower = new Tower(2,2);

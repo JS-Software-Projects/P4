@@ -322,6 +322,19 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
             LineNumber = _lineNumber
         };
     }
+    public override ASTNode VisitAssignmentfor(EduGrammarParser.AssignmentforContext context)
+    {
+        var idNode = Visit(context.id()) as IdentifierExpression;
+        if (idNode == null)
+        {
+            throw new InvalidCastException("Expected IdentifierExpression");
+        }
+
+        return new AssignmentStatement(idNode, (Expression)Visit(context.expr()))
+        {
+            LineNumber = _lineNumber
+        };
+    }
     public override ASTNode VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
         var condition = (Expression)Visit(context.expr());
@@ -351,7 +364,7 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     {
         var init = (Statement)Visit(context.variableDeclaration());
         var condition = (Expression)Visit(context.expr());
-        var update = (Statement)Visit(context.assignment());
+        var update = (Statement)Visit(context.assignmentfor());
         var block = (BlockStatement)Visit(context.block());
 
         return new ForLoopStatement(init, condition, update, block)
