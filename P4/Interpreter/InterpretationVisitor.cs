@@ -256,7 +256,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                     _environment.DeclareVariable(node.VariableName.Name, false);
                     break;
                 default:
-                    throw new Exception("Internal error: Type error not caught by type checker in variable declaration. In line: "+node.LineNumber);
+                    throw new Exception("Internal error: Type error not caught by type \n checker in variable declaration. In line: "+node.LineNumber);
             }
         }
         else

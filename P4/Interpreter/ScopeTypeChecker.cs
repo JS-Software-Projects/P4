@@ -202,7 +202,7 @@ public  ScopeTypeChecker()
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
             {
-                throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
+                throw new Exception("Type mismatch in function call \n does not match declaration of "+node.FunctionName);
             }
         }
 
