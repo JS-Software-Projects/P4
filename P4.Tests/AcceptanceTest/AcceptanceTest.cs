@@ -18,6 +18,7 @@ public class AcceptanceTest
         var lexer = new EduGrammarLexer(input);
         var tokens = new CommonTokenStream(lexer);
         var parser = new EduGrammarParser(tokens);
+        parser.ErrorHandler = new CustomErrorStrategy();
         var parseTree = parser.program();
 
         var astMaker = new ASTMaker();
