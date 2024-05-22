@@ -185,9 +185,9 @@ public class InterpretationVisitor : IASTVisitor<object>
             var x = (double)Visit(node.ArgumentLists.Arguments[0]);
             var y = (double)Visit(node.ArgumentLists.Arguments[1]);
             
-            if (x > 8 || x < 1)
+            if (x > 9 || x < 1)
             {
-                throw new Exception("Cannot create tower, value X is out \n of bounds. X must be between 1 and 8: "+node.LineNumber);
+                throw new Exception("Cannot create tower, value X is out \n of bounds. X must be between 1 and 9: "+node.LineNumber);
             }
             if (y > 8 || y < 1)
             {   
@@ -225,9 +225,9 @@ public class InterpretationVisitor : IASTVisitor<object>
             var x = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var y = (int)(double)Visit(node.ArgumentList.Arguments[1]);
 
-            if (x > 8 || x < 1)
+            if (x > 9 || x < 1)
             {
-                throw new Exception("Cannot move hero, value X is out \n of bounds. X must be between 1 and 8 in line: "+node.LineNumber);
+                throw new Exception("Cannot move hero, value X is out \n of bounds. X must be between 1 and 9 in line: "+node.LineNumber);
             }
             if (y > 8 || y < 1)
             {

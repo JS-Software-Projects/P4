@@ -287,6 +287,10 @@ public  ScopeTypeChecker()
                 throw new Exception("Type mismatch in Hero GameObject call. In line:"+node.LineNumber);
             }
         }
+        else
+        {
+            throw new Exception("Method not found in GameObject. In line:"+node.LineNumber);
+        }
 
         return null;
     }
