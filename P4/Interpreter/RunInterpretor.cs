@@ -19,8 +19,8 @@ public class RunInterpretor
             
             Console.WriteLine("Parse tree:");
             Console.WriteLine(parseTree.ToStringTree(parser)+"\n");
-            
-            
+
+
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(parseTree);
             
