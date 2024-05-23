@@ -71,7 +71,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                 result = (double)left / (double)right;
                 break;
             case Operator.Divide when left is double && (double)right == 0.0:
-                throw new Exception("Division by zero");
+                throw new Exception("Division by zero in line: "+node.LineNumber);
             case Operator.LessThan when left is double:
                 result = (double)left < (double)right;
                 break;
@@ -97,7 +97,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                 result = (bool)left || (bool)right;
                 break;
             default:
-                throw new Exception("Unknown operator");
+                throw new Exception("Unknown operator in line: "+node.LineNumber);
         }
         return result;
     }
@@ -116,7 +116,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                 result = -(double)value;
                 break;
             default:
-                throw new Exception("Unknown operator");
+                throw new Exception("Unknown operator in line: "+node.LineNumber);
         }
         return result;
     }
@@ -185,10 +185,30 @@ public class InterpretationVisitor : IASTVisitor<object>
             var x = (double)Visit(node.ArgumentLists.Arguments[0]);
             var y = (double)Visit(node.ArgumentLists.Arguments[1]);
             
-           var tower = GameManager.AddTower(x,y);
-           Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
-           node.SetGameObject(tower);
-           _environment.DeclareVariable(node.ObjectName.Name,node);
+            if (x > 9 || x < 1)
+            {
+                throw new Exception("Cannot create tower, value X is out \n of bounds. X must be between 1 and 9: "+node.LineNumber);
+            }
+            if (y > 8 || y < 1)
+            {   
+                throw new Exception("Cannot create tower, value Y is out \n of bounds. Y must be between 1 and 8 in line: "+node.LineNumber);
+            }
+
+            try
+            {
+                var tower = GameManager.AddTower(x,y);
+                Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
+                node.SetGameObject(tower);
+                _environment.DeclareVariable(node.ObjectName.Name,node);
+            }
+            catch (ArgumentException e)
+            {
+                throw new Exception("Tower already exists in ( "+ x + " , " + y+" ). Error in line: "+node.LineNumber);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Tower cannot be placed on path in ( "+ x + " , " + y+" ). \n Error in line: "+node.LineNumber);
+            }
         } 
         else if (node.ObjectType.TypeName == "Hero")
         {
@@ -202,7 +222,7 @@ public class InterpretationVisitor : IASTVisitor<object>
         }
         else
         {
-            throw new Exception("Internal error: Unknown GameObject type");
+            throw new Exception("Internal error: Unknown GameObject type in line: "+node.LineNumber);
         }
 
         return null;
@@ -215,8 +235,22 @@ public class InterpretationVisitor : IASTVisitor<object>
         if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
             var x = (int)(double)Visit(node.ArgumentList.Arguments[0]);
             var y = (int)(double)Visit(node.ArgumentList.Arguments[1]);
-           Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
-            GameManager.HeroMove(x,y);
+
+            if (x > 9 || x < 1)
+            {
+                throw new Exception("Cannot move hero, value X is out \n of bounds. X must be between 1 and 9 in line: "+node.LineNumber);
+            }
+            if (y > 8 || y < 1)
+            {
+                throw new Exception("Cannot move hero, value Y is out \n of bounds. Y must be between 1 and 8 in line: "+node.LineNumber);
+            }
+            var result = GameManager.HeroMove(x,y);
+            if (result == false)
+            {
+                throw new Exception("Cannot move hero, tile ( "+x+" , "+ y + " ) is blocked in line: "+node.LineNumber);
+            }
+            Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
+            
         }
         return null;
     }
@@ -237,7 +271,7 @@ public class InterpretationVisitor : IASTVisitor<object>
                     _environment.DeclareVariable(node.VariableName.Name, false);
                     break;
                 default:
-                    throw new Exception("Internal error: Type error not caught by type checker in variable declaration");
+                    throw new Exception("Internal error: Type error not caught by type \n checker in variable declaration. In line: "+node.LineNumber);
             }
         }
         else
@@ -247,21 +281,6 @@ public class InterpretationVisitor : IASTVisitor<object>
         }
         return null;
     }
-    
-    
-    /*
-    public object Visit(VariableDeclaration node)
-    {
-        _environment.DeclareVariable(node.VariableName.Name);
-        if (node.Expression != null)
-        {
-            var value = Visit(node.Expression);
-            _environment.DeclareVariable(node.VariableName.Name, value);
-        }
-        
-        return null;
-    }
-    */
 
     public object Visit(ConstantExpression node)
     {

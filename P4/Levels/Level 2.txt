@@ -1,5 +1,10 @@
 Hero hero = new Hero(0,3);
 
-Num x = _;
+Num x = 4;
+Num y = 3;
+
+Tower tower = new Tower(3,3);
+
+
 
 hero.move(x,y);

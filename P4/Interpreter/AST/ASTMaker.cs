@@ -40,6 +40,11 @@ public class ASTMaker : EduGrammarBaseVisitor<ASTNode>
     {
         var classType = (ObjectType)VisitObjectType(context.objectType()[0]);
         var objectName = VisitId(context.id()) as IdentifierExpression;
+        if (context.objectType().Length < 2)
+        {
+            throw new SyntaxErrorException("Expected token twice. Only received Token:\""+classType.TypeName+"\" once \n Pleas write in the format: "+classType.TypeName+" "+objectName.Name+" = new "+classType.TypeName+"(x,y);", _lineNumber,19);
+            
+        }
         var arguments = context.argumentList() != null ? VisitArgumentList(context.argumentList()) as ArgumentList : new ArgumentList();
 
         return new GameObjectDeclaration(classType, objectName, arguments)
@@ -322,6 +327,19 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
             LineNumber = _lineNumber
         };
     }
+    public override ASTNode VisitAssignmentfor(EduGrammarParser.AssignmentforContext context)
+    {
+        var idNode = Visit(context.id()) as IdentifierExpression;
+        if (idNode == null)
+        {
+            throw new InvalidCastException("Expected IdentifierExpression");
+        }
+
+        return new AssignmentStatement(idNode, (Expression)Visit(context.expr()))
+        {
+            LineNumber = _lineNumber
+        };
+    }
     public override ASTNode VisitIfBlock(EduGrammarParser.IfBlockContext context)
     {
         var condition = (Expression)Visit(context.expr());
@@ -351,7 +369,7 @@ public override ASTNode VisitTerm(EduGrammarParser.TermContext context)
     {
         var init = (Statement)Visit(context.variableDeclaration());
         var condition = (Expression)Visit(context.expr());
-        var update = (Statement)Visit(context.assignment());
+        var update = (Statement)Visit(context.assignmentfor());
         var block = (BlockStatement)Visit(context.block());
 
         return new ForLoopStatement(init, condition, update, block)

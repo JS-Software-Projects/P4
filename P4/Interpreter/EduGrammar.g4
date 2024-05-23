@@ -27,12 +27,13 @@ parameter:
 functionCallStatement:
     id '(' argumentList? ')' ';';
 functionCallExpr:
-    id '(' argumentList? ')' ';';
+    id '(' argumentList? ')';
     
 argumentList:
     expr (',' expr)*;    
 
-assignment: id '=' expr ';';
+assignment: id '=' expr ';' ;
+assignmentfor: id '=' expr;
 
 print: 'print' '(' expr ')' ';';
 
@@ -44,7 +45,7 @@ whileBlock: 'while' '(' expr ')' block;
 block: '{' statement* '}';
 
 returnStatement: 'return' expr ';';
-forLoop: 'for' '(' variableDeclaration ';' expr ';' assignment ')' block;
+forLoop: 'for' '(' variableDeclaration  expr ';' assignmentfor ')' block;
 
 
 gameObjectDeclaration: objectType id '=' 'new' objectType '(' argumentList? ')' ';';

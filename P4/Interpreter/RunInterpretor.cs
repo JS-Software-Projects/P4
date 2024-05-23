@@ -14,12 +14,13 @@ public class RunInterpretor
             var lexer = new EduGrammarLexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new EduGrammarParser(tokens);
+            parser.ErrorHandler = new CustomErrorStrategy();
             var parseTree = parser.program();
             
             Console.WriteLine("Parse tree:");
             Console.WriteLine(parseTree.ToStringTree(parser)+"\n");
-            
-            
+
+
             var astMaker = new ASTMaker();
             var AST = astMaker.VisitProgram(parseTree);
             
@@ -57,11 +58,13 @@ public class RunInterpretor
             visitor.Visit(tree);
             */
             
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
             Terminal.SetError(true, e.Message);
             Console.WriteLine("Error:"+e.Message);
             Console.WriteLine("Error: "+e.StackTrace);
         }
+        
     }
 }

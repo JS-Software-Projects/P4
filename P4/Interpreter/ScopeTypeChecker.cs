@@ -102,7 +102,7 @@ public  ScopeTypeChecker()
                 }
                 else
                 {
-                    throw new Exception("Type mismatch in binary expression: expected a Bool.");
+                    throw new Exception("Type mismatch in binary expression: expected a Bool.In line:"+node.LineNumber);
                 }
                
             default:
@@ -188,7 +188,7 @@ public  ScopeTypeChecker()
             }
         }
 
-        return functionType;
+        return null;
     }
     public Type Visit(FunctionCallExpression node)
     {
@@ -202,7 +202,7 @@ public  ScopeTypeChecker()
         {
             if (functionType != null && functionType.Args[i].TypeName != Visit(node.Arguments.Arguments[i]).TypeName)
             {
-                throw new Exception("Type mismatch in function call does not match declaration of "+node.FunctionName);
+                throw new Exception("Type mismatch in function call \n does not match declaration of "+node.FunctionName);
             }
         }
 
@@ -230,7 +230,7 @@ public  ScopeTypeChecker()
         {
             if (node.ArgumentLists.Arguments == null || node.ArgumentLists.Arguments.Count != VectorTypes.Count)
             {
-                throw new Exception("Incorrect number of arguments in Tower GameObject declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
+                throw new Exception("Incorrect number of arguments in Tower GameObject \n declaration. Needs two arguments (Num,Num) In line:"+node.LineNumber);
             }
             for (int i = 0; i < node.ArgumentLists.Arguments.Count; i++)
             {
@@ -286,6 +286,10 @@ public  ScopeTypeChecker()
             {
                 throw new Exception("Type mismatch in Hero GameObject call. In line:"+node.LineNumber);
             }
+        }
+        else
+        {
+            throw new Exception("Method not found in GameObject. In line:"+node.LineNumber);
         }
 
         return null;

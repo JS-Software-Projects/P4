@@ -9,7 +9,7 @@ public class Tile : Sprite
     public readonly int _mapX;
     public readonly int _mapY;
     public List<string> _boundry = new();
-    
+    public bool TowerPlaced { get; set; }
     // List to store circles
     private Circle _circle;
 

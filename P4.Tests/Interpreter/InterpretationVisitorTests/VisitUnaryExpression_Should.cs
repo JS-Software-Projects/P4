@@ -37,6 +37,6 @@ public class VisitUnaryExpression_Should
         var node = new UnaryExpression( Operator.Add, operand);
 
         var exception = Assert.Throws<Exception>(() => _visitor.Visit(node));
-        Assert.Equal("Unknown operator", exception.Message);
+        Assert.Equal("Unknown operator in line: 0", exception.Message);
     }
 }
