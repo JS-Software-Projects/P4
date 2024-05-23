@@ -193,11 +193,22 @@ public class InterpretationVisitor : IASTVisitor<object>
             {   
                 throw new Exception("Cannot create tower, value Y is out \n of bounds. Y must be between 1 and 8 in line: "+node.LineNumber);
             }
-            
-           var tower = GameManager.AddTower(x,y);
-           Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
-           node.SetGameObject(tower);
-           _environment.DeclareVariable(node.ObjectName.Name,node);
+
+            try
+            {
+                var tower = GameManager.AddTower(x,y);
+                Terminal.AddMessage(false,"Tower added in ( "+ x + " , " + y+" )");
+                node.SetGameObject(tower);
+                _environment.DeclareVariable(node.ObjectName.Name,node);
+            }
+            catch (ArgumentException e)
+            {
+                throw new Exception("Tower already exists in ( "+ x + " , " + y+" ). Error in line: "+node.LineNumber);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Tower cannot be placed on path in ( "+ x + " , " + y+" ). \n Error in line: "+node.LineNumber);
+            }
         } 
         else if (node.ObjectType.TypeName == "Hero")
         {
@@ -233,9 +244,13 @@ public class InterpretationVisitor : IASTVisitor<object>
             {
                 throw new Exception("Cannot move hero, value Y is out \n of bounds. Y must be between 1 and 8 in line: "+node.LineNumber);
             }
-
+            var result = GameManager.HeroMove(x,y);
+            if (result == false)
+            {
+                throw new Exception("Cannot move hero, tile ( "+x+" , "+ y + " ) is blocked in line: "+node.LineNumber);
+            }
             Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
-            GameManager.HeroMove(x,y);
+            
         }
         return null;
     }

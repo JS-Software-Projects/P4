@@ -24,8 +24,15 @@ public class LevelScene : IScreen
         _textEditor = new TextEditor(Globals.graphicsDevice, Globals.SpriteBatch, Globals.spriteFont, path, _level);
         _terminal = new Terminal(Globals.graphicsDevice , Globals.SpriteBatch, Globals.spriteFont);
         _gameManager = new GameManager(_level);
-        if (_level != 1)
+        if (_level != 1){
             _textEditor.LockLine(1);
+            _textEditor.currentLine = 1;
+            _textEditor.cursorPosition = 0;
+        }
+        if (_level == 2){
+            _textEditor.LockLine(5);
+        }
+        
         _textEditor.ResetRequested += TextEditor_ResetRequested;
         _gameManager.OnHomeClicked += goBack;
     }

@@ -13,8 +13,8 @@ namespace P4
     public class TextEditor
     {
         private readonly Rectangle buttomLine;
-        private int currentLine;
-        private int cursorPosition;
+        public int currentLine;
+        public int cursorPosition;
         private readonly GraphicsDevice graphicsDevice;
         private readonly List<string> lines = new() { "" };
         private readonly Rectangle numberArea;
@@ -182,87 +182,132 @@ namespace P4
             }
         }
 
-        public void AddCharacter(char character)
+    public void AddCharacter(char character)
+{
+    // If the current line is locked, do not allow editing
+    if (lockedLines.Contains(currentLine))
+    {
+        return;
+    }
+
+    const int margin = 10; // Margin for the text area
+    float availableWidth = textAreaRectangle.Width - 2 * margin; // Available width for text
+    var maxHeight = Globals.WindowSize.Y - 90; // Maximum height for text lines
+
+    // Calculate maximum number of lines allowed based on maxHeight and line spacing
+    var maxLines = ((maxHeight - textAreaRectangle.Y) - 70) / spriteFont.LineSpacing;
+
+    // Handle backspace
+    if (character == '\b')
+    {
+        if (cursorPosition > 0)
         {
-            // If the current line is locked, do not allow editing
-            if (lockedLines.Contains(currentLine))
+            lines[currentLine] = lines[currentLine].Remove(cursorPosition - 1, 1);
+            cursorPosition--;
+        }
+        else if (currentLine > 0)
+        {
+            // Check if deleting the line would result in all lines being locked
+            if (lines.Count - 1 == lockedLines.Count)
             {
-                return;
+                return; // Prevent deletion if it would result in all lines being locked
             }
 
-            const int margin = 10; // Margin for the text area
-            float availableWidth = textAreaRectangle.Width - 2 * margin; // Available width for text
-            var maxHeight = Globals.WindowSize.Y - 90; // Maximum height for text lines
+            cursorPosition = lines[currentLine - 1].Length;
+            lines[currentLine - 1] += lines[currentLine];
+            lines.RemoveAt(currentLine);
+            currentLine--;
 
-            // Calculate maximum number of lines allowed based on maxHeight and line spacing
-            var maxLines = ((maxHeight - textAreaRectangle.Y)-70) / spriteFont.LineSpacing;
-
-            // Handle backspace
-            if (character == '\b')
+            // Adjust locked lines
+            var newLockedLines = new HashSet<int>();
+            foreach (var line in lockedLines)
             {
-                if (cursorPosition > 0)
+                if (line > currentLine)
                 {
-                    lines[currentLine] = lines[currentLine].Remove(cursorPosition - 1, 1);
-                    cursorPosition--;
-                }
-                else if (currentLine > 0)
-                {
-                    cursorPosition = lines[currentLine - 1].Length;
-                    lines[currentLine - 1] += lines[currentLine];
-                    lines.RemoveAt(currentLine);
-                    currentLine--;
-                }
-            }
-            // Handle new line
-            else if (character == '\r' && lines.Count < maxLines)
-            {
-                lines.Insert(currentLine + 1, "");
-                currentLine++;
-                cursorPosition = 0;
-            }
-            // Handle normal characters
-            else if (!char.IsControl(character))
-            {
-                // Prevent adding new characters if this is the last allowed line and it's already at max length
-                if (currentLine == maxLines - 1 &&
-                    spriteFont.MeasureString(lines[currentLine]).X >=
-                    availableWidth) return; // Do nothing more, prevent overflow
-
-                // Insert character into the current line at the current cursor position
-                var newLine = lines[currentLine].Insert(cursorPosition, character.ToString());
-                var newSize = spriteFont.MeasureString(newLine);
-
-                // Check if the new line exceeds the available width
-                if (newSize.X > availableWidth && lines.Count < maxLines)
-                {
-                    // Split the line at the last space (if exists) or at the current position
-                    var lastSpace = newLine.LastIndexOf(' ', cursorPosition);
-                    if (lastSpace > -1)
-                    {
-                        // Create a new line starting from the word after the last space
-                        var nextLine = newLine.Substring(lastSpace + 1);
-                        lines[currentLine] = newLine.Substring(0, lastSpace);
-                        lines.Insert(currentLine + 1, nextLine);
-                        cursorPosition = nextLine.Length;
-                    }
-                    else
-                    {
-                        // No space found, just split the line at the current position
-                        lines[currentLine] = newLine.Substring(0, cursorPosition);
-                        lines.Insert(currentLine + 1, newLine.Substring(cursorPosition));
-                        cursorPosition = 1; // Start from the next character in the new line
-                    }
-
-                    currentLine++;
+                    newLockedLines.Add(line - 1);
                 }
                 else
                 {
-                    // If the line does not exceed the available width, just update normally
-                    lines[currentLine] = newLine;
-                    cursorPosition++;
+                    newLockedLines.Add(line);
                 }
             }
+            lockedLines.Clear();
+            foreach (var line in newLockedLines)
+            {
+                lockedLines.Add(line);
+            }
         }
+    }
+    // Handle new line
+    else if (character == '\r' && lines.Count < maxLines)
+    {
+        lines.Insert(currentLine + 1, "");
+        currentLine++;
+        cursorPosition = 0;
+
+        // Adjust locked lines
+        var newLockedLines = new HashSet<int>();
+        foreach (var line in lockedLines)
+        {
+            if (line >= currentLine)
+            {
+                newLockedLines.Add(line + 1);
+            }
+            else
+            {
+                newLockedLines.Add(line);
+            }
+        }
+        lockedLines.Clear();
+        foreach (var line in newLockedLines)
+        {
+            lockedLines.Add(line);
+        }
+    }
+    // Handle normal characters
+    else if (!char.IsControl(character))
+    {
+        // Prevent adding new characters if this is the last allowed line and it's already at max length
+        if (currentLine == maxLines - 1 &&
+            spriteFont.MeasureString(lines[currentLine]).X >=
+            availableWidth) return; // Do nothing more, prevent overflow
+
+        // Insert character into the current line at the current cursor position
+        var newLine = lines[currentLine].Insert(cursorPosition, character.ToString());
+        var newSize = spriteFont.MeasureString(newLine);
+
+        // Check if the new line exceeds the available width
+        if (newSize.X > availableWidth && lines.Count < maxLines)
+        {
+            // Split the line at the last space (if exists) or at the current position
+            var lastSpace = newLine.LastIndexOf(' ', cursorPosition);
+            if (lastSpace > -1)
+            {
+                // Create a new line starting from the word after the last space
+                var nextLine = newLine.Substring(lastSpace + 1);
+                lines[currentLine] = newLine.Substring(0, lastSpace);
+                lines.Insert(currentLine + 1, nextLine);
+                cursorPosition = nextLine.Length;
+            }
+            else
+            {
+                // No space found, just split the line at the current position
+                lines[currentLine] = newLine.Substring(0, cursorPosition);
+                lines.Insert(currentLine + 1, newLine.Substring(cursorPosition));
+                cursorPosition = 1; // Start from the next character in the new line
+            }
+
+            currentLine++;
+        }
+        else
+        {
+            // If the line does not exceed the available width, just update normally
+            lines[currentLine] = newLine;
+            cursorPosition++;
+        }
+    }
+}
+
 
         public void Update(MouseState mouseState)
         {
@@ -354,52 +399,58 @@ namespace P4
         }
 
         private void HandleMouseInput(MouseState mouseState)
+{
+    // Check for left mouse button click transition from not pressed to pressed
+    if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+    {
+        // Calculate the clicked position relative to the text area
+        var mouseX = mouseState.X;
+        var mouseY = mouseState.Y;
+
+        // Check if the click was inside the text area
+        if (textAreaRectangle.Contains(mouseX, mouseY))
         {
-            // Check for left mouse button click transition from not pressed to pressed
-            if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            var textStartX = textAreaRectangle.X + 10; // This should match your actual text margin
+            var clickX = mouseX - textStartX;
+            var clickY = mouseY - textAreaRectangle.Y;
+
+            // Determine which line was clicked
+            int clickedLine = Math.Min(clickY / spriteFont.LineSpacing, lines.Count - 1);
+
+            // If the clicked line is locked, do not allow selection
+            if (lockedLines.Contains(clickedLine))
             {
-                // Calculate the clicked position relative to the text area
-                var mouseX = mouseState.X;
-                var mouseY = mouseState.Y;
+                // Handle the click on the locked line if necessary (e.g., show a message or ignore)
+                return;
+            }
+            else
+            {
+                currentLine = clickedLine;
+                cursorPosition = 0;
 
-                // Check if the click was inside the text area
-                if (textAreaRectangle.Contains(mouseX, mouseY))
+                // Find the nearest character position to the click
+                var currentTextLine = lines[currentLine];
+                var smallestDistance = float.MaxValue;
+
+                for (var i = 0; i <= currentTextLine.Length; i++)
                 {
-                    var textStartX = textAreaRectangle.X + 10; // This should match your actual text margin
-                    var clickX = mouseX - textStartX;
-                    var clickY = mouseY - textAreaRectangle.Y;
+                    var textUpToCursor = currentTextLine.Substring(0, i);
+                    var textSize = spriteFont.MeasureString(textUpToCursor);
+                    var distance = Math.Abs(clickX - textSize.X);
 
-                    // Determine which line was clicked
-                    int clickedLine = Math.Min(clickY / spriteFont.LineSpacing, lines.Count - 1);
-
-                    // Skip locked lines
-                    if (!lockedLines.Contains(clickedLine))
+                    if (distance < smallestDistance)
                     {
-                        currentLine = clickedLine;
-                        cursorPosition = 0;
-
-                        // Find the nearest character position to the click
-                        var currentTextLine = lines[currentLine];
-                        var smallestDistance = float.MaxValue;
-
-                        for (var i = 0; i <= currentTextLine.Length; i++)
-                        {
-                            var textUpToCursor = currentTextLine.Substring(0, i);
-                            var textSize = spriteFont.MeasureString(textUpToCursor);
-                            var distance = Math.Abs(clickX - textSize.X);
-
-                            if (distance < smallestDistance)
-                            {
-                                smallestDistance = distance;
-                                cursorPosition = i;
-                            }
-                        }
+                        smallestDistance = distance;
+                        cursorPosition = i;
                     }
                 }
             }
-
-            previousMouseState = mouseState;
         }
+    }
+
+    previousMouseState = mouseState;
+}
+
 
 
     public void Draw()

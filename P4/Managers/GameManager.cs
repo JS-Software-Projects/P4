@@ -61,17 +61,35 @@ public class GameManager
     }
     public static BasicTower AddTower(double x,double y)
     {
+        if (_map.Tiles[(int)x-1, (int)y-1].TowerPlaced)
+        {
+            throw new ArgumentException("Tower already placed on this tile");
+        }
+
+        if (_map.Tiles[(int)x-1, (int)y-1]._boundry.Count == 2)
+        {
+            throw new Exception("Tower cannot be placed on path tile");
+        }
+    
+        
         BasicTower tower =  new(Globals.Content.Load<Texture2D>("Cannon"), new Vector2((float)x*Globals.TileSize, (float)y*Globals.TileSize), Color.White);
         _tower.Add(tower);
         if (_map.Tiles[(int) x-1, (int) y-1].CircleExist()){
             _map.Tiles[(int)x-1, (int)y-1].removeCircle();
         }
+        _map.Tiles[(int)x-1, (int)y-1].Blocked = true;
+        _map.Tiles[(int)x-1, (int)y-1].TowerPlaced = true;
         return tower;
     }
 
-    public static void HeroMove(int x, int y)
+    public static bool HeroMove(int x, int y)
     {
-      InputManager.SetExecute(true, x, y);
+        if (_map.Tiles[x-1,y-1].Blocked)
+        {
+            return false;
+        }
+        InputManager.SetExecute(true, x, y);
+        return true;
     }
     public void CheckCircles()
     {

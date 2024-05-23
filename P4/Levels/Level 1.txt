@@ -1,1 +1,1 @@
-Tower hero = new Tower(3,5);
+Tower tower = new Tower(2,2);
