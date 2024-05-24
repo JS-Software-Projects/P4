@@ -458,8 +458,8 @@ public  ScopeTypeChecker()
         }
         _symbolTableType.PushScope(); // Enter new scope for the for loop
         Visit(node.Block);
-        Visit(node.Increment);
         _symbolTableType.PopScope(); // Exit scope
+        Visit(node.Increment);
         return null;
     }
 }

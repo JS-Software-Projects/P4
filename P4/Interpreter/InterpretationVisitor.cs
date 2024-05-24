@@ -338,7 +338,9 @@ public class InterpretationVisitor : IASTVisitor<object>
         var condition = (bool)Visit(node.Condition);
         if(condition)
         {
+            _environment.PushScope();
             Visit(node.Block);
+            _environment.PopScope();
             return Visit(node);
         }
         return null;
@@ -356,7 +358,9 @@ public class InterpretationVisitor : IASTVisitor<object>
         Visit(node.Initialization);
         while ((bool)Visit(node.Condition))
         {
+            _environment.PushScope();
             Visit(node.Block);
+            _environment.PopScope();
             Visit(node.Increment);
         }
         return null;
