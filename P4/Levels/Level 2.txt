@@ -1,5 +1,9 @@
 Hero hero = new Hero(0,3);
 
+for(Num i = 0 ; i < 5 ; i = i + 1){
+print(i);
+}
+
 Num x = 4;
 Num y = 3;
 

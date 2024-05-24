@@ -11,7 +11,7 @@ public class Terminal
     private  static readonly List<string> Lines = new() { "" };
     private readonly int _textAreaY;
     private static bool _error = true;
-    
+    public static bool FirstLine = true;
     public Terminal(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, SpriteFont spriteFont)
     {
         this._spriteBatch = spriteBatch;
@@ -48,9 +48,10 @@ public class Terminal
     {
         _error = err;
     
-        if (Lines.Count == 1)
+        if (Lines.Count == 1 && FirstLine)
         {
             Lines[0] = line; // Replace the first line if Lines is not empty
+            FirstLine = false;
         }
         else
         {
@@ -62,6 +63,7 @@ public class Terminal
     {
         Lines.Clear();
         Lines.Add("");
+        FirstLine = true;
     }
     
     public void Draw()
