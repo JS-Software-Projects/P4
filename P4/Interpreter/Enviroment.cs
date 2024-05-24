@@ -24,13 +24,11 @@ public class Environment
     public void PushScope()
     {
         _locationTable.PushScope();
-        _valueTable.PushScope();
     }
 
     public void PopScope()
     {
         _locationTable.PopScope();
-        _valueTable.PopScope();
     }
     public Environment Copy()
     {
