@@ -1,14 +1,9 @@
 Hero hero = new Hero(0,3);
 
-for(Num i = 0 ; i < 5 ; i = i + 1){
-print(i);
+for(Num i = 1 ; i < 5 ; i = i + 1){
+Num x = i;
+Num y = i+1;
+hero.move(x,y);
 }
 
-Num x = 4;
-Num y = 3;
-
 Tower tower = new Tower(3,3);
-
-
-
-hero.move(x,y);
