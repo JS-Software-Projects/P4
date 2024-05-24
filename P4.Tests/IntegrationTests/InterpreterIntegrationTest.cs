@@ -97,6 +97,6 @@ public class InterpreterIntegrationTest
 
         // Assert
         var exception = Assert.Throws<Exception>(() => interpretationVisitor.Visit(AST));
-        Assert.Equal("Division by zero", exception.Message);
+        Assert.Equal("Division by zero in line: 1", exception.Message);
     }
 }
