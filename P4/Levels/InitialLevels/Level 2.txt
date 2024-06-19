@@ -1,4 +1,4 @@
-Hero hero = new Hero(0,3);
+Hero hero = new Hero(1,3);
 
 Num x = _;
 
