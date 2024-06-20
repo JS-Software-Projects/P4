@@ -82,13 +82,13 @@ public class GameManager
         return tower;
     }
 
-    public static bool HeroMove(int x, int y)
+    public static bool HeroMove(double x, double y)
     {
-        if (_map.Tiles[x-1,y-1].Blocked)
+        if (_map.Tiles[(int)x-1,(int)y-1].Blocked)
         {
             return false;
         }
-        InputManager.SetExecute(true, x, y);
+        InputManager.SetExecute(true, (int)x, (int)y);
         return true;
     }
     public void CheckCircles()

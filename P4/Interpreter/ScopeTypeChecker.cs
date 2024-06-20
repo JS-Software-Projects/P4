@@ -278,9 +278,9 @@ public  ScopeTypeChecker()
         var objType = _symbolTableType.Get(node.ObjectName.Name);
         if (node.MethodName == "move" && objType.TypeName == "Hero")
         {
-            if (node.ArgumentList.Arguments.Count != 2)
+            if (node.ArgumentList.Arguments == null || node.ArgumentList.Arguments.Count != 2)
             {
-                throw new Exception("Incorrect number of arguments in Hero GameObject call. Needs one argument (Num) In line:"+node.LineNumber);
+                throw new Exception("Incorrect number of arguments in Hero GameObject call. \n Needs argument (Num,Num) In line:"+node.LineNumber);
             }
             if (Visit(node.ArgumentList.Arguments[0]).TypeName != "Num" && Visit(node.ArgumentList.Arguments[1]).TypeName != "Num")
             {

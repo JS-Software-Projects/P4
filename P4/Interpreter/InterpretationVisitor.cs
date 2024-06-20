@@ -233,8 +233,8 @@ public class InterpretationVisitor : IASTVisitor<object>
         var Gameobject = (GameObjectDeclaration)_environment.Get(node.ObjectName.Name);
         
         if (Gameobject.ObjectType.TypeName == "Hero" && node.MethodName == "move"){
-            var x = (int)(double)Visit(node.ArgumentList.Arguments[0]);
-            var y = (int)(double)Visit(node.ArgumentList.Arguments[1]);
+            var x = (double)Visit(node.ArgumentList.Arguments[0]);
+            var y = (double)Visit(node.ArgumentList.Arguments[1]);
 
             if (x > 9 || x < 1)
             {
@@ -249,7 +249,7 @@ public class InterpretationVisitor : IASTVisitor<object>
             {
                 throw new Exception("Cannot move hero, tile ( "+x+" , "+ y + " ) is blocked in line: "+node.LineNumber);
             }
-            Terminal.AddMessage(false,"moving hero to: " + x + " , " + y);
+            Terminal.AddMessage(false,"moving hero to: (" + x + " , " + y+ " )");
             
         }
         return null;
