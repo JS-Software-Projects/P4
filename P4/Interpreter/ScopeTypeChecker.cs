@@ -139,7 +139,7 @@ public  ScopeTypeChecker()
         Type conditionType = Visit(node.Condition);
         if (conditionType.TypeName != "Bool")
         {
-            throw new Exception("Condition in ternary expression must be of type Bool. In line:"+node.LineNumber);
+            throw new Exception("Condition in ternary expression must be of \n type Bool. In line:"+node.LineNumber);
         }
         
         Type trueExpressionType = Visit(node.ThenExpression);
@@ -147,7 +147,7 @@ public  ScopeTypeChecker()
 
         if (trueExpressionType.TypeName != falseExpressionType.TypeName)
         {
-            throw new Exception("True and false expressions in a ternary operation must be of the same type. In line:"+node.LineNumber);
+            throw new Exception("True and false expressions in a ternary operation \n must be of the same type. In line:"+node.LineNumber);
         }
         
         return trueExpressionType;
@@ -302,7 +302,7 @@ public  ScopeTypeChecker()
         var varName = node.VariableName;
         if (_symbolTableType.IsVariableDeclaredInScope(varName.Name))
         {
-            throw new Exception($"Variable '{varName}' already declared. In line:"+node.LineNumber);
+            throw new Exception($"Variable '{varName.Name}' already declared. Error in line:"+node.LineNumber);
         }
 
         // Type checking
@@ -311,11 +311,13 @@ public  ScopeTypeChecker()
         {
             throw new Exception("Unknown type in variable declaration. In line:"+node.LineNumber);
         }
-        
-        var expressionType = Visit(node.Expression);
-        if (varType.TypeName != expressionType.TypeName)
-        {
-            throw new Exception($"Type mismatch for variable '{varName}'. In line:"+node.LineNumber);
+        if (node.Expression != null){
+            var expressionType = Visit(node.Expression);
+            
+            if (varType.TypeName != expressionType.TypeName)
+            {
+                throw new Exception($"Type mismatch for variable '{varName.Name}'. In line:"+node.LineNumber);
+            }
         }
         
         _symbolTableType.Add(varName.Name, varType);
